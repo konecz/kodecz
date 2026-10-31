@@ -1,0 +1,12 @@
+Kodecz
+Copyright 2026 Konecz
+
+This product includes software developed at Konecz (https://konecz.com).
+
+Third-party material distributed in this repository:
+
+- Schibsted Grotesk, Copyright 2023 The Schibsted-Grotesk Project Authors, SIL Open Font License 1.1
+  (marca/fontes/OFL-schibsted-grotesk.txt)
+- IBM Plex Mono, Copyright 2017 IBM Corp., Reserved Font Name "Plex", SIL Open Font License 1.1 (marca/fontes/OFL-ibm-plex-mono.txt)
+
+The full list of runtime dependencies and their notices is added with the engine code (docs/licencas/).
