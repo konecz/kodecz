@@ -12,5 +12,7 @@ Third-party material distributed in this repository:
 - Octicons, Copyright GitHub Inc., MIT License (marca/icones/LICENSE-octicons.txt)
 - Simple Icons, CC0 1.0 (marca/icones/LICENSE-simple-icons.md); the logos are trademarks of their owners and are
   used only to name the technologies Kodecz works with
+- The Remotion logo (marca/icones/icones.json, "marcas") is a trademark of Remotion AG, used only to identify it in
+  the measured comparison
 
 The full list of runtime dependencies and their notices is added with the engine code (docs/licencas/).

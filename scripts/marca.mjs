@@ -163,10 +163,10 @@ function tecnologias(t) {
 
 // O caminho do quadro nas duas pistas, só com peças: página → Chromium → quadro → codificador → MP4.
 function caminhoDoQuadro(t) {
-  const W = 1200, H = 400, lado = 92, x0 = 150;
+  const W = 1200, H = 330, lado = 92, x0 = 150;
   const pistas = [
-    { y: 70, marca: "nvidia", pecas: [["file-code", "page"], ["browser", "chromium"], ["zap", "texture"], ["video", "nvenc"], ["play", "mp4"]] },
-    { y: 240, marca: "cpu", pecas: [["file-code", "page"], ["browser", "chromium"], ["image", "raw"], ["video", "x264"], ["play", "mp4"]] },
+    { y: 44, marca: "nvidia", pecas: [["file-code", ""], ["browser", ""], ["zap", ""], ["nvidia", ""], ["play", ""]] },
+    { y: 194, marca: "cpu", pecas: [["file-code", ""], ["browser", ""], ["image", ""], ["cpu", ""], ["play", ""]] },
   ];
   const vao = (W - x0 - 44 - lado * 5) / 4, cx = (i) => x0 + i * (lado + vao), dist = cx(4) - cx(0);
   const corpo = pistas.map((p, pi) => {
@@ -182,30 +182,40 @@ function caminhoDoQuadro(t) {
   return svg(W, H, corpo, { fundo: t.fundo, borda: t.borda, css, titulo: "With an NVIDIA GPU: page, Chromium, texture, NVENC, MP4. On the CPU: page, Chromium, raw frame, x264, MP4." });
 }
 
-// Os números: o ícone da medida, duas barras (a do Kodecz com a fita no lugar do nome) e o ganho grande.
+// Os números sem texto: cada segundo é um quadradinho. A fila do Remotion (com o logo dele) e a do Kodecz (com a
+// fita) acendem no mesmo ritmo, um segundo por vez, e a do Kodecz acaba muito antes. O ícone diz a medida (CPU ou
+// relógio) e o ganho fica grande à direita.
+function logoRemotion(x, y, alto) {
+  const m = ICONES.marcas.remotion, k = alto / m.viewBox[1];
+  return `<g transform="translate(${f(x)} ${f(y)}) scale(${Math.round(k * 10000) / 10000})">${m.caminhos
+    .map((c) => `<path d="${c.d}" fill="${c.cor}" fill-opacity="${c.op}"/>`).join("")}</g>`;
+}
 function numeros(t) {
-  const W = 1200, H = 300, x0 = 44;
+  const W = 1200, H = 320, x0 = 44, lado = 12, passo = 15, xq = 200, ritmo = 0.07, ciclo = 6;
   const grupos = [
-    { icone: "cpu", y: 40, max: 43.7, outro: 43.7, nosso: 4.4, ganho: "10×" },
-    { icone: "clock", y: 166, max: 13.6, outro: 13.6, nosso: 4.6, ganho: "3×" },
+    { icone: "cpu", y: 46, remotion: 43.7, kodecz: 4.4, ganho: "10×" },
+    { icone: "clock", y: 186, remotion: 13.6, kodecz: 4.6, ganho: "3×" },
   ];
-  const barraX = x0 + 210, barraW = 600;
-  const corpo = grupos.map((g, gi) => {
-    const barra = (v, i, nosso) => {
-      const yy = g.y + 8 + i * 50, w = Math.max(8, (v / g.max) * barraW);
-      const rotulo = nosso
-        ? fita(barraX - 34, yy + 17, 40, t.azul, { quadros: 1, traco: 1.1, linhas: 8 })
-        : `<text x="${barraX - 14}" y="${yy + 23}" text-anchor="end" class="m" font-size="15" fill="${t.fraco}">remotion</text>`;
-      return `${rotulo}
-<rect class="cresce" style="animation-delay:${0.2 * gi + 0.15 * i}s" x="${barraX}" y="${yy}" width="${f(w)}" height="34" rx="8" fill="${nosso ? t.azul : t.fraco}" fill-opacity="${nosso ? 1 : 0.45}"/>
-<text x="${f(barraX + w + 14)}" y="${yy + 24}" class="m" font-size="18" fill="${nosso ? t.azul : t.fraco}">${v} s</text>`;
-    };
-    return `${icone(g.icone, x0, g.y + 20, 52, t.sec)}
-${barra(g.outro, 0, false)}
-${barra(g.nosso, 1, true)}
-<g class="surge" style="animation-delay:${0.6 + 0.2 * gi}s"><text x="${W - 44}" y="${g.y + 84}" text-anchor="end" class="g" font-size="96" font-weight="800" fill="${t.azul}" letter-spacing="-4">${g.ganho}</text></g>`;
+  const fila = (v, y, cor) => {
+    const inteiros = Math.floor(v), resto = v - inteiros, q = [];
+    for (let i = 0; i < Math.ceil(v); i++) {
+      const w = i < inteiros ? lado : Math.max(2, lado * resto);
+      q.push(`<rect class="seg" style="animation-delay:${f(i * ritmo)}s" x="${xq + i * passo}" y="${y}" width="${f(w)}" height="${lado}" rx="2.5" fill="${cor}"/>`);
+    }
+    return q.join("") + `<text x="${xq + Math.ceil(v) * passo + 8}" y="${y + lado - 1}" class="m" font-size="13" fill="${t.fraco}">${v}s</text>`;
+  };
+  const corpo = grupos.map((g) => {
+    const yR = g.y + 8, yK = g.y + 56;
+    return `${icone(g.icone, x0, g.y + 18, 46, t.sec)}
+${logoRemotion(128, yR - 10, 34)}
+${fila(g.remotion, yR, t.fraco)}
+${fita(148, yK + 7, 38, t.azul, { quadros: 1, traco: 1.1, linhas: 8 })}
+${fila(g.kodecz, yK, t.azul)}
+<text x="${W - 44}" y="${g.y + 72}" text-anchor="end" class="g" font-size="96" font-weight="800" fill="${t.azul}" letter-spacing="-4">${g.ganho}</text>`;
   }).join("\n");
-  return svg(W, H, corpo, { fundo: t.fundo, borda: t.borda, css: ENTRADA, titulo: "CPU time: Remotion 43.7 s, Kodecz 4.4 s, 10 times less. Wall time: 13.6 s against 4.6 s, 3 times faster." });
+  const css = `.seg{animation:seg ${ciclo}s linear infinite both}
+@keyframes seg{0%{opacity:.18}3%{opacity:1}88%{opacity:1}96%{opacity:.18}100%{opacity:.18}}`;
+  return svg(W, H, corpo, { fundo: t.fundo, borda: t.borda, css, titulo: "One square per second. CPU time: Remotion 43.7 s, Kodecz 4.4 s, 10 times less. Wall time: Remotion 13.6 s, Kodecz 4.6 s, 3 times faster." });
 }
 
 // O ciclo do agente (escrever, ver, conferir, corrigir), sem texto: quatro peças em volta da fita, setas no sentido

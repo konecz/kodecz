@@ -26,17 +26,12 @@ Chromium can draw it, Kodecz can render it:
 
 ## How it works
 
-Other code-driven video tools take a screenshot of every frame: the pixels leave the GPU, become a PNG and travel
-back to an encoder. Kodecz skips the screenshot on both paths.
+No screenshot of every frame, on either path. Frame *N* is always the same pixels.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="marca/caminho-escuro.svg">
   <img alt="With an NVIDIA GPU: page, Chromium, shared texture, NVENC, MP4. On the CPU: page, Chromium, raw frame, x264, MP4. Frames move along both lines without becoming PNGs." src="marca/caminho-claro.svg" width="100%">
 </picture>
-
-- **GPU:** the frame stays in a GPU texture all the way to NVENC, and the CPU stays free.
-- **CPU:** the raw frame Chromium just painted goes straight to x264, with no PNG in between.
-- **Deterministic:** frame *N* is always the same pixels, in order, out of order or from the middle.
 
 <a id="numbers"></a>
 
@@ -44,12 +39,10 @@ back to an encoder. Kodecz skips the screenshot on both paths.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="marca/numeros-escuro.svg">
-  <img alt="CPU time: Remotion 43.7 s, Kodecz 4.4 s, 10 times less. Wall time: Remotion 13.6 s, Kodecz 4.6 s, 3 times faster." src="marca/numeros-claro.svg" width="100%">
+  <img alt="One square per second. CPU time: Remotion 43.7 s, Kodecz 4.4 s, 10 times less. Wall time: Remotion 13.6 s, Kodecz 4.6 s, 3 times faster." src="marca/numeros-claro.svg" width="100%">
 </picture>
 
-<sub>GPU path. Synthetic 1080p composition with a presenter video, 150 frames, H.264, RTX 5090, two alternating runs
-per side; SSIM 0.998 against the official Remotion render. CPU-path numbers against Remotion are being measured.
-Method and raw numbers: <a href="docs/medidas.md"><code>docs/medidas.md</code></a>.</sub>
+<sub>One square per second · RTX 5090 · 1080p · 150 frames · <a href="docs/medidas.md">method</a></sub>
 
 ## Quick start
 
