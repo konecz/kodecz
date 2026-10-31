@@ -141,7 +141,7 @@ function peca(t, x, y, lado, nome, rotulo, { forte = false, atraso = 0 } = {}) {
   return `<g class="surge" style="animation-delay:${atraso}s">
 <rect x="${f(x)}" y="${f(y)}" width="${lado}" height="${lado}" rx="${lado * 0.24}" fill="${forte ? t.azul : t.cartao}" stroke="${forte ? t.azul : t.borda}"/>
 ${icone(nome, x + lado * 0.25, y + lado * 0.25, lado * 0.5, forte ? "#ffffff" : t.azul)}
-${rotulo ? `<text x="${f(x + lado / 2)}" y="${f(y + lado + 26)}" text-anchor="middle" class="m" font-size="15" fill="${t.sec}">${esc(rotulo)}</text>` : ""}</g>`;
+${rotulo ? `<text x="${f(x + lado / 2)}" y="${f(y + lado + 30)}" text-anchor="middle" class="g" font-size="20" font-weight="800" fill="${t.tinta}" letter-spacing="-.4">${esc(rotulo)}</text>` : ""}</g>`;
 }
 
 // Cabeçalho: o nome, uma frase e a fita girando. Nada mais.
@@ -163,10 +163,10 @@ function tecnologias(t) {
 
 // O caminho do quadro nas duas pistas, só com peças: página → Chromium → quadro → codificador → MP4.
 function caminhoDoQuadro(t) {
-  const W = 1200, H = 330, lado = 92, x0 = 150;
+  const W = 1200, H = 380, lado = 92, x0 = 150;
   const pistas = [
-    { y: 44, marca: "nvidia", pecas: [["file-code", ""], ["browser", ""], ["zap", ""], ["nvidia", ""], ["play", ""]] },
-    { y: 194, marca: "cpu", pecas: [["file-code", ""], ["browser", ""], ["image", ""], ["cpu", ""], ["play", ""]] },
+    { y: 44, marca: "nvidia", pecas: [["file-code", "Page"], ["browser", "Chromium"], ["zap", "Texture"], ["nvidia", "NVENC"], ["play", "MP4"]] },
+    { y: 216, marca: "cpu", pecas: [["file-code", "Page"], ["browser", "Chromium"], ["image", "Raw frame"], ["cpu", "x264"], ["play", "MP4"]] },
   ];
   const vao = (W - x0 - 44 - lado * 5) / 4, cx = (i) => x0 + i * (lado + vao), dist = cx(4) - cx(0);
   const corpo = pistas.map((p, pi) => {
@@ -174,7 +174,7 @@ function caminhoDoQuadro(t) {
     const linha = `<line x1="${cx(0) + lado}" y1="${meio}" x2="${cx(4)}" y2="${meio}" stroke="${t.azul}" stroke-width="2.5" stroke-dasharray="2 7" stroke-linecap="round"/>`;
     const quadros = [0, 1, 2].map((k) => `<rect style="animation:anda ${pi ? 5.4 : 3.6}s linear ${-(pi ? 1.8 : 1.2) * k}s infinite" x="${cx(0) + lado / 2 - 9}" y="${meio - 7}" width="18" height="14" rx="3" fill="${t.azul}"/>`).join("\n");
     const pecas = p.pecas.map(([ic, rot], i) => peca(t, cx(i), p.y, lado, ic, rot, { forte: i === 2, atraso: 0.1 * i + 0.3 * pi })).join("\n");
-    const marca = `${icone(p.marca, 44, meio - 28, 56, t.fraco)}`;
+    const marca = `${icone(p.marca, 44, meio - 34, 56, t.fraco)}<text x="72" y="${meio + 50}" text-anchor="middle" class="g" font-size="20" font-weight="800" fill="${t.sec}" letter-spacing="-.4">${p.marca === "nvidia" ? "GPU" : "CPU"}</text>`;
     return `${marca}\n${linha}\n${quadros}\n${pecas}`;
   }).join("\n");
   const css = `${ENTRADA}
@@ -191,7 +191,7 @@ function logoRemotion(x, y, alto) {
     .map((c) => `<path d="${c.d}" fill="${c.cor}" fill-opacity="${c.op}"/>`).join("")}</g>`;
 }
 function numeros(t) {
-  const W = 1200, H = 320, x0 = 44, lado = 12, passo = 15, xq = 200, ritmo = 0.07, ciclo = 6;
+  const W = 1200, H = 320, x0 = 44, lado = 11, passo = 14, xq = 272, ritmo = 0.07, ciclo = 6;
   const grupos = [
     { icone: "cpu", y: 46, remotion: 43.7, kodecz: 4.4, ganho: "10×" },
     { icone: "clock", y: 186, remotion: 13.6, kodecz: 4.6, ganho: "3×" },
@@ -207,9 +207,11 @@ function numeros(t) {
   const corpo = grupos.map((g) => {
     const yR = g.y + 8, yK = g.y + 56;
     return `${icone(g.icone, x0, g.y + 18, 46, t.sec)}
-${logoRemotion(128, yR - 10, 34)}
+${logoRemotion(106, yR - 10, 32)}
+<text x="146" y="${yR + 11}" class="g" font-size="23" font-weight="800" fill="${t.sec}" letter-spacing="-.5">Remotion</text>
 ${fila(g.remotion, yR, t.fraco)}
-${fita(148, yK + 7, 38, t.azul, { quadros: 1, traco: 1.1, linhas: 8 })}
+${fita(124, yK + 6, 36, t.azul, { quadros: 1, traco: 1.1, linhas: 8 })}
+<text x="152" y="${yK + 12}" class="g" font-size="23" font-weight="800" fill="${t.tinta}" letter-spacing="-.5">Kodecz</text>
 ${fila(g.kodecz, yK, t.azul)}
 <text x="${W - 44}" y="${g.y + 72}" text-anchor="end" class="g" font-size="96" font-weight="800" fill="${t.azul}" letter-spacing="-4">${g.ganho}</text>`;
   }).join("\n");
