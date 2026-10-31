@@ -42,7 +42,10 @@ No screenshot of every frame, on either path. Frame *N* is always the same pixel
   <img alt="One square per second. CPU time: Remotion 43.7 s, Kodecz 4.4 s, 10 times less. Wall time: Remotion 13.6 s, Kodecz 4.6 s, 3 times faster." src="marca/numeros-claro.svg" width="100%">
 </picture>
 
-<sub>One square per second · RTX 5090 · 1080p · 150 frames · <a href="docs/medidas.md">method</a></sub>
+Each square is one second. Rendering the same video, Kodecz keeps the processor busy for **10× less time**
+(43.7 s → 4.4 s of CPU) and hands you the MP4 **3× sooner** (13.6 s → 4.6 s on the clock).
+
+<sub>1080p · 150 frames · H.264 · RTX 5090 · <a href="docs/medidas.md">how we measured</a></sub>
 
 ## Quick start
 
