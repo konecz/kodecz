@@ -52,7 +52,6 @@ ${titulo ? `<title>${esc(titulo)}</title>\n` : ""}<style>
 ${fontes ? FONTES : ""}
 ${CLASSES}
 ${css}
-@media (prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
 ${moldura}
 ${corpo}
@@ -209,23 +208,36 @@ ${barra(g.nosso, 1, true)}
   return svg(W, H, corpo, { fundo: t.fundo, borda: t.borda, css: ENTRADA, titulo: "CPU time: Remotion 43.7 s, Kodecz 4.4 s, 10 times less. Wall time: 13.6 s against 4.6 s, 3 times faster." });
 }
 
-// O ciclo do agente: escrever, ver, conferir, corrigir, em volta da fita, com o traço andando no círculo.
+// O ciclo do agente (escrever, ver, conferir, corrigir), sem texto: quatro peças em volta da fita, setas no sentido
+// do ciclo e um ponto que dá a volta acendendo cada peça quando passa por ela. Só transform e opacity, para andar
+// em navegador fraco e com «menos movimento» ligado; a fita do meio é leve (poucas linhas e quadros).
 function agentes(t) {
-  const W = 1200, H = 480, cx = W / 2, cy = 236, r = 150, lado = 84;
-  const passos = [["code-square", "write", -90], ["eye", "preview", 0], ["check-circle", "check", 90], ["paintbrush", "fix", 180]];
-  const circulo = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${t.borda}" stroke-width="2"/>
-<circle class="gira" cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${t.azul}" stroke-width="3" stroke-linecap="round" stroke-dasharray="60 ${f(2 * Math.PI * r - 60)}"/>`;
-  const pecas = passos.map(([ic, rot, ang], i) => {
-    const a = (ang * Math.PI) / 180, x = cx + r * Math.cos(a) - lado / 2, y = cy + r * Math.sin(a) - lado / 2;
-    const lx = ang === 0 ? x + lado + 18 : ang === 180 ? x - 18 : cx;
-    const ly = ang === -90 ? y - 16 : ang === 90 ? y + lado + 30 : cy + 6;
-    return peca(t, x, y, lado, ic, "", { forte: i === 2, atraso: 0.12 * i }) +
-      `<text x="${f(lx)}" y="${f(ly)}" text-anchor="${ang === 0 ? "start" : ang === 180 ? "end" : "middle"}" class="m" font-size="16" fill="${t.sec}">${rot}</text>`;
+  const W = 1200, H = 440, cx = W / 2, cy = H / 2, r = 150, lado = 84, ciclo = 6;
+  const passos = [["code-square", -90], ["eye", 0], ["check-circle", 90], ["paintbrush", 180]];
+  const pos = (ang, raio = r) => [cx + raio * Math.cos((ang * Math.PI) / 180), cy + raio * Math.sin((ang * Math.PI) / 180)];
+  const anel = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${t.borda}" stroke-width="2"/>`;
+  // Setas no meio de cada trecho, apontando no sentido horário.
+  const setas = [-45, 45, 135, 225].map((ang) => {
+    const [x, y] = pos(ang);
+    return `<path transform="translate(${f(x)} ${f(y)}) rotate(${ang + 90})" d="M-7 -8 L5 0 L-7 8" fill="none" stroke="${t.azul}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`;
+  }).join("");
+  // O ponto que dá a volta, começando no alto (peça 0).
+  const ponto = `<g class="gira"><circle cx="${cx}" cy="${cy - r}" r="9" fill="${t.azul}"/></g>`;
+  // Cada peça: a normal por baixo e a acesa (azul cheio, ícone branco) por cima, que acende quando o ponto chega.
+  const pecas = passos.map(([ic, ang], i) => {
+    const [px, py] = pos(ang), x = px - lado / 2, y = py - lado / 2;
+    const acesa = `<g class="acende" style="animation-delay:${f(i * (ciclo / 4) - 0.35)}s">
+<rect x="${f(x)}" y="${f(y)}" width="${lado}" height="${lado}" rx="${lado * 0.24}" fill="${t.azul}"/>
+${icone(ic, x + lado * 0.25, y + lado * 0.25, lado * 0.5, "#ffffff")}</g>`;
+    return peca(t, x, y, lado, ic, "", { atraso: 0.12 * i }) + acesa;
   }).join("\n");
   const css = `${ENTRADA}
-.gira{transform-origin:${cx}px ${cy}px;animation:gira 6s linear infinite}
-@keyframes gira{to{transform:rotate(360deg)}}`;
-  return svg(W, H, `${circulo}\n${fita(cx, cy, 120, t.azul)}\n${pecas}`, { fundo: t.fundo, borda: t.borda, css, titulo: "The agent loop: write, preview, check, fix" });
+.gira{transform-origin:${cx}px ${cy}px;animation:gira ${ciclo}s linear infinite}
+@keyframes gira{to{transform:rotate(360deg)}}
+.acende{opacity:0;animation:acende ${ciclo}s linear infinite}
+@keyframes acende{0%{opacity:0}4%{opacity:1}18%{opacity:1}26%{opacity:0}100%{opacity:0}}`;
+  const centro = fita(cx, cy, 120, t.azul, { quadros: 10, linhas: 8, trecho: 16, traco: 1.4 });
+  return svg(W, H, `${anel}\n${setas}\n${ponto}\n${centro}\n${pecas}`, { fundo: t.fundo, borda: t.borda, css, titulo: "The agent loop: write, preview, check, fix, and around again" });
 }
 
 // A logo: só a fita, parada (para avatar e favicon) ou girando; e a logo com o nome ao lado.

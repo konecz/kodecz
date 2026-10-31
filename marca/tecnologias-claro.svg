@@ -11,7 +11,6 @@
 @keyframes surge{from{opacity:0;transform:translateY(8px)}}
 .vivo{animation:vivo 2.4s ease-in-out infinite}
 @keyframes vivo{0%,100%{opacity:1}50%{opacity:.3}}
-@media (prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
 <rect width="1200" height="140" rx="16" fill="#ffffff"/><rect x=".5" y=".5" width="1199" height="139" rx="15.5" fill="none" stroke="#d1d9e0"/>
 <g class="surge" style="animation-delay:0s">

@@ -60,5 +60,6 @@ no texto do README, fora do cartão. Ícones: Octicons (MIT) e Simple Icons (CC0
 ## Movimento
 
 O mesmo do site: só o que se move sozinho e devagar (o giro da fita e quadros andando pela linha); as entradas
-(barras crescendo, etapas surgindo) acontecem uma vez. Com `prefers-reduced-motion`, as animações de CSS param no
-estado final.
+(barras crescendo, etapas surgindo) acontecem uma vez. Tudo anda também com «menos movimento» ligado e em
+navegador fraco, como no konecz.com: só se anima `transform` e `opacity`, e a fita animada pequena usa poucas linhas e
+poucos quadros.

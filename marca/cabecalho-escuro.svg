@@ -6,7 +6,6 @@
 .g{font-family:G,"Schibsted Grotesk",Inter,"Segoe UI",Helvetica,Arial,sans-serif}
 .m{font-family:M,"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:500;font-variant-numeric:tabular-nums}
 
-@media (prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
 <rect width="1200" height="300" rx="16" fill="#0d1117"/><rect x=".5" y=".5" width="1199" height="299" rx="15.5" fill="none" stroke="#3d444d"/>
 <text x="44" y="164" class="g" font-size="128" font-weight="800" fill="#f0f6fc" letter-spacing="-6">Kodecz</text>
