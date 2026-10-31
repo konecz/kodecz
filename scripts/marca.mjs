@@ -191,7 +191,7 @@ function logoRemotion(x, y, alto) {
     .map((c) => `<path d="${c.d}" fill="${c.cor}" fill-opacity="${c.op}"/>`).join("")}</g>`;
 }
 function numeros(t) {
-  const W = 1200, H = 320, x0 = 44, lado = 11, passo = 14, xq = 272, ritmo = 0.07, ciclo = 6;
+  const W = 1200, H = 320, x0 = 44, lado = 11, passo = 14, xq = 300, ritmo = 0.07, ciclo = 6;
   const grupos = [
     { icone: "cpu", y: 46, remotion: 43.7, kodecz: 4.4, ganho: "10×" },
     { icone: "clock", y: 186, remotion: 13.6, kodecz: 4.6, ganho: "3×" },
@@ -206,12 +206,13 @@ function numeros(t) {
   };
   const corpo = grupos.map((g) => {
     const yR = g.y + 8, yK = g.y + 56;
-    return `${icone(g.icone, x0, g.y + 18, 46, t.sec)}
-${logoRemotion(106, yR - 10, 32)}
-<text x="146" y="${yR + 11}" class="g" font-size="23" font-weight="800" fill="${t.sec}" letter-spacing="-.5">Remotion</text>
+    return `${icone(g.icone, x0, g.y + 8, 46, t.sec)}
+<text x="${x0 + 23}" y="${g.y + 80}" text-anchor="middle" class="g" font-size="20" font-weight="800" fill="${t.sec}" letter-spacing="-.4">${g.icone === "cpu" ? "CPU" : "Time"}</text>
+${logoRemotion(134, yR - 10, 32)}
+<text x="174" y="${yR + 11}" class="g" font-size="23" font-weight="800" fill="${t.sec}" letter-spacing="-.5">Remotion</text>
 ${fila(g.remotion, yR, t.fraco)}
-${fita(124, yK + 6, 36, t.azul, { quadros: 1, traco: 1.1, linhas: 8 })}
-<text x="152" y="${yK + 12}" class="g" font-size="23" font-weight="800" fill="${t.tinta}" letter-spacing="-.5">Kodecz</text>
+${fita(152, yK + 6, 36, t.azul, { quadros: 1, traco: 1.1, linhas: 8 })}
+<text x="180" y="${yK + 12}" class="g" font-size="23" font-weight="800" fill="${t.tinta}" letter-spacing="-.5">Kodecz</text>
 ${fila(g.kodecz, yK, t.azul)}
 <text x="${W - 44}" y="${g.y + 72}" text-anchor="end" class="g" font-size="96" font-weight="800" fill="${t.azul}" letter-spacing="-4">${g.ganho}</text>`;
   }).join("\n");
