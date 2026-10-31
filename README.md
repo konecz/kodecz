@@ -1,13 +1,13 @@
 <a href="https://konecz.com">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="marca/cabecalho-escuro.svg">
-    <img alt="Kodecz: video as a web page, rendered on the GPU. The Kodecz ribbon, a twisted play triangle drawn in fine blue lines, turns in 3D." src="marca/cabecalho-claro.svg" width="100%">
+    <img alt="Kodecz: video as a web page, on the GPU or the CPU. The Kodecz ribbon, a twisted play triangle drawn in fine blue lines, turns in 3D." src="marca/cabecalho-claro.svg" width="100%">
   </picture>
 </a>
 
 <p align="center">
-  <b>Write the video as a web page. Get an MP4 straight from the GPU.</b><br>
-  <sub>HTML, CSS, JS, React, WebGL, GSAP, Lottie: if Chromium can draw it, Kodecz can render it, frame by frame, on an NVIDIA GPU.</sub>
+  <b>Write the video as a web page. Render it on an NVIDIA GPU or on any CPU.</b><br>
+  <sub>HTML, CSS, JS, React, WebGL, GSAP, Lottie: if Chromium can draw it, Kodecz can render it, frame by frame, on either one, from the same folder.</sub>
 </p>
 
 <p align="center">
@@ -26,19 +26,25 @@
 Code-driven video tools render each frame in a browser and then **take a screenshot of it**: the pixels go from the
 GPU to the CPU, become a PNG, and travel back to an encoder. That copy is most of the CPU bill.
 
-Kodecz never takes the screenshot. Chromium draws the frame into a GPU texture, the texture goes straight to the
-hardware encoder, and the CPU stays free for everything else on the machine.
+Kodecz never takes the screenshot, with or without a GPU:
+
+- **On an NVIDIA GPU**, Chromium draws the frame into a GPU texture and the texture goes straight to the hardware
+  encoder. The CPU stays free for everything else on the machine.
+- **On the CPU** (a laptop, a CI runner, a cloud VM without a GPU), Chromium hands over the raw frame it just painted
+  and it goes straight to x264. No PNG, no image encode and decode in the middle.
+
+One folder renders on both. Write on your laptop, render the final cut on the GPU server, or the other way around.
 
 - **The page is the format.** No proprietary scene graph: a folder with an `index.html` and a small JSON block.
 - **Deterministic.** Frame *N* is always the same pixels: in order, out of order, or starting from the middle.
-- **Built for AI to write.** Every editing technique ships as a documented, testable block that an agent can read,
-  apply and check (see [For AI agents](#for-ai-agents)).
+- **Built for AI agents, any of them.** Every editing technique ships as a documented, testable block in plain
+  Markdown that an agent can read, apply and check (see [For AI agents](#for-ai-agents)).
 
 <a id="how-it-works"></a>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="marca/caminho-escuro.svg">
-  <img alt="How a frame is made: page, Chromium off-screen, shared GPU texture, NVENC, MP4. Numbered frames move along the line without going back to the CPU." src="marca/caminho-claro.svg" width="100%">
+  <img alt="How a frame is made. With an NVIDIA GPU: page, Chromium off-screen, shared texture, NVENC, MP4. Without one: the same page, Chromium software raster, raw frame, x264, MP4. Numbered frames move along both lines without becoming PNGs." src="marca/caminho-claro.svg" width="100%">
 </picture>
 
 <a id="numbers"></a>
@@ -49,15 +55,16 @@ hardware encoder, and the CPU stays free for everything else on the machine.
 </picture>
 
 <sub>Synthetic 1080p composition with a presenter video, 150 frames, H.264, RTX 5090, two alternating runs per side;
-SSIM 0.998 against the official Remotion render. Method and raw numbers in <a href="docs/medidas.md"><code>docs/medidas.md</code></a>.</sub>
+SSIM 0.998 against the official Remotion render. CPU-mode numbers against Remotion on the same composition are
+being measured. Method and raw numbers in <a href="docs/medidas.md"><code>docs/medidas.md</code></a>.</sub>
 
 ## Quick start
 
 > **Status:** private preview. The engine is being moved here from our internal repository; the commands below are
 > the ones it ships with.
 
-Requirements: Linux, an NVIDIA GPU with NVENC (tested on an RTX 5090, driver 570+), Node 24, Rust (stable) and
-`ffmpeg`. Without a GPU, `--cpu` renders on the CPU with the same pages.
+Requirements: Linux, Node 24 and `ffmpeg`. For the GPU path, an NVIDIA GPU with NVENC (tested on an RTX 5090,
+driver 570+) and Rust (stable). Without one, the installer sets up the CPU path and everything else works the same.
 
 ```bash
 git clone https://github.com/konecz/kodecz && cd kodecz
@@ -70,7 +77,7 @@ kodecz render my-video/ MyVideo out.mp4
 | `--hevc` | HEVC instead of H.264 |
 | `--alpha` | transparent video (HEVC with alpha) |
 | `--from N` | start at frame *N* (same pixels as a full render) |
-| `--cpu` | no GPU: Chromium software raster and the CPU encoder |
+| `--cpu` | render on the CPU even when there is a GPU |
 | `kodecz preview my-video/ MyVideo --frame 90` | one frame as PNG, in about a second |
 | `kodecz preview my-video/ MyVideo --watch` | re-renders the frames you are looking at on every save |
 
@@ -108,14 +115,20 @@ A video is a folder. `index.html` declares the size, frame rate and length; ever
 
 ## For AI agents
 
-Kodecz is written to be driven by an agent such as Claude Code.
+Kodecz is made for any agent to write video with: a coding agent in a terminal, an agent in your own pipeline, or a
+script calling a model. Nothing in it is tied to one vendor. The agent needs only what it already handles: files,
+shell commands, HTML and CSS, and JSON.
 
+- **The format is plain web.** A video is an `index.html` and its files. Any model that writes web pages can write a
+  video, and any tool that edits files can change one.
 - **Kodecz blocks** (`blocos/`): each editing technique (one-line captions, zoom to the end of a sentence, text that
-  avoids the face...) is a folder with a `KODECZ.md` (what, when, parameters, where it came from), the CSS, a snippet
-  to paste and a right and a wrong example. The format is compatible with Agent Skills `SKILL.md`.
+  avoids the face...) is a folder with a `KODECZ.md` in plain Markdown (what, when, parameters, where it came from),
+  the CSS, a snippet to paste and a right and a wrong example. An index lists them all, so an agent can find the
+  right one without reading everything.
 - **Automatic checks:** `kodecz check` looks at the frames themselves (text inside the safe area, text over a face,
-  contrast, captions too long) and answers with the frame and the place, so the agent can fix it before a human looks.
-- **Previews in a second** so the agent sees what it wrote instead of guessing.
+  contrast, captions too long) and answers with one JSON line plus a picture of each problem, so the agent can fix
+  it before a human looks.
+- **Previews in about a second**, so the agent sees what it wrote instead of guessing.
 
 ## Patents
 

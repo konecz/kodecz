@@ -5,18 +5,23 @@
 
 # Kodecz
 
-**O vídeo escrito como página web, renderizado direto na placa de vídeo.**
+**O vídeo escrito como página web, renderizado na placa da NVIDIA ou em qualquer CPU.**
 
 O Kodecz é o motor de vídeo por código da [Konecz](https://konecz.com). O vídeo é uma pasta com um `index.html`:
 CSS, JS, React, WebGL, GSAP, Lottie, tudo o que o Chromium desenha. O Kodecz põe a página no quadro *N*, o Chromium
-desenha numa textura da placa, e a textura vai direto ao codificador da NVIDIA, sem a «foto» de cada quadro passar
-pela CPU.
+desenha o quadro e ele vai direto ao codificador, sem a «foto» de cada quadro no meio:
+
+- **com placa da NVIDIA**, o quadro fica numa textura da placa e vai direto ao NVENC, e a CPU fica livre;
+- **sem placa** (notebook, CI, servidor sem GPU), o quadro cru que o Chromium pintou vai direto ao x264, sem PNG.
+
+A mesma pasta renderiza nos dois.
 
 - **10× menos CPU e 3× mais rápido** que o Remotion no mesmo vídeo (1080p, 150 quadros, RTX 5090;
   [`docs/medidas.md`](docs/medidas.md)).
 - **Determinístico:** o quadro *N* sai sempre igual, em ordem, fora de ordem ou começando do meio.
-- **Feito para a IA escrever:** cada técnica de edição é um bloco Kodecz documentado e testável, e a conferência
-  automática olha os quadros e diz onde está o erro.
+- **Feito para qualquer agente de IA**, sem amarra a um fornecedor: o formato é web comum, cada técnica de edição é
+  um bloco Kodecz em Markdown, documentado e testável, e a conferência automática olha os quadros e devolve em JSON
+  onde está o erro.
 
 O README completo, com o passo a passo, está em inglês: [`README.md`](README.md).
 

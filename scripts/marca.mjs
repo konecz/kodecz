@@ -134,43 +134,40 @@ const ENTRADA = `.cresce{transform-box:fill-box;transform-origin:0 50%;animation
 function cabecalho(t) {
   const W = 1200, H = 320;
   const corpo = `<text x="44" y="158" class="g" font-size="112" font-weight="800" fill="${t.tinta}" letter-spacing="-5">Kodecz</text>
-<text x="48" y="214" class="g" font-size="34" font-weight="700" fill="${t.azul}" letter-spacing="-1">Video as a web page. Rendered on the GPU.</text>
-<g class="m" font-size="15" fill="${t.sec}"><text x="49" y="262">HTML · CSS · JS → Chromium → GPU texture → NVENC → MP4</text></g>
+<text x="48" y="214" class="g" font-size="34" font-weight="700" fill="${t.azul}" letter-spacing="-1">Video as a web page. On the GPU or the CPU.</text>
+<g class="m" font-size="15" fill="${t.sec}"><text x="49" y="262">same page · deterministic frames · no screenshots, on either one</text></g>
 <g class="m" font-size="13" fill="${t.fraco}"><text x="49" y="290">by Konecz · AI Factory</text></g>
 ${fita(1000, H / 2, 250, t.azul)}`;
-  return svg(W, H, corpo, { fundo: t.fundo, borda: t.borda, titulo: "Kodecz: video as a web page, rendered on the GPU" });
+  return svg(W, H, corpo, { fundo: t.fundo, borda: t.borda, titulo: "Kodecz: video as a web page, rendered on the GPU or the CPU" });
 }
 
-// O caminho do quadro: cinco etapas ligadas por uma linha, e quadros numerados andando por ela sem voltar à CPU.
+// O caminho do quadro, nas duas pistas: na placa (textura até o NVENC) e na CPU (o quadro cru do Chromium até o
+// x264). Cinco etapas ligadas por uma linha em cada pista, e quadros numerados andando sem virar PNG.
 function caminhoDoQuadro(t) {
-  const W = 1200, H = 300;
-  const etapas = [
-    ["Page", "HTML · CSS · JS"],
-    ["Chromium", "off-screen, GPU raster"],
-    ["Texture", "shared, zero-copy"],
-    ["NVENC", "H.264 · HEVC · alpha"],
-    ["MP4", "+ audio mix"],
+  const W = 1200, H = 470, x0 = 44, larg = 196, alto = 84;
+  const pistas = [
+    { nome: "GPU", y: 112, etapas: [["Page", "HTML · CSS · JS"], ["Chromium", "GPU raster, off-screen"], ["Texture", "shared, zero-copy"], ["NVENC", "H.264 · HEVC · alpha"], ["MP4", "+ audio mix"]], forte: 2 },
+    { nome: "CPU", y: 296, etapas: [["Page", "the same folder"], ["Chromium", "software raster"], ["Raw frame", "no PNG, no encode"], ["x264", "H.264 on the CPU"], ["MP4", "+ audio mix"]], forte: 2 },
   ];
-  const x0 = 44, larg = 196, vao = (W - 2 * x0 - larg * etapas.length) / (etapas.length - 1), y = 96, alto = 92;
-  const cx = (i) => x0 + i * (larg + vao);
-  const linha = `<line x1="${x0 + larg / 2}" y1="${y + alto / 2}" x2="${cx(etapas.length - 1) + larg / 2}" y2="${y + alto / 2}" stroke="${t.azul}" stroke-width="2" stroke-dasharray="2 6" stroke-linecap="round"/>`;
-  const caixas = etapas.map(([nome, sub], i) => `<g class="surge" style="animation-delay:${0.15 * i}s">
-<rect x="${f(cx(i))}" y="${y}" width="${larg}" height="${alto}" rx="14" fill="${t.cartao}" stroke="${i === 2 ? t.azul : t.borda}" stroke-width="${i === 2 ? 2 : 1}"/>
-<text x="${f(cx(i) + 18)}" y="${y + 42}" class="g" font-size="26" font-weight="800" fill="${t.tinta}" letter-spacing="-1">${esc(nome)}</text>
-<text x="${f(cx(i) + 18)}" y="${y + 70}" class="m" font-size="13" fill="${t.sec}">${esc(sub)}</text></g>`).join("\n");
-  // Três quadros em fila, cada um com o seu número, atravessando da página ao MP4.
-  const dist = cx(etapas.length - 1) - cx(0);
-  const quadros = [0, 1, 2].map((k) => `<g style="animation:anda 4.5s linear ${-1.5 * k}s infinite">
-<rect x="${x0 + larg / 2 - 22}" y="${y - 44}" width="44" height="28" rx="5" fill="${t.azul}"/>
-<text x="${x0 + larg / 2}" y="${y - 25}" text-anchor="middle" class="m" font-size="13" fill="#ffffff">N+${k}</text></g>`).join("\n");
+  const vao = (W - 2 * x0 - larg * 5) / 4, cx = (i) => x0 + i * (larg + vao), dist = cx(4) - cx(0);
+  const desenho = pistas.map((p, pi) => {
+    const linha = `<line x1="${x0 + larg / 2}" y1="${p.y + alto / 2}" x2="${cx(4) + larg / 2}" y2="${p.y + alto / 2}" stroke="${t.azul}" stroke-width="2" stroke-dasharray="2 6" stroke-linecap="round"/>`;
+    const caixas = p.etapas.map(([nome, sub], i) => `<g class="surge" style="animation-delay:${0.12 * i + 0.3 * pi}s">
+<rect x="${f(cx(i))}" y="${p.y}" width="${larg}" height="${alto}" rx="14" fill="${t.cartao}" stroke="${i === p.forte ? t.azul : t.borda}" stroke-width="${i === p.forte ? 2 : 1}"/>
+<text x="${f(cx(i) + 18)}" y="${p.y + 38}" class="g" font-size="25" font-weight="800" fill="${t.tinta}" letter-spacing="-1">${esc(nome)}</text>
+<text x="${f(cx(i) + 18)}" y="${p.y + 64}" class="m" font-size="13" fill="${t.sec}">${esc(sub)}</text></g>`).join("\n");
+    const quadros = [0, 1, 2].map((k) => `<g style="animation:anda ${pi ? 6 : 4.5}s linear ${-(pi ? 2 : 1.5) * k}s infinite">
+<rect x="${x0 + larg / 2 - 22}" y="${p.y - 40}" width="44" height="26" rx="5" fill="${t.azul}"/>
+<text x="${x0 + larg / 2}" y="${p.y - 22}" text-anchor="middle" class="m" font-size="12" fill="#ffffff">N+${k}</text></g>`).join("\n");
+    const rotulo = `<text x="${x0}" y="${p.y - 52}" class="m" font-size="14" fill="${t.sec}" letter-spacing="1">${p.nome === "GPU" ? "WITH AN NVIDIA GPU" : "WITHOUT ONE"}</text>`;
+    return `${rotulo}\n${linha}\n${quadros}\n${caixas}`;
+  }).join("\n");
   const css = `${ENTRADA}
 @keyframes anda{0%{transform:translateX(0);opacity:0}8%{opacity:1}92%{opacity:1}100%{transform:translateX(${f(dist)}px);opacity:0}}`;
   const rodape = `<g class="m" font-size="14" fill="${t.sec}">
-<circle class="vivo" cx="${x0 + 6}" cy="${H - 58}" r="5" fill="${t.azul}"/>
-<text x="${x0 + 22}" y="${H - 53}">the frame never goes back to the CPU: no screenshot, no PNG, no copy</text>
-<text x="${x0 + 22}" y="${H - 27}" fill="${t.fraco}">frame N is always the same pixels, in any order, from any starting point</text></g>`;
-  const titulo = `<text x="${x0}" y="44" class="m" font-size="14" fill="${t.sec}" letter-spacing="1">HOW A FRAME IS MADE</text>`;
-  return svg(W, H, `${titulo}\n${linha}\n${quadros}\n${caixas}\n${rodape}`, { fundo: t.fundo, borda: t.borda, css, titulo: "How a frame is made: page, Chromium, GPU texture, NVENC, MP4, without copies to the CPU" });
+<circle class="vivo" cx="${x0 + 6}" cy="${H - 31}" r="5" fill="${t.azul}"/>
+<text x="${x0 + 22}" y="${H - 26}">one page for both · on each, frame N is always the same pixels, in any order</text></g>`;
+  return svg(W, H, `${desenho}\n${rodape}`, { fundo: t.fundo, borda: t.borda, css, titulo: "How a frame is made, on the GPU (page, Chromium, shared texture, NVENC, MP4) and on the CPU (page, Chromium software raster, raw frame, x264, MP4), without screenshots" });
 }
 
 // Os números, medidos (docs/medidas.md): CPU e tempo de parede contra o render oficial do Remotion.

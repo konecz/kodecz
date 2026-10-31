@@ -31,6 +31,10 @@ codec foram pesquisadas e a posição está em `docs/patentes.md`. O Remotion sa
      `altura`, `qps`, `quadros`), `data-start`, `data-frames`, `data-trim`, `data-volume` (hoje `data-inicio`,
      `data-quadros`, `data-recorte`) e o gancho `window.kodecz_frame` (hoje `motor_quadro`);
    - aceitar os nomes antigos por um tempo, com aviso.
-4. Busca de marca «Kodecz» no INPI.
-5. Abrir: repositório público, prévia social (`marca/logo-azul.svg` em PNG 1280×640) e a janela no konecz.com
+4. **Medir o modo CPU contra o Remotion na mesma composição** (R05, 3 rodadas). O README fala dos dois caminhos e
+   só publica número do caminho da placa. A medida do M06 (13,4 a 15,5 s de CPU em 450 quadros) foi feita com outra
+   página que a do Remotion e não serve de comparação. Escolher o modo sozinho (placa quando houver, CPU quando não)
+   também falta: hoje é o `--placa` que liga a placa.
+5. Busca de marca «Kodecz» no INPI.
+6. Abrir: repositório público, prévia social (`marca/logo-azul.svg` em PNG 1280×640) e a janela no konecz.com
    (capítulo Pesquisa, como a do remotion-gpu).
