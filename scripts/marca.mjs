@@ -136,7 +136,7 @@ function cabecalho(t) {
   const corpo = `<text x="44" y="158" class="g" font-size="112" font-weight="800" fill="${t.tinta}" letter-spacing="-5">Kodecz</text>
 <text x="48" y="214" class="g" font-size="34" font-weight="700" fill="${t.azul}" letter-spacing="-1">Video as a web page. On the GPU or the CPU.</text>
 <g class="m" font-size="15" fill="${t.sec}"><text x="49" y="262">same page · deterministic frames · no screenshots, on either one</text></g>
-<g class="m" font-size="13" fill="${t.fraco}"><text x="49" y="290">by Konecz · AI Factory</text></g>
+<g class="m" font-size="13" fill="${t.fraco}"><text x="49" y="290">by Pedro Henrique Lahr &amp; Vanessa Cristine · Konecz</text></g>
 ${fita(1000, H / 2, 250, t.azul)}`;
   return svg(W, H, corpo, { fundo: t.fundo, borda: t.borda, titulo: "Kodecz: video as a web page, rendered on the GPU or the CPU" });
 }

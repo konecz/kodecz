@@ -25,4 +25,4 @@ A mesma pasta renderiza nos dois.
 
 O README completo, com o passo a passo, está em inglês: [`README.md`](README.md).
 
-Licença [Apache-2.0](LICENSE). Feito pela [Konecz](https://konecz.com), AI Factory.
+Criado por **Pedro Henrique Lahr** e **Vanessa Cristine**, pela [Konecz](https://konecz.com), AI Factory. Licença [Apache-2.0](LICENSE).
