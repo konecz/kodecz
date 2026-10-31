@@ -9,5 +9,8 @@ Third-party material distributed in this repository:
 - Schibsted Grotesk, Copyright 2023 The Schibsted-Grotesk Project Authors, SIL Open Font License 1.1
   (marca/fontes/OFL-schibsted-grotesk.txt)
 - IBM Plex Mono, Copyright 2017 IBM Corp., Reserved Font Name "Plex", SIL Open Font License 1.1 (marca/fontes/OFL-ibm-plex-mono.txt)
+- Octicons, Copyright GitHub Inc., MIT License (marca/icones/LICENSE-octicons.txt)
+- Simple Icons, CC0 1.0 (marca/icones/LICENSE-simple-icons.md); the logos are trademarks of their owners and are
+  used only to name the technologies Kodecz works with
 
 The full list of runtime dependencies and their notices is added with the engine code (docs/licencas/).
