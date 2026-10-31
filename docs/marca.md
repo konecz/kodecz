@@ -27,7 +27,7 @@ a torção corre pela fita, como a da Konecz no site.
 | `marca/logo-animada.svg` | símbolo girando (SMIL, anda dentro de `<img>`) |
 | `marca/logo-nome-{claro,escuro}.svg` | símbolo e nome lado a lado |
 | `marca/logo-nome-animada-{claro,escuro}.svg` | o mesmo, girando |
-| `marca/cabecalho-*.svg`, `caminho-*.svg`, `numeros-*.svg` | cartões do README, um por tema |
+| `marca/cabecalho-*.svg`, `tecnologias-*.svg`, `caminho-*.svg`, `numeros-*.svg`, `agentes-*.svg` | cartões do README, um por tema |
 
 Não pode: esticar, girar, contornar, pôr sombra ou gradiente, trocar a cor por outra que não as de baixo, nem pôr
 o símbolo sobre foto sem o quadrado azul.
@@ -51,6 +51,11 @@ traço é branco e azul-claro `#d6e2ff`, como no konecz.com. Sem cor de estado e
 - **IBM Plex Mono** 500 para rótulos, números e comandos, com números tabulares.
 
 As duas vêm em `marca/fontes/` com a licença OFL e são embutidas nos SVGs.
+
+## Gráfico é gráfico, texto é texto
+
+Os cartões do README não têm frases: só ícone, logo, número e no máximo uma palavra por peça. A explicação fica
+no texto do README, fora do cartão. Ícones: Octicons (MIT) e Simple Icons (CC0) em `marca/icones/`.
 
 ## Movimento
 

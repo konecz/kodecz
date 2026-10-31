@@ -1,14 +1,9 @@
 <a href="https://konecz.com">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="marca/cabecalho-escuro.svg">
-    <img alt="Kodecz: video as a web page, on the GPU or the CPU. The Kodecz ribbon, a twisted play triangle drawn in fine blue lines, turns in 3D." src="marca/cabecalho-claro.svg" width="100%">
-  </picture>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="marca/cabecalho-escuro.svg">
+  <img alt="Kodecz: video as a web page. The Kodecz ribbon, a twisted play triangle drawn in fine blue lines, turns in 3D." src="marca/cabecalho-claro.svg" width="100%">
+</picture>
 </a>
-
-<p align="center">
-  <b>Write the video as a web page. Render it on an NVIDIA GPU or on any CPU.</b><br>
-  <sub>HTML, CSS, JS, React, WebGL, GSAP, Lottie: if Chromium can draw it, Kodecz can render it, frame by frame, on either one, from the same folder.</sub>
-</p>
 
 <p align="center">
   <a href="#quick-start">Quick start</a> ·
@@ -19,44 +14,42 @@
   <a href="LEIAME.md">Português</a>
 </p>
 
----
+Write the video as a web page and render it to MP4, on an NVIDIA GPU or on any CPU, from the same folder. If
+Chromium can draw it, Kodecz can render it:
 
-## Why
-
-Code-driven video tools render each frame in a browser and then **take a screenshot of it**: the pixels go from the
-GPU to the CPU, become a PNG, and travel back to an encoder. That copy is most of the CPU bill.
-
-Kodecz never takes the screenshot, with or without a GPU:
-
-- **On an NVIDIA GPU**, Chromium draws the frame into a GPU texture and the texture goes straight to the hardware
-  encoder. The CPU stays free for everything else on the machine.
-- **On the CPU** (a laptop, a CI runner, a cloud VM without a GPU), Chromium hands over the raw frame it just painted
-  and it goes straight to x264. No PNG, no image encode and decode in the middle.
-
-One folder renders on both. Write on your laptop, render the final cut on the GPU server, or the other way around.
-
-- **The page is the format.** No proprietary scene graph: a folder with an `index.html` and a small JSON block.
-- **Deterministic.** Frame *N* is always the same pixels: in order, out of order, or starting from the middle.
-- **Built for AI agents, any of them.** Every editing technique ships as a documented, testable block in plain
-  Markdown that an agent can read, apply and check (see [For AI agents](#for-ai-agents)).
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="marca/tecnologias-escuro.svg">
+  <img alt="HTML, CSS, JavaScript, TypeScript, React, WebGL, three.js, GSAP and SVG." src="marca/tecnologias-claro.svg" width="100%">
+</picture>
 
 <a id="how-it-works"></a>
 
+## How it works
+
+Other code-driven video tools take a screenshot of every frame: the pixels leave the GPU, become a PNG and travel
+back to an encoder. Kodecz skips the screenshot on both paths.
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="marca/caminho-escuro.svg">
-  <img alt="How a frame is made. With an NVIDIA GPU: page, Chromium off-screen, shared texture, NVENC, MP4. Without one: the same page, Chromium software raster, raw frame, x264, MP4. Numbered frames move along both lines without becoming PNGs." src="marca/caminho-claro.svg" width="100%">
+  <img alt="With an NVIDIA GPU: page, Chromium, shared texture, NVENC, MP4. On the CPU: page, Chromium, raw frame, x264, MP4. Frames move along both lines without becoming PNGs." src="marca/caminho-claro.svg" width="100%">
 </picture>
+
+- **GPU:** the frame stays in a GPU texture all the way to NVENC, and the CPU stays free.
+- **CPU:** the raw frame Chromium just painted goes straight to x264, with no PNG in between.
+- **Deterministic:** frame *N* is always the same pixels, in order, out of order or from the middle.
 
 <a id="numbers"></a>
 
+## Numbers
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="marca/numeros-escuro.svg">
-  <img alt="Same video: Remotion uses 43.7 s of CPU and Kodecz 4.4 s, 10 times less; wall time 13.6 s against 4.6 s, 3 times faster." src="marca/numeros-claro.svg" width="100%">
+  <img alt="CPU time: Remotion 43.7 s, Kodecz 4.4 s, 10 times less. Wall time: Remotion 13.6 s, Kodecz 4.6 s, 3 times faster." src="marca/numeros-claro.svg" width="100%">
 </picture>
 
-<sub>Synthetic 1080p composition with a presenter video, 150 frames, H.264, RTX 5090, two alternating runs per side;
-SSIM 0.998 against the official Remotion render. CPU-mode numbers against Remotion on the same composition are
-being measured. Method and raw numbers in <a href="docs/medidas.md"><code>docs/medidas.md</code></a>.</sub>
+<sub>GPU path. Synthetic 1080p composition with a presenter video, 150 frames, H.264, RTX 5090, two alternating runs
+per side; SSIM 0.998 against the official Remotion render. CPU-path numbers against Remotion are being measured.
+Method and raw numbers: <a href="docs/medidas.md"><code>docs/medidas.md</code></a>.</sub>
 
 ## Quick start
 
@@ -68,8 +61,8 @@ driver 570+) and Rust (stable). Without one, the installer sets up the CPU path 
 
 ```bash
 git clone https://github.com/konecz/kodecz && cd kodecz
-./install.sh                 # checks the system, fetches Chromium (CEF), builds the native module, renders a test video
-kodecz render my-video/ MyVideo out.mp4
+./install.sh                              # checks the system and renders a test video
+kodecz render my-video/ MyVideo out.mp4    # GPU when there is one, CPU when not
 ```
 
 | Option | What it does |
@@ -114,6 +107,11 @@ A video is a folder. `index.html` declares the size, frame rate and length; ever
   tells you which ones it found.
 
 ## For AI agents
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="marca/agentes-escuro.svg">
+  <img alt="The agent loop: write, preview, check, fix, around the Kodecz ribbon." src="marca/agentes-claro.svg" width="100%">
+</picture>
 
 Kodecz is made for any agent to write video with: a coding agent in a terminal, an agent in your own pipeline, or a
 script calling a model. Nothing in it is tied to one vendor. The agent needs only what it already handles: files,

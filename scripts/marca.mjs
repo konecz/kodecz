@@ -130,70 +130,102 @@ const ENTRADA = `.cresce{transform-box:fill-box;transform-origin:0 50%;animation
 .vivo{animation:vivo 2.4s ease-in-out infinite}
 @keyframes vivo{0%,100%{opacity:1}50%{opacity:.3}}`;
 
-// Cabeçalho: «Kodecz» grande, a frase e a fita girando à direita, como o cabeçalho do perfil da Konecz.
-function cabecalho(t) {
-  const W = 1200, H = 320;
-  const corpo = `<text x="44" y="158" class="g" font-size="112" font-weight="800" fill="${t.tinta}" letter-spacing="-5">Kodecz</text>
-<text x="48" y="214" class="g" font-size="34" font-weight="700" fill="${t.azul}" letter-spacing="-1">Video as a web page. On the GPU or the CPU.</text>
-<g class="m" font-size="15" fill="${t.sec}"><text x="49" y="262">same page · deterministic frames · no screenshots, on either one</text></g>
-<g class="m" font-size="13" fill="${t.fraco}"><text x="49" y="290">by Pedro Henrique Lahr &amp; Vanessa Cristine · Konecz</text></g>
-${fita(1000, H / 2, 250, t.azul)}`;
-  return svg(W, H, corpo, { fundo: t.fundo, borda: t.borda, titulo: "Kodecz: video as a web page, rendered on the GPU or the CPU" });
+// Ícones (Octicons, MIT) e logos (Simple Icons, CC0), grade 24, em marca/icones/icones.json.
+const ICONES = JSON.parse(readFileSync(join(saida, "icones", "icones.json"), "utf8"));
+function icone(nome, x, y, tam, cor) {
+  const d = ICONES.octicons[nome] ?? ICONES.logos[nome];
+  if (!d) throw new Error(`ícone ${nome} não existe`);
+  return `<path transform="translate(${f(x)} ${f(y)}) scale(${Math.round((tam / 24) * 1000) / 1000})" d="${d}" fill="${cor}" fill-rule="evenodd"/>`;
+}
+// Uma peça: o quadrado de cantos redondos com o ícone no meio e, embaixo, uma palavra.
+function peca(t, x, y, lado, nome, rotulo, { forte = false, atraso = 0 } = {}) {
+  return `<g class="surge" style="animation-delay:${atraso}s">
+<rect x="${f(x)}" y="${f(y)}" width="${lado}" height="${lado}" rx="${lado * 0.24}" fill="${forte ? t.azul : t.cartao}" stroke="${forte ? t.azul : t.borda}"/>
+${icone(nome, x + lado * 0.25, y + lado * 0.25, lado * 0.5, forte ? "#ffffff" : t.azul)}
+${rotulo ? `<text x="${f(x + lado / 2)}" y="${f(y + lado + 26)}" text-anchor="middle" class="m" font-size="15" fill="${t.sec}">${esc(rotulo)}</text>` : ""}</g>`;
 }
 
-// O caminho do quadro, nas duas pistas: na placa (textura até o NVENC) e na CPU (o quadro cru do Chromium até o
-// x264). Cinco etapas ligadas por uma linha em cada pista, e quadros numerados andando sem virar PNG.
+// Cabeçalho: o nome, uma frase e a fita girando. Nada mais.
+function cabecalho(t) {
+  const W = 1200, H = 300;
+  const corpo = `<text x="44" y="164" class="g" font-size="128" font-weight="800" fill="${t.tinta}" letter-spacing="-6">Kodecz</text>
+<text x="50" y="226" class="g" font-size="38" font-weight="700" fill="${t.azul}" letter-spacing="-1">Video as a web page.</text>
+${fita(1000, H / 2, 240, t.azul)}`;
+  return svg(W, H, corpo, { fundo: t.fundo, borda: t.borda, titulo: "Kodecz: video as a web page" });
+}
+
+// O que a página pode usar: os logos, um por peça, entrando um depois do outro.
+function tecnologias(t) {
+  const lista = ["html5", "css", "javascript", "typescript", "react", "webgl", "threedotjs", "greensock", "svg"];
+  const lado = 84, W = 1200, H = 140, vao = (W - 88 - lado * lista.length) / (lista.length - 1);
+  const corpo = lista.map((n, i) => peca(t, 44 + i * (lado + vao), 28, lado, n, "", { atraso: 0.08 * i })).join("\n");
+  return svg(W, H, corpo, { fundo: t.fundo, borda: t.borda, css: ENTRADA, titulo: "HTML, CSS, JavaScript, TypeScript, React, WebGL, three.js, GSAP and SVG" });
+}
+
+// O caminho do quadro nas duas pistas, só com peças: página → Chromium → quadro → codificador → MP4.
 function caminhoDoQuadro(t) {
-  const W = 1200, H = 470, x0 = 44, larg = 196, alto = 84;
+  const W = 1200, H = 400, lado = 92, x0 = 150;
   const pistas = [
-    { nome: "GPU", y: 112, etapas: [["Page", "HTML · CSS · JS"], ["Chromium", "GPU raster, off-screen"], ["Texture", "shared, zero-copy"], ["NVENC", "H.264 · HEVC · alpha"], ["MP4", "+ audio mix"]], forte: 2 },
-    { nome: "CPU", y: 296, etapas: [["Page", "the same folder"], ["Chromium", "software raster"], ["Raw frame", "no PNG, no encode"], ["x264", "H.264 on the CPU"], ["MP4", "+ audio mix"]], forte: 2 },
+    { y: 70, marca: "nvidia", pecas: [["file-code", "page"], ["browser", "chromium"], ["zap", "texture"], ["video", "nvenc"], ["play", "mp4"]] },
+    { y: 240, marca: "cpu", pecas: [["file-code", "page"], ["browser", "chromium"], ["image", "raw"], ["video", "x264"], ["play", "mp4"]] },
   ];
-  const vao = (W - 2 * x0 - larg * 5) / 4, cx = (i) => x0 + i * (larg + vao), dist = cx(4) - cx(0);
-  const desenho = pistas.map((p, pi) => {
-    const linha = `<line x1="${x0 + larg / 2}" y1="${p.y + alto / 2}" x2="${cx(4) + larg / 2}" y2="${p.y + alto / 2}" stroke="${t.azul}" stroke-width="2" stroke-dasharray="2 6" stroke-linecap="round"/>`;
-    const caixas = p.etapas.map(([nome, sub], i) => `<g class="surge" style="animation-delay:${0.12 * i + 0.3 * pi}s">
-<rect x="${f(cx(i))}" y="${p.y}" width="${larg}" height="${alto}" rx="14" fill="${t.cartao}" stroke="${i === p.forte ? t.azul : t.borda}" stroke-width="${i === p.forte ? 2 : 1}"/>
-<text x="${f(cx(i) + 18)}" y="${p.y + 38}" class="g" font-size="25" font-weight="800" fill="${t.tinta}" letter-spacing="-1">${esc(nome)}</text>
-<text x="${f(cx(i) + 18)}" y="${p.y + 64}" class="m" font-size="13" fill="${t.sec}">${esc(sub)}</text></g>`).join("\n");
-    const quadros = [0, 1, 2].map((k) => `<g style="animation:anda ${pi ? 6 : 4.5}s linear ${-(pi ? 2 : 1.5) * k}s infinite">
-<rect x="${x0 + larg / 2 - 22}" y="${p.y - 40}" width="44" height="26" rx="5" fill="${t.azul}"/>
-<text x="${x0 + larg / 2}" y="${p.y - 22}" text-anchor="middle" class="m" font-size="12" fill="#ffffff">N+${k}</text></g>`).join("\n");
-    const rotulo = `<text x="${x0}" y="${p.y - 52}" class="m" font-size="14" fill="${t.sec}" letter-spacing="1">${p.nome === "GPU" ? "WITH AN NVIDIA GPU" : "WITHOUT ONE"}</text>`;
-    return `${rotulo}\n${linha}\n${quadros}\n${caixas}`;
+  const vao = (W - x0 - 44 - lado * 5) / 4, cx = (i) => x0 + i * (lado + vao), dist = cx(4) - cx(0);
+  const corpo = pistas.map((p, pi) => {
+    const meio = p.y + lado / 2;
+    const linha = `<line x1="${cx(0) + lado}" y1="${meio}" x2="${cx(4)}" y2="${meio}" stroke="${t.azul}" stroke-width="2.5" stroke-dasharray="2 7" stroke-linecap="round"/>`;
+    const quadros = [0, 1, 2].map((k) => `<rect style="animation:anda ${pi ? 5.4 : 3.6}s linear ${-(pi ? 1.8 : 1.2) * k}s infinite" x="${cx(0) + lado / 2 - 9}" y="${meio - 7}" width="18" height="14" rx="3" fill="${t.azul}"/>`).join("\n");
+    const pecas = p.pecas.map(([ic, rot], i) => peca(t, cx(i), p.y, lado, ic, rot, { forte: i === 2, atraso: 0.1 * i + 0.3 * pi })).join("\n");
+    const marca = `${icone(p.marca, 44, meio - 28, 56, t.fraco)}`;
+    return `${marca}\n${linha}\n${quadros}\n${pecas}`;
   }).join("\n");
   const css = `${ENTRADA}
-@keyframes anda{0%{transform:translateX(0);opacity:0}8%{opacity:1}92%{opacity:1}100%{transform:translateX(${f(dist)}px);opacity:0}}`;
-  const rodape = `<g class="m" font-size="14" fill="${t.sec}">
-<circle class="vivo" cx="${x0 + 6}" cy="${H - 31}" r="5" fill="${t.azul}"/>
-<text x="${x0 + 22}" y="${H - 26}">one page for both · on each, frame N is always the same pixels, in any order</text></g>`;
-  return svg(W, H, `${desenho}\n${rodape}`, { fundo: t.fundo, borda: t.borda, css, titulo: "How a frame is made, on the GPU (page, Chromium, shared texture, NVENC, MP4) and on the CPU (page, Chromium software raster, raw frame, x264, MP4), without screenshots" });
+@keyframes anda{0%{transform:translateX(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateX(${f(dist)}px);opacity:0}}`;
+  return svg(W, H, corpo, { fundo: t.fundo, borda: t.borda, css, titulo: "With an NVIDIA GPU: page, Chromium, texture, NVENC, MP4. On the CPU: page, Chromium, raw frame, x264, MP4." });
 }
 
-// Os números, medidos (docs/medidas.md): CPU e tempo de parede contra o render oficial do Remotion.
+// Os números: o ícone da medida, duas barras (a do Kodecz com a fita no lugar do nome) e o ganho grande.
 function numeros(t) {
-  const W = 1200, H = 380, x0 = 44;
+  const W = 1200, H = 300, x0 = 44;
   const grupos = [
-    { rotulo: "CPU TIME", y: 100, max: 43.7, linhas: [["Remotion", 43.7, false], ["Kodecz", 4.4, true]], ganho: "10×", sub: "less CPU" },
-    { rotulo: "WALL TIME", y: 238, max: 13.6, linhas: [["Remotion", 13.6, false], ["Kodecz", 4.6, true]], ganho: "3×", sub: "faster" },
+    { icone: "cpu", y: 40, max: 43.7, outro: 43.7, nosso: 4.4, ganho: "10×" },
+    { icone: "clock", y: 166, max: 13.6, outro: 13.6, nosso: 4.6, ganho: "3×" },
   ];
-  const barraX = x0 + 130, barraW = 640;
+  const barraX = x0 + 210, barraW = 600;
   const corpo = grupos.map((g, gi) => {
-    const linhas = g.linhas.map(([nome, v, nosso], i) => {
-      const yy = g.y + 18 + i * 42, w = Math.max(6, (v / g.max) * barraW);
-      return `<text x="${x0}" y="${yy + 19}" class="g" font-size="20" font-weight="${nosso ? 800 : 600}" fill="${nosso ? t.tinta : t.sec}">${nome}</text>
-<rect x="${barraX}" y="${yy}" width="${barraW}" height="26" rx="6" fill="${t.trilha}"/>
-<rect class="cresce" style="animation-delay:${0.2 * gi + 0.15 * i}s" x="${barraX}" y="${yy}" width="${f(w)}" height="26" rx="6" fill="${nosso ? t.azul : t.fraco}"/>
-<text x="${f(barraX + w + 12)}" y="${yy + 19}" class="m" font-size="16" fill="${nosso ? t.azul : t.sec}">${v} s</text>`;
-    }).join("\n");
-    return `<text x="${x0}" y="${g.y}" class="m" font-size="14" fill="${t.sec}" letter-spacing="1">${g.rotulo}</text>
-${linhas}
-<g class="surge" style="animation-delay:${0.6 + 0.2 * gi}s"><text x="${W - 44}" y="${g.y + 62}" text-anchor="end" class="g" font-size="76" font-weight="800" fill="${t.azul}" letter-spacing="-3">${g.ganho}</text>
-<text x="${W - 44}" y="${g.y + 92}" text-anchor="end" class="m" font-size="15" fill="${t.sec}">${g.sub}</text></g>`;
+    const barra = (v, i, nosso) => {
+      const yy = g.y + 8 + i * 50, w = Math.max(8, (v / g.max) * barraW);
+      const rotulo = nosso
+        ? fita(barraX - 34, yy + 17, 40, t.azul, { quadros: 1, traco: 1.1, linhas: 8 })
+        : `<text x="${barraX - 14}" y="${yy + 23}" text-anchor="end" class="m" font-size="15" fill="${t.fraco}">remotion</text>`;
+      return `${rotulo}
+<rect class="cresce" style="animation-delay:${0.2 * gi + 0.15 * i}s" x="${barraX}" y="${yy}" width="${f(w)}" height="34" rx="8" fill="${nosso ? t.azul : t.fraco}" fill-opacity="${nosso ? 1 : 0.45}"/>
+<text x="${f(barraX + w + 14)}" y="${yy + 24}" class="m" font-size="18" fill="${nosso ? t.azul : t.fraco}">${v} s</text>`;
+    };
+    return `${icone(g.icone, x0, g.y + 20, 52, t.sec)}
+${barra(g.outro, 0, false)}
+${barra(g.nosso, 1, true)}
+<g class="surge" style="animation-delay:${0.6 + 0.2 * gi}s"><text x="${W - 44}" y="${g.y + 84}" text-anchor="end" class="g" font-size="96" font-weight="800" fill="${t.azul}" letter-spacing="-4">${g.ganho}</text></g>`;
   }).join("\n");
-  const titulo = `<text x="${x0}" y="50" class="g" font-size="30" font-weight="800" fill="${t.tinta}" letter-spacing="-1">Same video, a fraction of the CPU</text>`;
-  const nota = `<text x="${x0}" y="${H - 22}" class="m" font-size="12" fill="${t.fraco}">1080p · 150 frames · H.264 · RTX 5090 · SSIM 0.998 vs. Remotion · measured 2026-10-30</text>`;
-  return svg(W, H, `${titulo}\n${corpo}\n${nota}`, { fundo: t.fundo, borda: t.borda, css: ENTRADA, titulo: "Same video: Remotion 43.7 s of CPU, Kodecz 4.4 s; wall time 13.6 s against 4.6 s" });
+  return svg(W, H, corpo, { fundo: t.fundo, borda: t.borda, css: ENTRADA, titulo: "CPU time: Remotion 43.7 s, Kodecz 4.4 s, 10 times less. Wall time: 13.6 s against 4.6 s, 3 times faster." });
+}
+
+// O ciclo do agente: escrever, ver, conferir, corrigir, em volta da fita, com o traço andando no círculo.
+function agentes(t) {
+  const W = 1200, H = 480, cx = W / 2, cy = 236, r = 150, lado = 84;
+  const passos = [["code-square", "write", -90], ["eye", "preview", 0], ["check-circle", "check", 90], ["paintbrush", "fix", 180]];
+  const circulo = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${t.borda}" stroke-width="2"/>
+<circle class="gira" cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${t.azul}" stroke-width="3" stroke-linecap="round" stroke-dasharray="60 ${f(2 * Math.PI * r - 60)}"/>`;
+  const pecas = passos.map(([ic, rot, ang], i) => {
+    const a = (ang * Math.PI) / 180, x = cx + r * Math.cos(a) - lado / 2, y = cy + r * Math.sin(a) - lado / 2;
+    const lx = ang === 0 ? x + lado + 18 : ang === 180 ? x - 18 : cx;
+    const ly = ang === -90 ? y - 16 : ang === 90 ? y + lado + 30 : cy + 6;
+    return peca(t, x, y, lado, ic, "", { forte: i === 2, atraso: 0.12 * i }) +
+      `<text x="${f(lx)}" y="${f(ly)}" text-anchor="${ang === 0 ? "start" : ang === 180 ? "end" : "middle"}" class="m" font-size="16" fill="${t.sec}">${rot}</text>`;
+  }).join("\n");
+  const css = `${ENTRADA}
+.gira{transform-origin:${cx}px ${cy}px;animation:gira 6s linear infinite}
+@keyframes gira{to{transform:rotate(360deg)}}`;
+  return svg(W, H, `${circulo}\n${fita(cx, cy, 120, t.azul)}\n${pecas}`, { fundo: t.fundo, borda: t.borda, css, titulo: "The agent loop: write, preview, check, fix" });
 }
 
 // A logo: só a fita, parada (para avatar e favicon) ou girando; e a logo com o nome ao lado.
@@ -216,6 +248,8 @@ for (const [nome, t] of Object.entries(TEMAS)) {
   arquivos[`cabecalho-${nome}.svg`] = cabecalho(t);
   arquivos[`caminho-${nome}.svg`] = caminhoDoQuadro(t);
   arquivos[`numeros-${nome}.svg`] = numeros(t);
+  arquivos[`tecnologias-${nome}.svg`] = tecnologias(t);
+  arquivos[`agentes-${nome}.svg`] = agentes(t);
   arquivos[`logo-nome-${nome}.svg`] = logoComNome(t);
   arquivos[`logo-nome-animada-${nome}.svg`] = logoComNome(t, { animada: true });
 }
