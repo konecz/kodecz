@@ -145,5 +145,3 @@ The Kodecz name and logo are brand assets of Konecz; see [`docs/marca.md`](docs/
 
 Kodecz was created by **Pedro Henrique Lahr** and **Vanessa Cristine** at [Konecz](https://konecz.com). See
 [`AUTHORS`](AUTHORS).
-
-<p align="center"><br>Created by <b>Pedro Henrique Lahr</b> and <b>Vanessa Cristine</b> · <a href="https://konecz.com"><b>Konecz</b></a>, AI Factory</p>
