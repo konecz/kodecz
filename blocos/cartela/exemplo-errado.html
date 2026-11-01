@@ -1,0 +1,17 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>cartela · exemplo errado</title>
+<!-- H09, errado de propósito: chamada longa demais para uma linha em display; com nowrap, passa da borda. A
+     conferência tem de acusar cartela.zona-segura. -->
+<script type="application/json" id="motor-video">
+{ "id": "ExemploCartelaErrado", "largura": 1920, "altura": 1080, "qps": 30, "quadros": 60 }
+</script>
+<link rel="stylesheet" href="../marca/marca.css">
+<link rel="stylesheet" href="bloco.css">
+<style>
+  :root { --qps: 30; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--color-ground); }
+</style>
+<div class="kz-cartela" data-bloco="cartela" style="--inicio: 3; --fim: 60">
+  <p class="kz-cartela-texto">Uma chamada comprida demais para caber</p>
+</div>

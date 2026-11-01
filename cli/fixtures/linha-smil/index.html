@@ -1,0 +1,19 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Linha com SVG SMIL</title>
+<!-- Composição sintética em linha do tempo (R01: nada de cliente) com um círculo animado por SVG SMIL (<animate>),
+     que o motor não vê pela document.timeline: o quadro repetido tem de ficar desligado (repetirNao «SVG SMIL»).
+     O bipe em data: (WAV de 50 ms) testa que a pasta <rótulo>-dados, onde a mídia em data: é decodificada, é apagada
+     no fim do render. -->
+<script type="application/json" id="motor-video">
+{ "id": "LinhaSmil", "largura": 960, "altura": 540, "qps": 30, "quadros": 10 }
+</script>
+<style>
+  html, body { margin: 0; width: 960px; height: 540px; overflow: hidden; background: #10163a; }
+</style>
+<svg width="960" height="540" viewBox="0 0 960 540">
+  <circle cx="100" cy="270" r="60" fill="#ff8c3c">
+    <animate attributeName="cx" from="100" to="860" dur="0.3s" fill="freeze"/>
+  </circle>
+</svg>
+<audio src="data:audio/wav;base64,UklGRmYDAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAATElTVBoAAABJTkZPSVNGVA0AAABMYXZmNjIuMy4xMDAAAGRhdGEgAwAAAABQC/8PUAsAALD0AfCw9AAAUAv/D1ALAACw9AHwsPQAAFAL/w9QCwAAsPQB8LD0AABQC/8PUAsAALD0AfCw9AAAUAv/D1ALAACw9AHwsPQAAFAL/w9QCwAAsPQB8LD0AABQC/8PUAsAALD0AfCw9AAAUAv/D1ALAACw9AHwsPQAAFAL/w9QCwAAsPQB8LD0AABQC/8PUAsAALD0AfCw9AAAUAv/D1ALAACw9AHwsPQAAFAL/w9QCwAAsPQB8LD0AABQC/8PUAsAALD0AfCw9AAAUAv/D1ALAACw9AHwsPQAAFAL/w9QCwAAsPQB8LD0AABQC/8PUAsAALD0AfCw9AAAUAv/D1ALAACw9AHwsPQAAFAL/w9QCwAAsPQB8LD0AABQC/8PUAsAALD0AfCw9AAAUAv/D1ALAACw9AHwsPQAAFAL/w9QCwAAsPQB8LD0AABQC/8PUAsAALD0AfCw9AAAUAv/D1ALAACw9AHwsPQAAFAL/w9QCwAAsPQB8LD0AABQC/8PUAsAALD0AfCw9AAAUAv/D1ALAACw9AHwsPQAAFAL/w9QCwAAsPQB8LD0AABQC/8PUAsAALD0AfCw9AAAUAv/D1ALAACw9AHwsPQAAFAL/w9QCwAAsPQB8LD0AABQC/8PUAsAALD0AfCw9AAAUAv/D1ALAACw9AHwsPQAAFAL/w9QCwAAsPQB8LD0AABQC/8PUAsAALD0AfCw9AAAUAv/D1ALAACw9AHwsPQAAFAL/w9QCwAAsPQB8LD0AABQC/8PUAsAALD0AfCw9AAAUAv/D1ALAACw9AHwsPQAAFAL/w9QCwAAsPQB8LD0AABQC/8PUAsAALD0AfCw9AAAUAv/D1ALAACw9AHwsPQAAFAL/w9QCwAAsPQB8LD0AABQC/8PUAsAALD0AfCw9AAAUAv/D1ALAACw9AHwsPQAAFAL/w9QCwAAsPQB8LD0AABQC/8PUAsAALD0AfCw9AAAUAv/D1ALAACw9AHwsPQAAFAL/w9QCwAAsPQB8LD0AABQC/8PUAsAALD0AfCw9AAAUAv/D1ALAACw9AHwsPQ=" data-inicio="2"></audio>

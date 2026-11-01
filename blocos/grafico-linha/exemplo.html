@@ -1,0 +1,19 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>grafico-linha · exemplo</title>
+<!-- H12: sete pontos (dados inventados), traço do quadro 10 ao 55. Servir a pasta blocos/. -->
+<script type="application/json" id="motor-video">
+{ "id": "ExemploLinha", "largura": 1920, "altura": 1080, "qps": 30, "quadros": 70 }
+</script>
+<link rel="stylesheet" href="../marca/marca.css">
+<link rel="stylesheet" href="bloco.css">
+<style>
+  :root { --qps: 30; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--color-ground); }
+</style>
+<figure class="kz-linha" data-bloco="grafico-linha" data-valores="12 18 15 27 33 30 41" data-maximo="50"
+        style="--inicio: 10; --duracao: 45; --linha-largura: 70%">
+  <svg aria-hidden="true"><polyline class="kz-linha-traco" pathLength="1"></polyline></svg>
+  <b class="kz-linha-num"></b>
+</figure>
+<script src="bloco.js"></script>

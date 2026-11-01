@@ -1,0 +1,8 @@
+{
+  "name": "conferencia",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "onnxruntime-node": "1.30.0"
+  }
+}

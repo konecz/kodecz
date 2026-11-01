@@ -1,0 +1,53 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Zoom na placa</title>
+<!-- S08, escala ≠ 1: composição sintética (R01) para o vídeo ampliado, reduzido e com zoom animado montado na placa.
+     O vídeo (o teste gera na hora o video.mp4: testsrc2 do ffmpeg, 1920×1080, 25 q/s) aparece em sete casos de 6
+     quadros, um vídeo por caso, num palco de fundo opaco, com uma tarja semitransparente por cima:
+       A (0–5)   ampliado pelo tamanho no CSS (2112×1188) em posição fracionária;
+       B (6–11)  transform: scale(1.15), com a origem da caixa em meio pixel negativo;
+       C (12–17) zoom animado (scale 1 → 1,2) dentro de uma coluna recortada (overflow) em pixel inteiro;
+       D (18–23) reduzido à metade, com as bordas no pixel;
+       E (24–29) reduzido com tamanho e posição fracionários (o Chromium arredonda as bordas);
+       F (30–35) sem escala, em posição fracionária (idem);
+       G (36–39) scale(0.77): a borda visível cai fora do pixel e vai pelo canvas (o Chromium a suaviza);
+       H (40–43) `scale` solto num ancestral, com o vídeo no pixel: vai pelo canvas (escala fora do vídeo);
+       I (44–47) só translação de meio pixel no vídeo: vai pelo canvas (posição fora do pixel).
+     O mesmo quadro tem de sair igual pelos dois caminhos (MOTOR_TAKE_PLACA=0 e o padrão), dentro da régua do R03. -->
+<script type="application/json" id="motor-video">
+{ "id": "LinhaZoom", "largura": 1920, "altura": 1080, "qps": 25, "quadros": 48 }
+</script>
+<style>
+  /* Fonte embutida (cli/fixtures/fonte-padrao): o quadro não depende das fontes da máquina. */
+  @font-face { font-family: 'Teste Sans'; font-weight: 400; src: url('fonte/DejaVuSans.woff2') format('woff2'); }
+  @font-face { font-family: 'Teste Sans'; font-weight: 700; src: url('fonte/DejaVuSans-Bold.woff2') format('woff2'); }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; }
+  .palco { position: absolute; inset: 0; background: #0b1220; overflow: hidden; }
+  .v { position: absolute; }
+  .a { left: -96.3px; top: -50.7px; width: 2112px; height: 1188px; }
+  .b { left: -10.5px; top: 3.5px; width: 1920px; height: 1080px; transform: scale(1.15); }
+  .d { left: 100px; top: 100px; width: 960px; height: 540px; }
+  .e { left: 100.5px; top: 100.25px; width: 961.3px; height: 540.7px; }
+  .f { left: 10.3px; top: -4.6px; width: 1920px; height: 1080px; }
+  .g { left: 0; top: 0; width: 1920px; height: 1080px; transform: scale(0.77); }
+  .h { left: 0; top: 0; width: 1920px; height: 1080px; }
+  .metade { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; scale: 0.5; }
+  .i { left: 10px; top: 0; width: 1920px; height: 1080px; transform: translate(0.5px); }
+  .coluna { position: absolute; left: 600px; top: 100px; width: 1000px; height: 800px; overflow: hidden; }
+  .c { left: -700.3px; top: -150.2px; width: 2112px; height: 1188px; animation: zoom 0.2s linear both; animation-delay: 0.48s; }
+  @keyframes zoom { from { transform: scale(1); } to { transform: scale(1.2); } }
+  .tarja { position: absolute; left: 700px; top: 700px; width: 900px; height: 160px; border-radius: 16px;
+           background: rgba(15, 21, 48, 0.7); color: #fff; font: 700 64px 'Teste Sans', sans-serif; padding: 40px; box-sizing: border-box; }
+</style>
+<div class="palco">
+  <video class="v a" src="video.mp4" data-inicio="0" data-quadros="6"></video>
+  <video class="v b" src="video.mp4" data-inicio="6" data-recorte="6" data-quadros="6"></video>
+  <video class="v d" src="video.mp4" data-inicio="18" data-recorte="18" data-quadros="6"></video>
+  <video class="v e" src="video.mp4" data-inicio="24" data-recorte="24" data-quadros="6"></video>
+  <video class="v f" src="video.mp4" data-inicio="30" data-recorte="30" data-quadros="6"></video>
+  <video class="v g" src="video.mp4" data-inicio="36" data-recorte="36" data-quadros="4"></video>
+  <div class="coluna"><video class="v c" src="video.mp4" data-inicio="12" data-recorte="12" data-quadros="6"></video></div>
+  <div class="metade"><video class="v h" src="video.mp4" data-inicio="40" data-recorte="0" data-quadros="4"></video></div>
+  <video class="v i" src="video.mp4" data-inicio="44" data-recorte="0" data-quadros="4"></video>
+  <div class="tarja">Zoom sintético</div>
+</div>

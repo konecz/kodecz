@@ -1,0 +1,14 @@
+/* zoom-ate-o-fim-da-frase (H02, G21): punch-in no apresentador que entra no quadro da palavra de ênfase (--inicio) e
+   só volta na pausa depois do fim da frase dela (--fim). Duas animações no mesmo invólucro; a de saída, declarada
+   depois, vence quando começa. --entrada e --saida em quadros; --escala e --zoom-origem (o ponto de interesse, G23). */
+.kz-zoom {
+  position: absolute; inset: 0;
+  transform-origin: var(--zoom-origem, 50% 38%);
+  animation: kz-zoom-entra calc(var(--entrada, 6) * 1s / var(--qps)) var(--motion-easing-move, cubic-bezier(0.65, 0, 0.35, 1))
+               calc(var(--inicio) * 1s / var(--qps)) forwards,
+             kz-zoom-sai calc(var(--saida, 12) * 1s / var(--qps)) var(--motion-easing-move, cubic-bezier(0.65, 0, 0.35, 1))
+               calc(var(--fim) * 1s / var(--qps)) forwards;
+}
+.kz-zoom > * { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+@keyframes kz-zoom-entra { from { transform: none; } to { transform: scale(var(--escala, 1.15)); } }
+@keyframes kz-zoom-sai { from { transform: scale(var(--escala, 1.15)); } to { transform: none; } }

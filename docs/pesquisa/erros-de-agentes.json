@@ -1,0 +1,4520 @@
+{
+  "tiposDeVideo": {
+    "reel": "reel ou short vertical",
+    "anuncio": "anúncio",
+    "apresentador": "apresentador falando",
+    "explicativo": "explicativo e institucional",
+    "tutorial": "tutorial ou tela gravada",
+    "demo": "demonstração de produto",
+    "dados": "gráfico de dados animado",
+    "lyric": "lyric video",
+    "podcast": "corte de podcast",
+    "documental": "documental",
+    "evento": "vídeo de evento",
+    "vinheta": "abertura e vinheta",
+    "slide": "slide animado"
+  },
+  "eixos": {
+    "formato": {
+      "valores": [
+        "9:16",
+        "1:1",
+        "4:5",
+        "16:9"
+      ],
+      "porque": "muda a área útil, a zona segura e o tamanho mínimo do texto"
+    },
+    "duracao": {
+      "valores": [
+        "6 s",
+        "15 s",
+        "30 s",
+        "60 s",
+        "3 min"
+      ],
+      "porque": "muda o acúmulo de deriva, o ritmo e o limite da plataforma"
+    },
+    "fps": {
+      "valores": [
+        "24",
+        "30",
+        "60"
+      ],
+      "porque": "muda o arredondamento do tempo para o quadro e a percepção de tremor"
+    },
+    "resolucao": {
+      "valores": [
+        "720p",
+        "1080p",
+        "4K"
+      ],
+      "porque": "muda o borrado de escala, o banding e o custo de memória"
+    },
+    "densidade": {
+      "valores": [
+        "1 a 3 palavras",
+        "4 a 8",
+        "9 a 15",
+        "16 ou mais"
+      ],
+      "porque": "muda quebra de linha, transbordo e tempo de leitura"
+    },
+    "escrita": {
+      "valores": [
+        "português",
+        "inglês",
+        "alemão (palavras longas)",
+        "árabe (direita para a esquerda)",
+        "japonês (sem espaços)"
+      ],
+      "porque": "muda largura, quebra, direção e forma das letras"
+    },
+    "fonte": {
+      "valores": [
+        "Google Fonts pela rede",
+        "arquivo local",
+        "fonte do sistema",
+        "fonte variável"
+      ],
+      "porque": "muda se a fonte chega ao render e as métricas"
+    },
+    "paleta": {
+      "valores": [
+        "clara",
+        "escura",
+        "saturada",
+        "marca com acento de baixo contraste"
+      ],
+      "porque": "muda contraste, banding e o sinal de cara de IA"
+    },
+    "rosto": {
+      "valores": [
+        "centro",
+        "terço superior",
+        "esquerda",
+        "direita",
+        "sem rosto"
+      ],
+      "porque": "muda onde texto e cobertura podem ficar"
+    },
+    "fala": {
+      "valores": [
+        "lenta (cerca de 2 palavras/s)",
+        "média (cerca de 3)",
+        "rápida (4 ou mais)"
+      ],
+      "porque": "muda o tempo de leitura, o corte e a deriva da legenda"
+    },
+    "bpm": {
+      "valores": [
+        "70",
+        "100",
+        "128",
+        "170"
+      ],
+      "porque": "muda a grade de batidas e o erro de arredondamento por quadro"
+    },
+    "midia": {
+      "valores": [
+        "imagem",
+        "vídeo",
+        "GIF ou Lottie",
+        "canvas ou 3D"
+      ],
+      "porque": "cada tipo carrega, busca e captura de um jeito"
+    },
+    "cenas": {
+      "valores": [
+        "1",
+        "3",
+        "8",
+        "20"
+      ],
+      "porque": "muda o número de emendas onde o erro aparece"
+    },
+    "fundo": {
+      "valores": [
+        "liso",
+        "gradiente",
+        "foto",
+        "vídeo em movimento"
+      ],
+      "porque": "muda contraste real atrás do texto e o banding"
+    },
+    "trilha": {
+      "valores": [
+        "sem trilha",
+        "trilha baixa",
+        "trilha alta"
+      ],
+      "porque": "muda mascaramento da voz e o nível final"
+    },
+    "plataforma": {
+      "valores": [
+        "Reels",
+        "TikTok",
+        "Shorts",
+        "YouTube"
+      ],
+      "porque": "muda zona segura, duração, perfil de envio e alvo de volume"
+    },
+    "legenda": {
+      "valores": [
+        "linha única",
+        "duas linhas",
+        "palavra a palavra"
+      ],
+      "porque": "muda tempo de leitura e o efeito de um tempo errado"
+    },
+    "tipo": {
+      "valores": [
+        "os tipos de vídeo da classe"
+      ],
+      "porque": "muda o que é certo (o mesmo layout é certo num slide e errado num reel)"
+    }
+  },
+  "classes": [
+    {
+      "id": "K-COD-01",
+      "area": "codigo",
+      "origem": "agente",
+      "titulo": "Animação pelo relógio do navegador",
+      "erro": "A animação usa transição ou animação de CSS, classe animada do Tailwind ou temporizador em vez de ser função do quadro.",
+      "sintoma": "No render a animação salta, pisca, aparece pronta ou some; na prévia parecia certa.",
+      "causa": "O render pede quadros fora de ordem e em paralelo; o que depende do tempo real não volta ao mesmo estado no mesmo quadro.",
+      "camada": 3,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "dados",
+        "lyric",
+        "podcast",
+        "documental",
+        "evento",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 5,
+      "eixos": [
+        "fps",
+        "midia",
+        "cenas"
+      ],
+      "assinatura": "css (animation|transition)|tailwind (anim|class)|animate-|setTimeout|requestAnimationFrame",
+      "fontes": [
+        "https://www.remotion.dev/docs/troubleshooting/css-animations",
+        "https://www.remotion.dev/docs/flickering",
+        "https://github.com/remotion-dev/skills/blob/HEAD/skills/remotion-markup/SKILL.md",
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/SKILL.md"
+      ],
+      "relatos": 4,
+      "relatos_exemplo": [
+        "https://github.com/heygen-com/hyperframes/issues/4555",
+        "https://github.com/heygen-com/hyperframes/issues/3493",
+        "https://github.com/remotion-dev/remotion/issues/2812"
+      ],
+      "frequencia": 2,
+      "casos": 48,
+      "casos_conservador": 12
+    },
+    {
+      "id": "K-COD-02",
+      "area": "codigo",
+      "origem": "agente",
+      "titulo": "Valor aleatório ou de data no quadro",
+      "erro": "O quadro usa sorteio sem semente, a data atual ou dado da rede.",
+      "sintoma": "Partículas, posições ou textos mudam entre a prévia e o render e entre dois renders; piscada entre quadros vizinhos.",
+      "causa": "Cada quadro é calculado em separado; sem semente fixa, cada cálculo sorteia de novo.",
+      "camada": 3,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "dados",
+        "lyric",
+        "podcast",
+        "documental",
+        "evento",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 4,
+      "eixos": [
+        "midia",
+        "fps"
+      ],
+      "assinatura": "Math\\.random|\\brandom\\(\\)|nondetermin|non-determin|Date\\.now|differs? (from run to run|between renders)",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/SKILL.md",
+        "https://www.remotion.dev/docs/flickering"
+      ],
+      "relatos": 4,
+      "relatos_exemplo": [
+        "https://github.com/heygen-com/hyperframes/issues/5669",
+        "https://github.com/heygen-com/hyperframes/issues/2550",
+        "https://github.com/remotion-dev/remotion/issues/10274"
+      ],
+      "frequencia": 2,
+      "casos": 12,
+      "casos_conservador": 12
+    },
+    {
+      "id": "K-COD-03",
+      "area": "codigo",
+      "origem": "agente",
+      "titulo": "Quadro capturado antes da mídia carregar",
+      "erro": "Imagem, vídeo, mapa ou dado remoto é mostrado sem segurar o quadro até carregar.",
+      "sintoma": "Quadros em branco ou com a imagem pela metade, mais no começo das cenas; piscada que muda de lugar a cada render.",
+      "causa": "A captura não sabe que a mídia ainda está chegando se ninguém avisa que o quadro não está pronto.",
+      "camada": 3,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "dados",
+        "lyric",
+        "podcast",
+        "documental",
+        "evento",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 5,
+      "eixos": [
+        "midia",
+        "resolucao",
+        "cenas"
+      ],
+      "assinatura": "blank frame|white frame|empty frame|image (not|isn'?t) (load|show)|not loaded|flash(es|ing)? (of|blank|white)|before (it|the image) load",
+      "fontes": [
+        "https://www.remotion.dev/docs/flickering",
+        "https://www.remotion.dev/docs/troubleshooting/background-image",
+        "https://www.remotion.dev/docs/troubleshooting/nextjs-image",
+        "https://www.remotion.dev/docs/troubleshooting/delay-render-proxy"
+      ],
+      "relatos": 4,
+      "relatos_exemplo": [
+        "https://stackoverflow.com/questions/63994135/filter-useless-white-frames-at-the-beginning-and-duplicated-frames-at-the-end-of",
+        "https://github.com/remotion-dev/remotion/issues/11107",
+        "https://github.com/remotion-dev/remotion/issues/5912"
+      ],
+      "frequencia": 2,
+      "casos": 48,
+      "casos_conservador": 12
+    },
+    {
+      "id": "K-COD-04",
+      "area": "codigo",
+      "origem": "agente",
+      "titulo": "Fonte que não chega ao render",
+      "erro": "O texto pede uma família que não está embutida nem declarada com arquivo; o render cai na fonte de reserva.",
+      "sintoma": "Título em fonte genérica, mais largo ou mais estreito que na prévia; quebra de linha diferente; às vezes troca de fonte no meio do vídeo.",
+      "causa": "A prévia acha a fonte instalada na máquina; o navegador do render não, ou a fonte chega depois dos primeiros quadros.",
+      "camada": 1,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "dados",
+        "lyric",
+        "podcast",
+        "documental",
+        "evento",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 4,
+      "eixos": [
+        "fonte",
+        "escrita",
+        "densidade"
+      ],
+      "assinatura": "wrong font|font (not|isn'?t|doesn'?t) (load|appl|work|render|show)|fallback font|font (changes|differs?|missing)|fonts? (not|never) (load|embedded)|font[- ]loading",
+      "fontes": [
+        "https://www.remotion.dev/docs/troubleshooting/font-loading-errors",
+        "https://github.com/remotion-dev/skills/blob/HEAD/skills/remotion-markup/google-fonts.md",
+        "https://github.com/remotion-dev/skills/blob/HEAD/skills/remotion-markup/local-fonts.md",
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/SKILL.md",
+        "https://stackoverflow.com/questions/63430214"
+      ],
+      "relatos": 6,
+      "relatos_exemplo": [
+        "https://stackoverflow.com/questions/63430214/ffmpeg-burned-in-subtitles-render-in-the-wrong-font",
+        "https://github.com/remotion-dev/remotion/issues/11315",
+        "https://github.com/remotion-dev/remotion/issues/5843"
+      ],
+      "frequencia": 2,
+      "casos": 80,
+      "casos_conservador": 20
+    },
+    {
+      "id": "K-COD-05",
+      "area": "codigo",
+      "origem": "agente",
+      "titulo": "Texto medido antes da fonte",
+      "erro": "O tamanho ou a quebra do texto é calculado antes de a fonte final carregar, ou com borda e preenchimento que mudam a medida.",
+      "sintoma": "Texto que transborda a caixa, corta a última letra ou fica pequeno demais; muda de um render para outro.",
+      "causa": "A medida feita com a fonte de reserva não vale para a fonte final.",
+      "camada": 1,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "explicativo",
+        "demo",
+        "dados",
+        "lyric",
+        "vinheta",
+        "slide",
+        "apresentador",
+        "tutorial"
+      ],
+      "gravidade": 4,
+      "eixos": [
+        "fonte",
+        "escrita",
+        "densidade"
+      ],
+      "assinatura": "measure ?text|fit ?text|text (overflow|cut|clipped|truncat)|clips? (the )?text",
+      "fontes": [
+        "https://github.com/remotion-dev/skills/blob/HEAD/skills/remotion-markup/measuring-text.md",
+        "https://www.remotion.dev/docs/flickering"
+      ],
+      "relatos": 7,
+      "relatos_exemplo": [
+        "https://github.com/remotion-dev/remotion/issues/7359",
+        "https://github.com/remotion-dev/remotion/issues/3861",
+        "https://github.com/remotion-dev/remotion/issues/3648"
+      ],
+      "frequencia": 2,
+      "casos": 80,
+      "casos_conservador": 20
+    },
+    {
+      "id": "K-COD-06",
+      "area": "codigo",
+      "origem": "agente",
+      "titulo": "Mídia controlada à mão",
+      "erro": "O código dá play, pausa ou pula o vídeo e o áudio em vez de deixar o motor posicionar a mídia pelo tempo da cena.",
+      "sintoma": "Vídeo dessincronizado do áudio ou da legenda, congelado ou repetindo trecho; diferente em cada render.",
+      "causa": "O motor busca cada quadro pelo tempo; um controle manual briga com essa busca.",
+      "camada": 3,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "podcast",
+        "documental",
+        "evento"
+      ],
+      "gravidade": 5,
+      "eixos": [
+        "midia",
+        "duracao",
+        "fps"
+      ],
+      "assinatura": "\\.play\\(\\)|pause\\(\\)|currentTime|HTMLMediaElement",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/packages/core/docs/common-mistakes.md",
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/SKILL.md"
+      ],
+      "relatos": 3,
+      "relatos_exemplo": [
+        "https://github.com/remotion-dev/remotion/issues/5512",
+        "https://github.com/remotion-dev/remotion/issues/643",
+        "https://github.com/motion-canvas/motion-canvas/issues/1219"
+      ],
+      "frequencia": 2,
+      "casos": 60,
+      "casos_conservador": 20
+    },
+    {
+      "id": "K-COD-07",
+      "area": "codigo",
+      "origem": "agente",
+      "titulo": "Duração declarada diferente da mídia",
+      "erro": "A composição ou a cena tem duração fixa que não bate com a voz, o vídeo ou a trilha.",
+      "sintoma": "Fim cortado no meio da frase, ou último quadro parado por segundos; trilha que acaba antes.",
+      "causa": "A duração foi escrita à mão em vez de medida da mídia.",
+      "camada": 2,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "podcast",
+        "documental",
+        "evento",
+        "lyric"
+      ],
+      "gravidade": 4,
+      "eixos": [
+        "duracao",
+        "fala",
+        "cenas"
+      ],
+      "assinatura": "(wrong|incorrect|mismatch(ed)?) duration|duration (mismatch|wrong|shorter|longer)|cut off at the end|ends (early|too soon)|last frame (freez|hold|repeat)|black (at|in) the end",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/packages/core/docs/common-mistakes.md",
+        "https://github.com/remotion-dev/skills/blob/HEAD/skills/remotion-markup/calculate-metadata.md",
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/SKILL.md"
+      ],
+      "relatos": 1,
+      "relatos_exemplo": [
+        "https://github.com/remotion-dev/remotion/issues/538"
+      ],
+      "frequencia": 2,
+      "casos": 60,
+      "casos_conservador": 15
+    },
+    {
+      "id": "K-COD-08",
+      "area": "codigo",
+      "origem": "agente",
+      "titulo": "Legenda no tempo errado do trecho",
+      "erro": "As legendas usam o tempo do arquivo inteiro quando o vídeo foi aparado ou acelerado, ou juntam transcrições de clipes diferentes numa camada só.",
+      "sintoma": "Legenda adiantada ou atrasada em relação à boca, cada vez mais à medida que o vídeo anda; palavra repetida com o tempo da outra.",
+      "causa": "O deslocamento do corte e a velocidade valem para o vídeo, mas não foram aplicados às legendas.",
+      "camada": 2,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "podcast",
+        "documental",
+        "evento",
+        "lyric"
+      ],
+      "gravidade": 5,
+      "eixos": [
+        "fala",
+        "duracao",
+        "legenda"
+      ],
+      "assinatura": "(caption|subtitle)s? (are |is )?(out of sync|offset|delay|early|late|timing|misalign)|(caption|subtitle)s?.*(trim|playbackRate)",
+      "fontes": [
+        "https://github.com/remotion-dev/skills/blob/HEAD/skills/remotion-captions/display-captions.md",
+        "https://github.com/remotion-dev/skills/blob/HEAD/skills/remotion-captions/transcribe-captions.md",
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/references/captions.md",
+        "https://stackoverflow.com/questions/61835223"
+      ],
+      "relatos": 2,
+      "relatos_exemplo": [
+        "https://stackoverflow.com/questions/61835223/ffmpeg-burnt-in-subtitles-out-of-sync-when-converting-to-hls",
+        "https://stackoverflow.com/questions/51124813/stretch-subtitles-timing-by-factor"
+      ],
+      "frequencia": 2,
+      "casos": 45,
+      "casos_conservador": 15
+    },
+    {
+      "id": "K-COD-09",
+      "area": "codigo",
+      "origem": "agente",
+      "titulo": "Vídeo sem som",
+      "erro": "A faixa de áudio fica fora da mixagem (sem identificador, vídeo mudo por padrão, volume zero ou formato que o codificador não aceita).",
+      "sintoma": "O vídeo sai mudo ou só com parte dos sons.",
+      "causa": "O motor só mixa o que reconhece como faixa de som; o resto vira imagem muda.",
+      "camada": 3,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "podcast",
+        "documental",
+        "evento",
+        "lyric",
+        "vinheta"
+      ],
+      "gravidade": 5,
+      "eixos": [
+        "midia",
+        "trilha"
+      ],
+      "assinatura": "no (sound|audio)|without (sound|audio)|audio (missing|silent|is lost|dropped)",
+      "fontes": [
+        "https://www.remotion.dev/docs/troubleshooting/video-has-no-sound",
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/SKILL.md",
+        "https://stackoverflow.com/questions/79144443"
+      ],
+      "relatos": 10,
+      "relatos_exemplo": [
+        "https://stackoverflow.com/questions/35900490/how-to-concatenate-multiple-mp4-videos-with-ffmpeg-without-audio-sync-issues",
+        "https://stackoverflow.com/questions/16268968/ffmpeg-php-problems-converting-any-video-format-to-ogg-choppy-video-no-aud",
+        "https://github.com/remotion-dev/remotion/issues/9032"
+      ],
+      "frequencia": 3,
+      "casos": 12,
+      "casos_conservador": 12
+    },
+    {
+      "id": "K-COD-10",
+      "area": "codigo",
+      "origem": "agente",
+      "titulo": "Animação de propriedade de layout",
+      "erro": "Move ou redimensiona pelo posicionamento e pela largura, ou anima a exibição do elemento temporizado, em vez de transformar um filho.",
+      "sintoma": "Tremor, salto de um pixel, texto que treme no deslocamento lento, elemento que some de vez.",
+      "causa": "Propriedade de layout recalcula a página e arredonda para o pixel; a exibição do elemento temporizado é do motor.",
+      "camada": 3,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "explicativo",
+        "demo",
+        "dados",
+        "lyric",
+        "vinheta",
+        "slide",
+        "apresentador",
+        "tutorial"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "fps",
+        "resolucao",
+        "midia"
+      ],
+      "assinatura": "jitter|jank|shak(e|ing|y)|wobbl|stutter|jerky",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/packages/core/docs/common-mistakes.md",
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/SKILL.md",
+        "https://www.remotion.dev/docs/troubleshooting/subpixel-rendering",
+        "https://graphicdesign.stackexchange.com/questions/13338"
+      ],
+      "relatos": 12,
+      "relatos_exemplo": [
+        "https://graphicdesign.stackexchange.com/questions/13338/how-can-i-fix-jerky-text-panning-in-photoshop-cs6-video",
+        "https://github.com/heygen-com/hyperframes/issues/6753",
+        "https://github.com/remotion-dev/remotion/issues/6015"
+      ],
+      "frequencia": 3,
+      "casos": 36,
+      "casos_conservador": 9
+    },
+    {
+      "id": "K-COD-11",
+      "area": "codigo",
+      "origem": "agente",
+      "titulo": "Escala de raster acima do original",
+      "erro": "Aproxima com escala maior que 1 uma imagem, mapa ou captura de tela em vez de renderizar no tamanho final.",
+      "sintoma": "Imagem borrada ou serrilhada no fim do zoom; detalhe que oscila no mapa.",
+      "causa": "A imagem já virou pixel no tamanho menor; aumentar depois só interpola.",
+      "camada": 4,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "dados",
+        "documental"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "resolucao",
+        "midia",
+        "formato"
+      ],
+      "assinatura": "blurry|blurred|pixelat|not sharp|low quality (image|render)",
+      "fontes": [
+        "https://github.com/remotion-dev/skills/blob/HEAD/skills/remotion-maps/techniques/maplibre/references/render-stability.md",
+        "https://stackoverflow.com/questions/79507537"
+      ],
+      "relatos": 10,
+      "relatos_exemplo": [
+        "https://stackoverflow.com/questions/79507537/why-is-my-puppeteer-screenshot-blurry-for-the-main-flourish-chart-but-sharp-for",
+        "https://graphicdesign.stackexchange.com/questions/147180/photoshop-how-to-create-a-stepped-gradient-without-blurred-separation",
+        "https://graphicdesign.stackexchange.com/questions/98689/blurry-edges-in-lettering-straight-lines"
+      ],
+      "frequencia": 3,
+      "casos": 48,
+      "casos_conservador": 12
+    },
+    {
+      "id": "K-COD-12",
+      "area": "codigo",
+      "origem": "agente",
+      "titulo": "Texto de escrita da direita para a esquerda quebrado",
+      "erro": "Árabe, persa ou hebraico com espaçamento entre letras, caixa alta forçada ou animação letra a letra que separa as formas ligadas.",
+      "sintoma": "Letras soltas que não se ligam, palavras ao contrário, ordem das palavras invertida.",
+      "causa": "Essas escritas dependem da forma contextual e da direção base; separar letras desfaz a ligação.",
+      "camada": 1,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "dados",
+        "lyric",
+        "podcast",
+        "documental",
+        "evento",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 4,
+      "eixos": [
+        "escrita",
+        "densidade",
+        "fonte"
+      ],
+      "assinatura": "\\b(rtl|arabic|hebrew|persian|farsi|urdu)\\b|right-to-left",
+      "fontes": [
+        "https://github.com/remotion-dev/skills/blob/HEAD/skills/remotion-markup/arabic-text.md",
+        "https://stackoverflow.com/questions/26046586"
+      ],
+      "relatos": 4,
+      "relatos_exemplo": [
+        "https://stackoverflow.com/questions/26046586/how-to-fix-ffmpeg-mencoder-pushing-persian-rtl-subtitles-reversed",
+        "https://graphicdesign.stackexchange.com/questions/87680/kerning-hebrew-diacritics-in-indesign",
+        "https://github.com/heygen-com/hyperframes/issues/5885"
+      ],
+      "frequencia": 2,
+      "casos": 80,
+      "casos_conservador": 20
+    },
+    {
+      "id": "K-COD-13",
+      "area": "codigo",
+      "origem": "agente",
+      "titulo": "Caminho de arquivo que só vale na máquina",
+      "erro": "Imagem, fonte ou vídeo com caminho absoluto, endereço local ou fora da pasta pública do projeto.",
+      "sintoma": "Quadro sem a imagem, fonte de reserva, erro só no render ou só em outra máquina.",
+      "causa": "O render roda num servidor próprio que não enxerga o disco nem o endereço local de quem escreveu.",
+      "camada": 1,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "dados",
+        "lyric",
+        "podcast",
+        "documental",
+        "evento",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 4,
+      "eixos": [
+        "midia",
+        "cenas"
+      ],
+      "assinatura": "(file|asset|image|path) not found|404|ENOENT|static ?file|public folder|staticFile",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/SKILL.md",
+        "https://www.remotion.dev/docs/troubleshooting/nextjs-image"
+      ],
+      "relatos": 14,
+      "relatos_exemplo": [
+        "https://stackoverflow.com/questions/79148853/react-vite-ffmpeg-how-to-resolve-worker-module-returning-404",
+        "https://github.com/heygen-com/hyperframes/issues/5863",
+        "https://github.com/heygen-com/hyperframes/issues/5333"
+      ],
+      "frequencia": 3,
+      "casos": 16,
+      "casos_conservador": 16
+    },
+    {
+      "id": "K-COD-14",
+      "area": "codigo",
+      "origem": "agente",
+      "titulo": "Espera de carregamento que nunca termina",
+      "erro": "Seguram o quadro para carregar algo e esquecem de liberar, ou a espera depende de recurso que não responde.",
+      "sintoma": "Render parado no mesmo quadro até estourar o tempo; nada sai.",
+      "causa": "O aviso de pronto nunca é dado num dos caminhos (erro, cache, condição).",
+      "camada": 3,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "dados",
+        "lyric",
+        "podcast",
+        "documental",
+        "evento",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 5,
+      "eixos": [
+        "midia",
+        "cenas"
+      ],
+      "assinatura": "timeout|timed out|stuck|hang(s|ing)?\\b|never (finish|complete)|freez",
+      "fontes": [
+        "https://www.remotion.dev/docs/timeout",
+        "https://www.remotion.dev/docs/troubleshooting/stuck-render",
+        "https://www.remotion.dev/docs/troubleshooting/timed-out-page-function",
+        "https://www.remotion.dev/docs/troubleshooting/delay-render-proxy"
+      ],
+      "relatos": 99,
+      "relatos_exemplo": [
+        "https://stackoverflow.com/questions/71131701/puppeteer-stuck-while-capture-image",
+        "https://graphicdesign.stackexchange.com/questions/96739/how-to-correctly-choose-protrusion-for-letters-and-hanging-punctuation",
+        "https://github.com/heygen-com/hyperframes/issues/6029"
+      ],
+      "frequencia": 5,
+      "casos": 16,
+      "casos_conservador": 16
+    },
+    {
+      "id": "K-COD-15",
+      "area": "codigo",
+      "origem": "agente",
+      "titulo": "Contexto de 3D ou WebGL indisponível no render",
+      "erro": "Usa 3D, shader ou canvas acelerado sem conferir que o navegador do render tem placa; cai no modo por software.",
+      "sintoma": "Canvas preto ou vazio, render muito lento, cores ou bordas diferentes da prévia.",
+      "causa": "O navegador sem tela pode não ter aceleração; sem aviso, o efeito não aparece.",
+      "camada": 1,
+      "verificador": "parcial",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "explicativo",
+        "demo",
+        "dados",
+        "lyric",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 4,
+      "eixos": [
+        "midia",
+        "resolucao"
+      ],
+      "assinatura": "webgl2? (context|not|unavailable|error|fail|black|blank)|swiftshader|three\\.?js (not|black|blank|render)|canvas (is )?(black|blank|empty)|gpu (not|isn'?t) used",
+      "fontes": [
+        "https://www.remotion.dev/docs/troubleshooting/webgl2-context",
+        "https://stackoverflow.com/questions/62575117"
+      ],
+      "relatos": 5,
+      "relatos_exemplo": [
+        "https://stackoverflow.com/questions/62575117/force-headless-chromium-chrome-to-use-actual-gpu-instead-of-google-swiftshader",
+        "https://github.com/heygen-com/hyperframes/issues/5548",
+        "https://github.com/remotion-dev/remotion/issues/1761"
+      ],
+      "frequencia": 2,
+      "casos": 12,
+      "casos_conservador": 12
+    },
+    {
+      "id": "K-COD-16",
+      "area": "codigo",
+      "origem": "agente",
+      "titulo": "Composição montada no lugar errado",
+      "erro": "Monta a composição dentro de outro componente, registra duas vezes ou com nome que não bate.",
+      "sintoma": "Erro de composição não achada, vídeo errado no render, cena vazia.",
+      "causa": "O registro das composições tem lugar e forma próprios; fora dele o render não acha o que a prévia mostra.",
+      "camada": 3,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "dados",
+        "lyric",
+        "podcast",
+        "documental",
+        "evento",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "cenas"
+      ],
+      "assinatura": "composition (not found|could not be found)|no composition|wrong composition|registerRoot|__timelines",
+      "fontes": [
+        "https://www.remotion.dev/docs/wrong-composition-mount",
+        "https://www.remotion.dev/docs/troubleshooting/loading-root-component",
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/packages/core/docs/common-mistakes.md"
+      ],
+      "relatos": 2,
+      "relatos_exemplo": [
+        "https://github.com/heygen-com/hyperframes/issues/6334",
+        "https://github.com/heygen-com/hyperframes/issues/672"
+      ],
+      "frequencia": 2,
+      "casos": 4,
+      "casos_conservador": 4
+    },
+    {
+      "id": "K-COD-17",
+      "area": "codigo",
+      "origem": "agente",
+      "titulo": "Tratamento de imagem por filtro de CSS",
+      "erro": "Gradação, granulação, desfoque e vinheta sobre vídeo por filtro de CSS em vez de tratamento de mídia.",
+      "sintoma": "Render lento, cor diferente da prévia, desfoque que muda de quadro a quadro.",
+      "causa": "Filtro de CSS recalcula sobre cada quadro na captura e não segue o espaço de cor do vídeo.",
+      "camada": 3,
+      "verificador": "parcial",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "documental",
+        "evento",
+        "vinheta"
+      ],
+      "gravidade": 2,
+      "eixos": [
+        "midia",
+        "resolucao"
+      ],
+      "assinatura": "filter: ?blur|css filter|backdrop-filter|blur (is )?slow",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/SKILL.md",
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/media-use/references/media-treatments.md"
+      ],
+      "relatos": 1,
+      "relatos_exemplo": [
+        "https://github.com/remotion-dev/remotion/issues/5126"
+      ],
+      "frequencia": 1,
+      "casos": 12,
+      "casos_conservador": 12
+    },
+    {
+      "id": "K-COD-18",
+      "area": "codigo",
+      "origem": "agente",
+      "titulo": "Propriedades padrão grandes demais",
+      "erro": "Passa dados grandes (imagens embutidas, listas enormes) como propriedades da composição.",
+      "sintoma": "Render que falha ou demora antes do primeiro quadro.",
+      "causa": "As propriedades viajam para cada processo de render; grandes demais estouram limites.",
+      "camada": 3,
+      "verificador": "sim",
+      "tipos": [
+        "dados",
+        "demo",
+        "slide"
+      ],
+      "gravidade": 2,
+      "eixos": [
+        "midia",
+        "cenas"
+      ],
+      "assinatura": "props? too (big|large)|defaultProps|input ?props",
+      "fontes": [
+        "https://www.remotion.dev/docs/troubleshooting/defaultprops-too-big"
+      ],
+      "relatos": 13,
+      "relatos_exemplo": [
+        "https://github.com/remotion-dev/remotion/issues/5362",
+        "https://github.com/remotion-dev/remotion/issues/4986",
+        "https://github.com/remotion-dev/remotion/issues/4502"
+      ],
+      "frequencia": 3,
+      "casos": 16,
+      "casos_conservador": 16
+    },
+    {
+      "id": "K-COD-19",
+      "area": "codigo",
+      "origem": "agente",
+      "titulo": "Elemento temporizado com tempo e transformação conflitantes",
+      "erro": "O mesmo elemento recebe o tempo da cena e a animação de entrada, ou transformação de CSS fixa somada à animada.",
+      "sintoma": "Elemento que aparece no lugar errado, pula na entrada ou ignora o zoom.",
+      "causa": "Duas regras disputam a mesma propriedade; a última a valer muda conforme o quadro.",
+      "camada": 3,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "explicativo",
+        "demo",
+        "dados",
+        "lyric",
+        "vinheta",
+        "slide",
+        "apresentador"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "midia",
+        "cenas"
+      ],
+      "assinatura": "transform (is )?(ignored|lost|not applied)|scale (not|isn'?t) appl|tween(s)? (ignored|not)",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/SKILL.md",
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/packages/core/docs/common-mistakes.md"
+      ],
+      "relatos": 0,
+      "relatos_exemplo": [],
+      "frequencia": 1,
+      "casos": 16,
+      "casos_conservador": 16
+    },
+    {
+      "id": "K-COD-20",
+      "area": "codigo",
+      "origem": "agente",
+      "titulo": "Composição sem a resolução e o formato do destino",
+      "erro": "Escreve a página no tamanho de tela do site, ou mantém o tamanho do modelo inicial ao mudar para vertical.",
+      "sintoma": "Só o topo aparece no vertical, faixas pretas, elementos fora do quadro.",
+      "causa": "O tamanho da página e o do vídeo foram definidos em lugares diferentes.",
+      "camada": 1,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "dados",
+        "lyric",
+        "podcast",
+        "documental",
+        "evento",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 4,
+      "eixos": [
+        "formato",
+        "resolucao"
+      ],
+      "assinatura": "portrait|vertical video|9:16|only (the )?top|letterbox",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/references/types/vertical.md",
+        "https://github.com/remotion-dev/skills/blob/HEAD/skills/remotion-create/video-layout.md"
+      ],
+      "relatos": 4,
+      "relatos_exemplo": [
+        "https://github.com/heygen-com/hyperframes/issues/4001",
+        "https://github.com/remotion-dev/remotion/issues/6470",
+        "https://github.com/remotion-dev/remotion/issues/12461"
+      ],
+      "frequencia": 2,
+      "casos": 12,
+      "casos_conservador": 12
+    },
+    {
+      "id": "K-FER-01",
+      "area": "codigo",
+      "origem": "ferramenta",
+      "titulo": "Quadro fora da grade de quadros",
+      "erro": "Tempos que não caem num quadro inteiro são arredondados de jeitos diferentes entre prévia, render e paralelo.",
+      "sintoma": "Mídia que aparece um quadro antes ou depois, quadro de outra fonte na emenda, primeiro quadro de cada pedaço atrasado.",
+      "causa": "Arredondamento do tempo para o quadro sem regra única.",
+      "camada": 3,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "dados",
+        "lyric",
+        "podcast",
+        "documental",
+        "evento",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "fps",
+        "cenas"
+      ],
+      "assinatura": "off (the|by) (one|a) frame|frame (late|early|grid)|one frame|off-by-one|frame (accur|offset)",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/issues/6753",
+        "https://github.com/heygen-com/hyperframes/issues/5502",
+        "https://github.com/heygen-com/hyperframes/issues/4763"
+      ],
+      "kodecz": "resolve: o tempo é medido em quadros inteiros na linha do tempo declarada",
+      "relatos": 5,
+      "relatos_exemplo": [
+        "https://stackoverflow.com/questions/58821485/how-to-map-frame-extracted-with-ffmpeg-and-subtitle-of-a-video-frame-accuracy",
+        "https://github.com/heygen-com/hyperframes/issues/1731",
+        "https://github.com/remotion-dev/remotion/issues/12666"
+      ],
+      "frequencia": 2,
+      "casos": 12,
+      "casos_conservador": 12
+    },
+    {
+      "id": "K-FER-02",
+      "area": "cor",
+      "origem": "ferramenta",
+      "titulo": "Espaço de cor sem etiqueta ou trocado",
+      "erro": "O arquivo sai com matriz de cor errada (BT.601 no lugar de BT.709), faixa de níveis trocada ou sem etiqueta.",
+      "sintoma": "Vídeo lavado ou escuro demais, rosas e vermelhos desbotados, sombras esmagadas, cor diferente em cada player.",
+      "causa": "Conversão de RGB para YUV sem dizer qual padrão, ou player que adivinha outro.",
+      "camada": 3,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "dados",
+        "lyric",
+        "podcast",
+        "documental",
+        "evento",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 4,
+      "eixos": [
+        "midia",
+        "paleta",
+        "plataforma"
+      ],
+      "assinatura": "colou?rs? (shift|wrong|differ|washed|pale|lose|look)|washed out|bt\\.?(601|709)|rec\\.?709|colou?r ?space|full range|darker than",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/issues/5380",
+        "https://github.com/heygen-com/hyperframes/issues/4899",
+        "https://github.com/heygen-com/hyperframes/issues/4549",
+        "https://trac.ffmpeg.org/wiki/colorspace",
+        "https://video.stackexchange.com/questions/26262",
+        "https://video.stackexchange.com/questions/20859",
+        "https://video.stackexchange.com/questions/13174"
+      ],
+      "kodecz": "deveria resolver: etiqueta BT.709 e faixa conferidas na saída",
+      "relatos": 23,
+      "relatos_exemplo": [
+        "https://graphicdesign.stackexchange.com/questions/68351/what-are-some-design-strategies-to-make-a-dull-colour-palette-feel-more-vibran",
+        "https://graphicdesign.stackexchange.com/questions/69117/eps-file-looks-great-in-ai-but-washed-out-in-mac-preview-or-ghostscript",
+        "https://graphicdesign.stackexchange.com/questions/18454/how-to-choose-a-color-palette-for-a-website"
+      ],
+      "frequencia": 3,
+      "casos": 64,
+      "casos_conservador": 16
+    },
+    {
+      "id": "K-FER-03",
+      "area": "codigo",
+      "origem": "ferramenta",
+      "titulo": "Quadro repetido ou pulado na captura",
+      "erro": "A captura entrega o mesmo quadro duas vezes, pula quadro ou pega o estado anterior à busca.",
+      "sintoma": "Movimento que engasga, vídeo dentro do vídeo que congela, quadro preto isolado.",
+      "causa": "Captura antes de a página terminar de aplicar o tempo pedido.",
+      "camada": 3,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "dados",
+        "lyric",
+        "podcast",
+        "documental",
+        "evento",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 4,
+      "eixos": [
+        "fps",
+        "midia",
+        "duracao"
+      ],
+      "assinatura": "duplicate frame|repeated frame|dropped frame|skips? frames?|frame (drop|skip)|stale frame|black frames?|pre-seek",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/issues/6556",
+        "https://github.com/heygen-com/hyperframes/issues/3391",
+        "https://stackoverflow.com/questions/63994135"
+      ],
+      "kodecz": "resolve: o quadro só é entregue com o número certo na marca (conferência por quadro)",
+      "relatos": 10,
+      "relatos_exemplo": [
+        "https://stackoverflow.com/questions/42262888/what-ffmpeg-settings-to-ensure-0-duplicate-frames-and-0-dropped-frames-when-capt",
+        "https://github.com/heygen-com/hyperframes/issues/4435",
+        "https://github.com/heygen-com/hyperframes/issues/2007"
+      ],
+      "frequencia": 3,
+      "casos": 60,
+      "casos_conservador": 12
+    },
+    {
+      "id": "K-FER-04",
+      "area": "codigo",
+      "origem": "ferramenta",
+      "titulo": "Animação capturada mais rápida que o tempo real",
+      "erro": "A gravação da página por captura de tela segue o relógio real, não o tempo do vídeo.",
+      "sintoma": "Vídeo acelerado, com saltos, ou com ritmo que muda conforme a carga da máquina.",
+      "causa": "Sem relógio virtual, cada captura demora o que demora e a animação continua correndo.",
+      "camada": 3,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "dados",
+        "lyric",
+        "podcast",
+        "documental",
+        "evento",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 5,
+      "eixos": [
+        "fps",
+        "duracao",
+        "midia"
+      ],
+      "assinatura": "faster than real|real-?time|too fast|speed(s)? up|fps (issue|low|drop)|low fps|record.*(animation|page)",
+      "fontes": [
+        "https://stackoverflow.com/questions/69580933",
+        "https://stackoverflow.com/questions/71314134",
+        "https://stackoverflow.com/questions/61520364",
+        "https://stackoverflow.com/questions/71437739"
+      ],
+      "kodecz": "resolve: o tempo da página é o tempo do quadro",
+      "relatos": 11,
+      "relatos_exemplo": [
+        "https://stackoverflow.com/questions/61520364/how-to-record-an-html-animation-and-save-it-as-a-video-in-an-automated-manner-i",
+        "https://stackoverflow.com/questions/69580933/why-puppeteer-animations-runs-faster-than-real-time",
+        "https://stackoverflow.com/questions/71437739/page-startscreencast-chrome-devtools-protocol-low-fps-issue"
+      ],
+      "frequencia": 3,
+      "casos": 60,
+      "casos_conservador": 15
+    },
+    {
+      "id": "K-FER-05",
+      "area": "audio",
+      "origem": "ferramenta",
+      "titulo": "Áudio e vídeo se afastam com o tempo",
+      "erro": "Juntar trechos com taxas de amostragem, durações ou carimbos de tempo diferentes.",
+      "sintoma": "A voz atrasa ou adianta da boca, pouco no começo e muito no fim.",
+      "causa": "Arredondamentos acumulados e cortes de áudio que não caem no limite do quadro.",
+      "camada": 2,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "podcast",
+        "documental",
+        "evento"
+      ],
+      "gravidade": 5,
+      "eixos": [
+        "duracao",
+        "fps",
+        "cenas"
+      ],
+      "assinatura": "out of sync|desync|a/?v sync|audio (drift|delay|lag|offset)|lip ?sync",
+      "fontes": [
+        "https://stackoverflow.com/questions/35416110",
+        "https://stackoverflow.com/questions/8844460",
+        "https://stackoverflow.com/questions/60005999",
+        "https://stackoverflow.com/questions/65672535",
+        "https://stackoverflow.com/questions/37436897"
+      ],
+      "kodecz": "deveria resolver: áudio e quadro no mesmo eixo de tempo falado",
+      "relatos": 22,
+      "relatos_exemplo": [
+        "https://stackoverflow.com/questions/61835223/ffmpeg-burnt-in-subtitles-out-of-sync-when-converting-to-hls",
+        "https://stackoverflow.com/questions/71230403/external-pgs-subtitle-sup-track-burned-with-ffmpeg-is-out-of-sync",
+        "https://stackoverflow.com/questions/35416110/ffmpeg-concat-video-and-audio-out-of-sync"
+      ],
+      "frequencia": 3,
+      "casos": 60,
+      "casos_conservador": 15
+    },
+    {
+      "id": "K-FER-06",
+      "area": "audio",
+      "origem": "ferramenta",
+      "titulo": "Mixagem que muda a cada render",
+      "erro": "A ordem ou o nível das faixas depende de qual terminou de preparar antes.",
+      "sintoma": "Som um pouco diferente em cada render; trilha que passa por cima numa versão e não na outra.",
+      "causa": "Mistura sem ordem fixa.",
+      "camada": 5,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "podcast",
+        "documental",
+        "evento",
+        "lyric"
+      ],
+      "gravidade": 2,
+      "eixos": [
+        "trilha",
+        "cenas"
+      ],
+      "assinatura": "audio differs|different (audio|sound)|mix (order|differ)|amix",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/issues/5669"
+      ],
+      "kodecz": "deveria resolver: render determinístico também no áudio",
+      "relatos": 2,
+      "relatos_exemplo": [
+        "https://stackoverflow.com/questions/78530863/ffmpeg-error-cannot-find-a-matching-stream-for-unlabeled-input-pad-0-on-filter"
+      ],
+      "frequencia": 1,
+      "casos": 12,
+      "casos_conservador": 12
+    },
+    {
+      "id": "K-FER-07",
+      "area": "codigo",
+      "origem": "ferramenta",
+      "titulo": "Corte de pixels na largura ou altura",
+      "erro": "O codificador exige dimensões pares ou múltiplas e a ferramenta corta ou estica sem avisar.",
+      "sintoma": "Faixa de 1 a 8 pixels perdida na borda; texto encostado na borda fica cortado.",
+      "causa": "Arredondamento das dimensões do quadro para o formato do codificador.",
+      "camada": 3,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "dados",
+        "lyric",
+        "podcast",
+        "documental",
+        "evento",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 2,
+      "eixos": [
+        "resolucao",
+        "formato"
+      ],
+      "assinatura": "pixels? (cut|cropped|missing)|drops? the rightmost|odd (width|height)|divisible by",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/issues/5551"
+      ],
+      "kodecz": "deveria resolver: conferência do tamanho de saída",
+      "relatos": 1,
+      "relatos_exemplo": [],
+      "frequencia": 1,
+      "casos": 12,
+      "casos_conservador": 12
+    },
+    {
+      "id": "K-FER-08",
+      "area": "codigo",
+      "origem": "ferramenta",
+      "titulo": "Conferência que aprova o que está quebrado",
+      "erro": "A checagem automática passa enquanto o texto tem a descida cortada pela máscara, a legenda está tapada ou o arquivo está truncado.",
+      "sintoma": "Vídeo aprovado que sai com defeito visível.",
+      "causa": "A checagem olha a estrutura ou o arquivo, não o quadro como quem assiste vê.",
+      "camada": 3,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "dados",
+        "lyric",
+        "podcast",
+        "documental",
+        "evento",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 4,
+      "eixos": [
+        "midia",
+        "densidade"
+      ],
+      "assinatura": "check passes|passes (when|while|but)|records PASS|false (positive|negative)|falsely",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/issues/5231",
+        "https://github.com/heygen-com/hyperframes/issues/5485",
+        "https://github.com/heygen-com/hyperframes/issues/3395"
+      ],
+      "kodecz": "deveria resolver: conferência sobre o quadro (S04) que devolve a correção",
+      "relatos": 9,
+      "relatos_exemplo": [
+        "https://github.com/heygen-com/hyperframes/issues/6182",
+        "https://github.com/heygen-com/hyperframes/issues/3916",
+        "https://github.com/remotion-dev/remotion/issues/5186"
+      ],
+      "frequencia": 2,
+      "casos": 16,
+      "casos_conservador": 16
+    },
+    {
+      "id": "K-FER-09",
+      "area": "codigo",
+      "origem": "ferramenta",
+      "titulo": "Fonte de pacote prometida e não entregue",
+      "erro": "A documentação diz que a fonte vem embutida e o render busca na rede ou não acha.",
+      "sintoma": "Fonte de reserva no render offline; fonte certa só com internet.",
+      "causa": "Lista de fontes embutidas e compilador fora de acordo.",
+      "camada": 1,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "dados",
+        "lyric",
+        "podcast",
+        "documental",
+        "evento",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "fonte",
+        "escrita"
+      ],
+      "assinatura": "fonts? (never|not) (staged|bundled|embedded)|google fonts|font (fetch|download|cache)",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/issues/6137",
+        "https://github.com/heygen-com/hyperframes/issues/3583",
+        "https://github.com/heygen-com/hyperframes/issues/3412"
+      ],
+      "kodecz": "resolve em parte: o render baixa a fonte do Google que falta no cache (#74)",
+      "relatos": 9,
+      "relatos_exemplo": [
+        "https://github.com/heygen-com/hyperframes/issues/3496",
+        "https://github.com/remotion-dev/remotion/issues/5446",
+        "https://github.com/remotion-dev/remotion/issues/2692"
+      ],
+      "frequencia": 2,
+      "casos": 20,
+      "casos_conservador": 20
+    },
+    {
+      "id": "K-FER-10",
+      "area": "codigo",
+      "origem": "ferramenta",
+      "titulo": "Processo do navegador pesado ou instável no render longo",
+      "erro": "Memória que cresce a cada quadro, processo morto pelo sistema, travamento perto de um quadro fixo.",
+      "sintoma": "Render que morre no meio sem arquivo, ou sai truncado.",
+      "causa": "Recursos não liberados entre quadros e limite do sistema.",
+      "camada": 1,
+      "verificador": "parcial",
+      "tipos": [
+        "documental",
+        "evento",
+        "podcast",
+        "tutorial"
+      ],
+      "gravidade": 4,
+      "eixos": [
+        "duracao",
+        "resolucao",
+        "midia"
+      ],
+      "assinatura": "out of memory|\\boom\\b|sigkill|memory (leak|grows|usage)|killed|crash(es|ed)? (during|while|at|when) render",
+      "fontes": [
+        "https://www.remotion.dev/docs/troubleshooting/sigkill",
+        "https://github.com/heygen-com/hyperframes/issues/5492",
+        "https://github.com/heygen-com/hyperframes/issues/5473"
+      ],
+      "kodecz": "deveria resolver: liberação de recursos com teste (R04)",
+      "relatos": 11,
+      "relatos_exemplo": [
+        "https://github.com/heygen-com/hyperframes/issues/5378",
+        "https://github.com/heygen-com/hyperframes/issues/5097",
+        "https://github.com/heygen-com/hyperframes/issues/4036"
+      ],
+      "frequencia": 3,
+      "casos": 60,
+      "casos_conservador": 15
+    },
+    {
+      "id": "K-FER-11",
+      "area": "codigo",
+      "origem": "ferramenta",
+      "titulo": "Fundo transparente perdido",
+      "erro": "O formato de saída ou o efeito escolhido não carrega o canal alfa; ou o fundo fica preto com desfoque de movimento.",
+      "sintoma": "Vinheta ou lettering que devia sobrepor sai com fundo preto ou branco.",
+      "causa": "Codificador ou etapa intermediária sem alfa.",
+      "camada": 3,
+      "verificador": "sim",
+      "tipos": [
+        "vinheta",
+        "lyric",
+        "anuncio",
+        "evento"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "midia",
+        "fundo"
+      ],
+      "assinatura": "transparen(t|cy) (video|background|render|webm)|alpha channel|no alpha|background (turns )?black",
+      "fontes": [
+        "https://github.com/remotion-dev/skills/blob/HEAD/skills/remotion-render/transparent-videos.md",
+        "https://github.com/heygen-com/hyperframes/issues/6259"
+      ],
+      "kodecz": "deveria resolver: saída com alfa conferida",
+      "relatos": 17,
+      "relatos_exemplo": [
+        "https://graphicdesign.stackexchange.com/questions/163035/export-asset-from-ai-file-as-having-transparent-background",
+        "https://github.com/heygen-com/hyperframes/issues/4797",
+        "https://github.com/heygen-com/hyperframes/issues/3220"
+      ],
+      "frequencia": 3,
+      "casos": 16,
+      "casos_conservador": 16
+    },
+    {
+      "id": "K-FER-12",
+      "area": "codigo",
+      "origem": "ferramenta",
+      "titulo": "Versões de pacotes desencontradas",
+      "erro": "Pacotes do mesmo motor em versões diferentes, ou navegador de render diferente do esperado.",
+      "sintoma": "Erro obscuro no render, recurso que some, comportamento diferente entre máquinas.",
+      "causa": "Instalação parcial ou atualização de um pacote só.",
+      "camada": 1,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "dados",
+        "lyric",
+        "podcast",
+        "documental",
+        "evento",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 3,
+      "eixos": [],
+      "assinatura": "version mismatch|mismatch|different versions?|upgrade|after updat",
+      "fontes": [
+        "https://www.remotion.dev/docs/version-mismatch",
+        "https://www.remotion.dev/docs/troubleshooting/browser-launch"
+      ],
+      "kodecz": "resolve: instalação travada por versão (instalar/)",
+      "relatos": 28,
+      "relatos_exemplo": [
+        "https://stackoverflow.com/questions/54700786/how-do-i-fix-the-pes-packet-size-mismatch-error-in-ffmpeg",
+        "https://github.com/heygen-com/hyperframes/issues/4382",
+        "https://github.com/heygen-com/hyperframes/issues/3629"
+      ],
+      "frequencia": 3,
+      "casos": 1,
+      "casos_conservador": 1
+    },
+    {
+      "id": "K-EDI-01",
+      "area": "edicao",
+      "origem": "agente",
+      "titulo": "Corte fora da batida",
+      "erro": "O corte ou a entrada de elemento cai entre batidas da trilha, ou a grade de batidas acumula arredondamento.",
+      "sintoma": "A emenda parece atrasada ou nervosa; o elemento entra um pouco antes ou depois da batida e o atraso cresce até o fim.",
+      "causa": "A batida foi somada arredondada várias vezes em vez de calculada pelo índice, ou o tempo da trilha foi ignorado.",
+      "camada": 2,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "lyric",
+        "evento",
+        "vinheta",
+        "demo"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "bpm",
+        "fps",
+        "cenas"
+      ],
+      "assinatura": "\\bbpm\\b|on the beat|beat[- ]sync|beats? (grid|detect|cli)|music sync",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/references/motion.md"
+      ],
+      "relatos": 1,
+      "relatos_exemplo": [
+        "https://github.com/heygen-com/hyperframes/issues/1623"
+      ],
+      "frequencia": 1,
+      "casos": 48,
+      "casos_conservador": 12
+    },
+    {
+      "id": "K-EDI-02",
+      "area": "edicao",
+      "origem": "agente",
+      "titulo": "Jump cut sem intenção",
+      "erro": "Dois trechos do mesmo plano com enquadramento quase igual, emendados sem mudar escala nem cobrir com outra imagem.",
+      "sintoma": "O rosto pula de lugar na emenda; parece erro e não estilo.",
+      "causa": "Os cortes de silêncio foram feitos no plano único sem variação de enquadramento nem cobertura.",
+      "camada": 4,
+      "verificador": "sim",
+      "tipos": [
+        "apresentador",
+        "podcast",
+        "tutorial",
+        "reel",
+        "documental"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "rosto",
+        "fala",
+        "cenas"
+      ],
+      "assinatura": "jump ?cut",
+      "fontes": [
+        "https://video.stackexchange.com/questions/12647",
+        "https://en.wikipedia.org/wiki/Jump_cut",
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/references/types/vertical.md"
+      ],
+      "relatos": 1,
+      "relatos_exemplo": [
+        "https://video.stackexchange.com/questions/39311/auto-detect-jump-cuts-in-h-264-video-with-ffmpeg-or-kdenlive"
+      ],
+      "frequencia": 1,
+      "casos": 60,
+      "casos_conservador": 15
+    },
+    {
+      "id": "K-EDI-03",
+      "area": "edicao",
+      "origem": "agente",
+      "titulo": "Corte no meio da palavra",
+      "erro": "O corte de silêncio ou de trecho cai dentro de uma palavra ou corta a respiração final.",
+      "sintoma": "Sílaba engolida, estalo no áudio, frase que soa picotada.",
+      "causa": "O corte usa o tempo aproximado da transcrição sem margem nem conferência da forma de onda.",
+      "camada": 2,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "podcast",
+        "documental",
+        "evento"
+      ],
+      "gravidade": 4,
+      "eixos": [
+        "fala",
+        "escrita",
+        "cenas"
+      ],
+      "assinatura": "(word|syllable|speech)s? (cut|clipped)|clipped audio|pop(ping)? (sound|at)|click(s)? (at|in) (the )?(cut|start|end)",
+      "fontes": [
+        "https://github.com/remotion-dev/skills/blob/HEAD/skills/remotion-markup/silence-detection.md",
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/media-use/audio/references/captions/transcript-handling.md"
+      ],
+      "relatos": 0,
+      "relatos_exemplo": [],
+      "frequencia": 1,
+      "casos": 60,
+      "casos_conservador": 15
+    },
+    {
+      "id": "K-EDI-04",
+      "area": "edicao",
+      "origem": "agente",
+      "titulo": "Ritmo arrastado",
+      "erro": "Planos e telas que ficam muito mais tempo do que o necessário para ler ou entender; pausas mortas mantidas.",
+      "sintoma": "Quem assiste perde o interesse; a mesma imagem parada por vários segundos sem informação nova.",
+      "causa": "Duração de cena escolhida sem relação com a quantidade de texto e com a fala.",
+      "camada": 2,
+      "verificador": "parcial",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "slide",
+        "podcast"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "densidade",
+        "fala",
+        "duracao"
+      ],
+      "assinatura": "\\bpacing\\b|boring|dead air|drags on",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/references/review.md",
+        "https://video.stackexchange.com/questions/7237"
+      ],
+      "relatos": 0,
+      "relatos_exemplo": [],
+      "frequencia": 1,
+      "casos": 60,
+      "casos_conservador": 12
+    },
+    {
+      "id": "K-EDI-05",
+      "area": "edicao",
+      "origem": "agente",
+      "titulo": "B-roll que ilustra a palavra errada",
+      "erro": "A imagem de cobertura entra antes ou depois da palavra que ela ilustra, ou ilustra literalmente uma palavra sem importância.",
+      "sintoma": "Imagem que não combina com o que está sendo dito; sensação de banco de imagens.",
+      "causa": "A cobertura foi posicionada por cena e não pelo tempo da palavra; escolha por palavra-chave solta.",
+      "camada": 2,
+      "verificador": "parcial",
+      "tipos": [
+        "apresentador",
+        "explicativo",
+        "documental",
+        "podcast",
+        "reel"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "fala",
+        "cenas",
+        "rosto"
+      ],
+      "assinatura": "b-?roll|stock footage|cutaway",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/references/types/vertical.md",
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/.claude/skills/motion-doctrine/SKILL.md"
+      ],
+      "relatos": 1,
+      "relatos_exemplo": [
+        "https://stackoverflow.com/questions/37200534/how-to-use-ffmpeg-for-a-cutaway-with-audio-crossfade"
+      ],
+      "frequencia": 1,
+      "casos": 60,
+      "casos_conservador": 12
+    },
+    {
+      "id": "K-EDI-06",
+      "area": "edicao",
+      "origem": "agente",
+      "titulo": "Cobertura que tapa o rosto na hora errada",
+      "erro": "Tela cheia de cobertura ou cartão por cima do apresentador justamente na frase de ênfase.",
+      "sintoma": "Some o rosto quando a pessoa diz o mais importante; o vídeo perde a presença.",
+      "causa": "A cobertura não sabe onde estão as frases de ênfase nem o rosto.",
+      "camada": 4,
+      "verificador": "sim",
+      "tipos": [
+        "apresentador",
+        "podcast",
+        "reel",
+        "anuncio"
+      ],
+      "gravidade": 4,
+      "eixos": [
+        "rosto",
+        "fala",
+        "formato"
+      ],
+      "assinatura": "talking[- ]head|\\bfaces? (cover|hidden|detection|track)|speaker'?s face|presenter",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/references/types/vertical.md",
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/references/overlays.md"
+      ],
+      "relatos": 2,
+      "relatos_exemplo": [
+        "https://github.com/heygen-com/hyperframes/issues/2779",
+        "https://www.reddit.com/r/VideoEditing/comments/1kwti28/how_can_i_remotely_control_a_teleprompter_during/"
+      ],
+      "frequencia": 1,
+      "casos": 60,
+      "casos_conservador": 15
+    },
+    {
+      "id": "K-EDI-07",
+      "area": "edicao",
+      "origem": "agente",
+      "titulo": "Transição demais ou do mesmo tipo",
+      "erro": "Toda emenda leva uma transição de efeito, sempre a mesma, ou uma diferente em cada corte sem motivo.",
+      "sintoma": "Vídeo cansativo e amador; as transições chamam mais atenção que o conteúdo.",
+      "causa": "Transição usada como enfeite padrão em vez de corte seco dentro da cena e poucas transições motivadas.",
+      "camada": 3,
+      "verificador": "parcial",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "explicativo",
+        "evento",
+        "slide",
+        "demo"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "cenas",
+        "duracao"
+      ],
+      "assinatura": "too many transitions|transition (advice|overuse)|cut advice",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/references/motion.md",
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/.claude/skills/motion-doctrine/SKILL.md",
+        "https://github.com/remotion-dev/skills/blob/HEAD/skills/remotion-markup/transitions.md"
+      ],
+      "relatos": 1,
+      "relatos_exemplo": [
+        "https://video.stackexchange.com/questions/33288/transition-cut-advice-for-video-idea"
+      ],
+      "frequencia": 2,
+      "casos": 20,
+      "casos_conservador": 20
+    },
+    {
+      "id": "K-EDI-08",
+      "area": "edicao",
+      "origem": "agente",
+      "titulo": "Direção que se contradiz entre cenas",
+      "erro": "A cena sai para um lado e a próxima entra pelo mesmo lado, ou o eixo do movimento troca na emenda.",
+      "sintoma": "Emenda que parece ida e volta; quem assiste perde a continuidade.",
+      "causa": "Cada cena foi animada sozinha, sem regra de eixo e direção para o filme.",
+      "camada": 4,
+      "verificador": "sim",
+      "tipos": [
+        "explicativo",
+        "anuncio",
+        "vinheta",
+        "slide",
+        "demo",
+        "dados"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "cenas",
+        "formato"
+      ],
+      "assinatura": "continuity|opposite direction|direction (of|across) (the )?(cut|scene)",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/.claude/skills/motion-doctrine/SKILL.md",
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/.claude/skills/motion-doctrine/references/seam-gate.md"
+      ],
+      "relatos": 0,
+      "relatos_exemplo": [],
+      "frequencia": 1,
+      "casos": 16,
+      "casos_conservador": 16
+    },
+    {
+      "id": "K-EDI-09",
+      "area": "edicao",
+      "origem": "agente",
+      "titulo": "Duas cenas visíveis ao mesmo tempo na emenda",
+      "erro": "A cena que sai ainda aparece quando a próxima já entrou, sem que seja uma transição pensada.",
+      "sintoma": "Sobreposição suja de um ou dois quadros; texto de uma cena sobre a outra.",
+      "causa": "Tempos de saída e entrada calculados separados.",
+      "camada": 4,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "dados",
+        "lyric",
+        "podcast",
+        "documental",
+        "evento",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "fps",
+        "cenas"
+      ],
+      "assinatura": "both (scenes )?visible|ghost(ing)?|double (image|exposure)|overlap (at|between) (scenes|clips)",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/.claude/skills/motion-doctrine/references/seam-gate.md",
+        "https://github.com/heygen-com/hyperframes/issues/6278"
+      ],
+      "relatos": 5,
+      "relatos_exemplo": [
+        "https://graphicdesign.stackexchange.com/questions/69117/eps-file-looks-great-in-ai-but-washed-out-in-mac-preview-or-ghostscript",
+        "https://github.com/heygen-com/hyperframes/issues/3049",
+        "https://github.com/remotion-dev/remotion/issues/10968"
+      ],
+      "frequencia": 2,
+      "casos": 12,
+      "casos_conservador": 12
+    },
+    {
+      "id": "K-EDI-10",
+      "area": "edicao",
+      "origem": "agente",
+      "titulo": "Fim seco ou sem respiro",
+      "erro": "O vídeo termina no último quadro da fala, sem segurar a última imagem nem resolver a trilha.",
+      "sintoma": "Fim que parece cortado; trilha que para no meio da frase musical.",
+      "causa": "Duração igual ao fim da voz.",
+      "camada": 2,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "dados",
+        "lyric",
+        "podcast",
+        "documental",
+        "evento",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "duracao",
+        "bpm",
+        "trilha"
+      ],
+      "assinatura": "ends abruptly|abrupt|cut off at the end",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/SKILL.md",
+        "https://github.com/remotion-dev/skills/blob/HEAD/skills/remotion-markup/video-editing.md"
+      ],
+      "relatos": 1,
+      "relatos_exemplo": [
+        "https://github.com/remotion-dev/remotion/issues/930"
+      ],
+      "frequencia": 1,
+      "casos": 60,
+      "casos_conservador": 20
+    },
+    {
+      "id": "K-EDI-11",
+      "area": "edicao",
+      "origem": "agente",
+      "titulo": "Duração errada para o destino",
+      "erro": "Vídeo longo demais para anúncio ou reel, curto demais para explicar o que promete.",
+      "sintoma": "Corte da plataforma, queda de retenção, mensagem pela metade.",
+      "causa": "Duração decidida pelo material, não pelo destino.",
+      "camada": 4,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "vinheta",
+        "evento",
+        "podcast"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "plataforma",
+        "duracao"
+      ],
+      "assinatura": "too long|max(imum)? duration|length limit",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/references/types/vertical.md",
+        "https://support.google.com/youtube/answer/1722171"
+      ],
+      "relatos": 1,
+      "relatos_exemplo": [
+        "https://github.com/remotion-dev/remotion/issues/7594"
+      ],
+      "frequencia": 1,
+      "casos": 20,
+      "casos_conservador": 20
+    },
+    {
+      "id": "K-EDI-12",
+      "area": "edicao",
+      "origem": "agente",
+      "titulo": "Primeiro quadro sem gancho",
+      "erro": "O vídeo vertical abre com tela preta, logotipo ou título lento.",
+      "sintoma": "Miniatura escura ou sem assunto; quem rola passa direto.",
+      "causa": "Abertura pensada como filme, não como peça de rolagem.",
+      "camada": 4,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "podcast",
+        "demo"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "formato",
+        "plataforma"
+      ],
+      "assinatura": "first frame (is )?(black|blank)|\\bhook\\b",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/references/types/vertical.md"
+      ],
+      "relatos": 2,
+      "relatos_exemplo": [
+        "https://github.com/remotion-dev/remotion/issues/5627",
+        "https://github.com/remotion-dev/remotion/issues/7398"
+      ],
+      "frequencia": 1,
+      "casos": 16,
+      "casos_conservador": 16
+    },
+    {
+      "id": "K-EDI-13",
+      "area": "edicao",
+      "origem": "agente",
+      "titulo": "Som e imagem trocam juntos sem J ou L",
+      "erro": "Toda emenda troca som e imagem no mesmo quadro, sem antecipar o som nem deixá-lo continuar.",
+      "sintoma": "Emendas duras, conversa que parece picotada.",
+      "causa": "Áudio tratado como parte grudada da imagem.",
+      "camada": 2,
+      "verificador": "parcial",
+      "tipos": [
+        "apresentador",
+        "documental",
+        "podcast",
+        "evento"
+      ],
+      "gravidade": 2,
+      "eixos": [
+        "cenas",
+        "fala"
+      ],
+      "assinatura": "j-?cut|l-?cut|split edit",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/SKILL.md"
+      ],
+      "relatos": 0,
+      "relatos_exemplo": [],
+      "frequencia": 1,
+      "casos": 12,
+      "casos_conservador": 12
+    },
+    {
+      "id": "K-EDI-15",
+      "area": "edicao",
+      "origem": "agente",
+      "titulo": "Conferência por amostragem que deixa o erro passar",
+      "erro": "O agente confere só alguns quadros ou só o primeiro render, e o erro está no trecho não visto.",
+      "sintoma": "Defeito que aparece no meio do vídeo entregue.",
+      "causa": "Conferir cada quadro com outro agente é caro; sem verificação automática, a conferência vira amostra.",
+      "camada": 3,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "dados",
+        "lyric",
+        "podcast",
+        "documental",
+        "evento",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "duracao",
+        "cenas"
+      ],
+      "assinatura": "",
+      "fontes": [
+        "https://www.reddit.com/r/Remotion/comments/1x60he2/",
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/references/review.md"
+      ],
+      "relatos": 0,
+      "relatos_exemplo": [],
+      "frequencia": 1,
+      "casos": 20,
+      "casos_conservador": 20
+    },
+    {
+      "id": "K-EDI-14",
+      "area": "edicao",
+      "origem": "agente",
+      "titulo": "Versão nova perde o que já foi aprovado",
+      "erro": "Ao refazer um trecho, o agente reescreve a composição e desfaz ajustes aprovados em outras partes.",
+      "sintoma": "Erro antigo volta; corte, texto ou posição que estavam certos mudam.",
+      "causa": "Sem linhagem a partir da versão aprovada; edição por reescrita.",
+      "camada": 5,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "dados",
+        "lyric",
+        "podcast",
+        "documental",
+        "evento",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 4,
+      "eixos": [
+        "cenas"
+      ],
+      "assinatura": "",
+      "fontes": [
+        "https://github.com/remotion-dev/skills/blob/HEAD/skills/remotion-best-practices/SKILL.md",
+        "https://github.com/remotion-dev/skills/blob/HEAD/skills/remotion-markup/SKILL.md"
+      ],
+      "relatos": 0,
+      "relatos_exemplo": [],
+      "frequencia": 1,
+      "casos": 4,
+      "casos_conservador": 4
+    },
+    {
+      "id": "K-ANI-01",
+      "area": "animacao",
+      "origem": "agente",
+      "titulo": "Movimento linear",
+      "erro": "Entradas, saídas e deslocamentos com velocidade constante.",
+      "sintoma": "Movimento mecânico, sem peso; começa e para de repente.",
+      "causa": "Curva de aceleração padrão ou ausente.",
+      "camada": 4,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "explicativo",
+        "demo",
+        "dados",
+        "lyric",
+        "vinheta",
+        "slide",
+        "apresentador",
+        "tutorial",
+        "evento"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "midia",
+        "duracao"
+      ],
+      "assinatura": "\\beas(e|ing)\\b|linear (motion|interpolation|animation)",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/references/motion.md",
+        "https://en.wikipedia.org/wiki/Twelve_basic_principles_of_animation",
+        "https://www.reddit.com/r/AfterEffects/comments/gd55qs/",
+        "https://www.reddit.com/r/AfterEffects/comments/1gj8p99/"
+      ],
+      "relatos": 29,
+      "relatos_exemplo": [
+        "https://ux.stackexchange.com/questions/134761/what-is-the-best-ease-curve-and-speed-for-color-transitions",
+        "https://github.com/heygen-com/hyperframes/issues/5538",
+        "https://github.com/heygen-com/hyperframes/issues/1801"
+      ],
+      "frequencia": 3,
+      "casos": 20,
+      "casos_conservador": 20
+    },
+    {
+      "id": "K-ANI-02",
+      "area": "animacao",
+      "origem": "agente",
+      "titulo": "Tudo entra junto",
+      "erro": "Todos os elementos da tela entram no mesmo quadro com a mesma animação.",
+      "sintoma": "O olho não sabe para onde ir; tela que aparece em bloco.",
+      "causa": "Sem escalonamento nem ordem de leitura na coreografia.",
+      "camada": 4,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "explicativo",
+        "demo",
+        "dados",
+        "lyric",
+        "vinheta",
+        "slide",
+        "tutorial"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "densidade",
+        "cenas"
+      ],
+      "assinatura": "stagger|all at once|(appear|enter|animate)s? (simultaneously|at once)",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/references/motion.md",
+        "https://developer.apple.com/design/human-interface-guidelines/motion"
+      ],
+      "relatos": 2,
+      "relatos_exemplo": [
+        "https://github.com/heygen-com/hyperframes/issues/3253",
+        "https://github.com/remotion-dev/remotion/issues/9874"
+      ],
+      "frequencia": 1,
+      "casos": 16,
+      "casos_conservador": 16
+    },
+    {
+      "id": "K-ANI-03",
+      "area": "animacao",
+      "origem": "agente",
+      "titulo": "Movimento sem causa",
+      "erro": "Elementos flutuam, giram ou pulsam o tempo todo sem relação com a fala ou com outro elemento.",
+      "sintoma": "Tela inquieta que distrai do que está sendo dito.",
+      "causa": "Movimento usado para preencher, não para mostrar algo.",
+      "camada": 4,
+      "verificador": "parcial",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "explicativo",
+        "demo",
+        "dados",
+        "lyric",
+        "vinheta",
+        "slide",
+        "apresentador"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "densidade",
+        "fala"
+      ],
+      "assinatura": "distract|too much (motion|movement|animation)|over-?animat",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/.claude/skills/motion-doctrine/SKILL.md",
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/references/motion.md"
+      ],
+      "relatos": 1,
+      "relatos_exemplo": [
+        "https://github.com/heygen-com/hyperframes/issues/995"
+      ],
+      "frequencia": 1,
+      "casos": 12,
+      "casos_conservador": 12
+    },
+    {
+      "id": "K-ANI-04",
+      "area": "animacao",
+      "origem": "agente",
+      "titulo": "Título pousado que continua mexendo",
+      "erro": "O título termina de entrar e segue com deriva, pulsação ou tremor.",
+      "sintoma": "Texto difícil de ler, sensação de instabilidade.",
+      "causa": "Animação contínua aplicada ao texto em vez de passar o movimento para outro elemento ou para o fundo.",
+      "camada": 4,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "explicativo",
+        "demo",
+        "dados",
+        "lyric",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "densidade",
+        "escrita"
+      ],
+      "assinatura": "text (jitter|shak|wobbl|moving)|title (moves|drift)",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/references/motion.md",
+        "https://www.remotion.dev/docs/troubleshooting/subpixel-rendering"
+      ],
+      "relatos": 0,
+      "relatos_exemplo": [],
+      "frequencia": 1,
+      "casos": 20,
+      "casos_conservador": 20
+    },
+    {
+      "id": "K-ANI-05",
+      "area": "animacao",
+      "origem": "agente",
+      "titulo": "Loop que emenda mal",
+      "erro": "O último quadro do trecho em laço não volta ao estado do primeiro, ou a trilha em laço para depois da primeira volta.",
+      "sintoma": "Pulo visível a cada volta; silêncio depois do primeiro ciclo.",
+      "causa": "Laço calculado por duração aproximada, não pelo período exato.",
+      "camada": 4,
+      "verificador": "sim",
+      "tipos": [
+        "vinheta",
+        "evento",
+        "anuncio",
+        "lyric"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "duracao",
+        "fps",
+        "bpm"
+      ],
+      "assinatura": "seamless loop|loop (not work|jump|glitch|seam|stutter|only)|looped (audio|video)|audio loop",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/issues/6183",
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/SKILL.md"
+      ],
+      "relatos": 6,
+      "relatos_exemplo": [
+        "https://github.com/remotion-dev/remotion/issues/5785",
+        "https://github.com/remotion-dev/remotion/issues/3192",
+        "https://github.com/remotion-dev/remotion/issues/2823"
+      ],
+      "frequencia": 2,
+      "casos": 60,
+      "casos_conservador": 15
+    },
+    {
+      "id": "K-ANI-06",
+      "area": "animacao",
+      "origem": "agente",
+      "titulo": "Duração de animação errada",
+      "erro": "Entradas lentas demais para o ritmo ou rápidas demais para perceber; mesma duração para distâncias muito diferentes.",
+      "sintoma": "Animação que se arrasta ou que passa sem ser vista.",
+      "causa": "Duração única copiada para tudo, sem relação com a distância e o tamanho.",
+      "camada": 4,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "explicativo",
+        "demo",
+        "dados",
+        "lyric",
+        "vinheta",
+        "slide",
+        "tutorial"
+      ],
+      "gravidade": 2,
+      "eixos": [
+        "formato",
+        "resolucao",
+        "duracao"
+      ],
+      "assinatura": "animation (is )?(too )?(slow|fast)|too (slow|fast) animation|speed of (the )?animation",
+      "fontes": [
+        "https://developer.apple.com/design/human-interface-guidelines/motion",
+        "https://en.wikipedia.org/wiki/Twelve_basic_principles_of_animation"
+      ],
+      "relatos": 0,
+      "relatos_exemplo": [],
+      "frequencia": 1,
+      "casos": 60,
+      "casos_conservador": 12
+    },
+    {
+      "id": "K-ANI-07",
+      "area": "animacao",
+      "origem": "agente",
+      "titulo": "Mola exagerada",
+      "erro": "Quique forte em tudo, inclusive em opacidade e em peças de leitura.",
+      "sintoma": "Aparência de desenho infantil num vídeo sério; texto que balança antes de ler.",
+      "causa": "Amortecimento baixo escolhido por padrão.",
+      "camada": 4,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "explicativo",
+        "demo",
+        "dados",
+        "lyric",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 2,
+      "eixos": [
+        "midia",
+        "densidade"
+      ],
+      "assinatura": "spring|bounce|overshoot",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/references/motion.md"
+      ],
+      "relatos": 14,
+      "relatos_exemplo": [
+        "https://github.com/heygen-com/hyperframes/issues/4365",
+        "https://github.com/remotion-dev/remotion/issues/11359",
+        "https://github.com/remotion-dev/remotion/issues/7209"
+      ],
+      "frequencia": 3,
+      "casos": 16,
+      "casos_conservador": 16
+    },
+    {
+      "id": "K-ANI-08",
+      "area": "animacao",
+      "origem": "agente",
+      "titulo": "Saída que para antes de sair",
+      "erro": "O elemento desliza, para e depois sai, ou some sem saída enquanto o resto anima.",
+      "sintoma": "Saída truncada; sensação de corte acidental.",
+      "causa": "Saída montada como duas animações ou esquecida.",
+      "camada": 4,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "explicativo",
+        "demo",
+        "dados",
+        "lyric",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 2,
+      "eixos": [
+        "cenas"
+      ],
+      "assinatura": "exit animation|disappear(s)? (abruptly|suddenly)",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/references/motion.md",
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/.claude/skills/motion-doctrine/SKILL.md"
+      ],
+      "relatos": 0,
+      "relatos_exemplo": [],
+      "frequencia": 1,
+      "casos": 4,
+      "casos_conservador": 4
+    },
+    {
+      "id": "K-ANI-09",
+      "area": "animacao",
+      "origem": "agente",
+      "titulo": "Velocidades que não casam na emenda",
+      "erro": "O movimento sai de uma cena numa velocidade e entra na outra em outra.",
+      "sintoma": "Tranco na passagem entre cenas.",
+      "causa": "Curvas de saída e de entrada escolhidas sem espelhar.",
+      "camada": 4,
+      "verificador": "sim",
+      "tipos": [
+        "explicativo",
+        "anuncio",
+        "vinheta",
+        "demo",
+        "slide"
+      ],
+      "gravidade": 2,
+      "eixos": [
+        "cenas",
+        "fps"
+      ],
+      "assinatura": "",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/references/motion.md",
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/.claude/skills/motion-doctrine/references/seam-gate.md"
+      ],
+      "relatos": 0,
+      "relatos_exemplo": [],
+      "frequencia": 1,
+      "casos": 12,
+      "casos_conservador": 12
+    },
+    {
+      "id": "K-ANI-10",
+      "area": "animacao",
+      "origem": "agente",
+      "titulo": "Efeito que começa depois da causa",
+      "erro": "O som, o flash ou a reação entra alguns quadros depois do evento que deveria causá-lo.",
+      "sintoma": "Impacto mole; o efeito parece atrasado.",
+      "causa": "Efeito posicionado à mão, perto do evento, em vez de no mesmo tempo.",
+      "camada": 2,
+      "verificador": "sim",
+      "tipos": [
+        "anuncio",
+        "vinheta",
+        "lyric",
+        "reel",
+        "evento"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "fps",
+        "bpm"
+      ],
+      "assinatura": "(effect|sound) (is )?(late|delayed|early)",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/.claude/skills/motion-doctrine/SKILL.md"
+      ],
+      "relatos": 0,
+      "relatos_exemplo": [],
+      "frequencia": 1,
+      "casos": 12,
+      "casos_conservador": 12
+    },
+    {
+      "id": "K-ANI-11",
+      "area": "animacao",
+      "origem": "agente",
+      "titulo": "Animação de entrada genérica",
+      "erro": "A mesma subida com esmaecimento em todo título, cartão e legenda do vídeo.",
+      "sintoma": "Vídeo com cara de modelo pronto; nada tem personalidade.",
+      "causa": "Animação padrão aplicada sem escolher pela função do elemento.",
+      "camada": 4,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "explicativo",
+        "demo",
+        "dados",
+        "lyric",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 2,
+      "eixos": [
+        "cenas",
+        "densidade"
+      ],
+      "assinatura": "fade (in|up)|same animation",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/references/motion.md",
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/media-use/audio/references/captions/motion.md"
+      ],
+      "cara_de_ia": true,
+      "no_lugar": "Variar a entrada pela função do elemento (corte para título, máscara para revelação, deslocamento para lista) e usar no máximo três a cinco tipos no filme.",
+      "assinatura_texto": "fade[- ](in|up)",
+      "relatos": 2,
+      "relatos_exemplo": [
+        "https://github.com/remotion-dev/remotion/issues/7461",
+        "https://github.com/remotion-dev/remotion/issues/9097"
+      ],
+      "frequencia": 1,
+      "casos": 16,
+      "casos_conservador": 16
+    },
+    {
+      "id": "K-DES-01",
+      "area": "design",
+      "origem": "agente",
+      "titulo": "Sem hierarquia",
+      "erro": "Título, apoio e detalhe com tamanho, peso e cor parecidos.",
+      "sintoma": "Quem assiste não sabe o que ler primeiro; tela que parece lista.",
+      "causa": "Escala tipográfica não definida.",
+      "camada": 4,
+      "verificador": "parcial",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "explicativo",
+        "demo",
+        "dados",
+        "lyric",
+        "vinheta",
+        "slide",
+        "tutorial",
+        "evento"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "densidade",
+        "formato"
+      ],
+      "assinatura": "hierarchy|visual hierarchy",
+      "fontes": [
+        "https://graphicdesign.stackexchange.com/questions/25925",
+        "https://graphicdesign.stackexchange.com/questions/102276",
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/references/review.md"
+      ],
+      "relatos": 2,
+      "relatos_exemplo": [
+        "https://github.com/heygen-com/hyperframes/issues/783",
+        "https://github.com/motion-canvas/motion-canvas/issues/848"
+      ],
+      "frequencia": 1,
+      "casos": 16,
+      "casos_conservador": 16
+    },
+    {
+      "id": "K-DES-02",
+      "area": "design",
+      "origem": "agente",
+      "titulo": "Alinhamento sem eixo",
+      "erro": "Elementos alinhados por eixos diferentes na mesma tela ou trocando de eixo entre cenas.",
+      "sintoma": "Tela torta, desarrumada; texto que pula de lugar a cada cena.",
+      "causa": "Cada elemento posicionado à mão, sem grade.",
+      "camada": 4,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "explicativo",
+        "demo",
+        "dados",
+        "lyric",
+        "vinheta",
+        "slide",
+        "tutorial"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "formato",
+        "densidade",
+        "cenas"
+      ],
+      "assinatura": "misalign(ed)?|off-?cent(er|re)|not (centered|aligned)|alignment (issue|problem|off)",
+      "fontes": [
+        "https://graphicdesign.stackexchange.com/questions/78996",
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/.claude/skills/motion-doctrine/SKILL.md"
+      ],
+      "relatos": 5,
+      "relatos_exemplo": [
+        "https://github.com/heygen-com/hyperframes/issues/3251",
+        "https://github.com/remotion-dev/remotion/issues/7004",
+        "https://github.com/remotion-dev/remotion/issues/7042"
+      ],
+      "frequencia": 2,
+      "casos": 64,
+      "casos_conservador": 16
+    },
+    {
+      "id": "K-DES-03",
+      "area": "design",
+      "origem": "agente",
+      "titulo": "Sem respiro",
+      "erro": "Texto e elementos encostados uns nos outros e nas bordas.",
+      "sintoma": "Tela apertada e cansativa; legenda colada na borda.",
+      "causa": "Margens e espaçamentos sem escala.",
+      "camada": 4,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "explicativo",
+        "demo",
+        "dados",
+        "lyric",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "formato",
+        "densidade"
+      ],
+      "assinatura": "cramped|whitespace|white space|words touch|no (padding|margin)|too (close|tight)",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/SKILL.md",
+        "https://graphicdesign.stackexchange.com/questions/2613"
+      ],
+      "relatos": 3,
+      "relatos_exemplo": [
+        "https://graphicdesign.stackexchange.com/questions/147113/white-spaces-or-widows",
+        "https://github.com/heygen-com/hyperframes/issues/3353",
+        "https://github.com/remotion-dev/remotion/issues/7489"
+      ],
+      "frequencia": 2,
+      "casos": 16,
+      "casos_conservador": 16
+    },
+    {
+      "id": "K-DES-04",
+      "area": "design",
+      "origem": "agente",
+      "titulo": "Quebra de linha ruim",
+      "erro": "Linha com uma palavra sozinha, quebra que separa artigo do nome ou número da unidade, título em escada desigual.",
+      "sintoma": "Leitura aos trancos; palavra solta que chama atenção.",
+      "causa": "Quebra automática do navegador sem regra de tipografia.",
+      "camada": 4,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "explicativo",
+        "demo",
+        "dados",
+        "lyric",
+        "vinheta",
+        "slide",
+        "apresentador",
+        "tutorial"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "escrita",
+        "densidade",
+        "formato"
+      ],
+      "assinatura": "widow|orphan|line ?break|word ?wrap|text wrap|\\brag(s|ged)?\\b",
+      "fontes": [
+        "https://graphicdesign.stackexchange.com/questions/132660",
+        "https://graphicdesign.stackexchange.com/questions/147113",
+        "https://graphicdesign.stackexchange.com/questions/13423",
+        "https://en.wikipedia.org/wiki/Widows_and_orphans",
+        "https://practicaltypography.com/summary-of-key-rules.html"
+      ],
+      "relatos": 11,
+      "relatos_exemplo": [
+        "https://stackoverflow.com/questions/62809452/why-does-ffmpeg-burn-chinese-subtitlesass-without-word-wrap",
+        "https://graphicdesign.stackexchange.com/questions/13423/what-are-the-best-practices-and-techniques-to-fix-rags",
+        "https://graphicdesign.stackexchange.com/questions/132660/are-orphans-and-widows-ever-good"
+      ],
+      "frequencia": 3,
+      "casos": 80,
+      "casos_conservador": 20
+    },
+    {
+      "id": "K-DES-05",
+      "area": "design",
+      "origem": "agente",
+      "titulo": "Kerning de título sem ajuste",
+      "erro": "Letras grandes com o espaçamento padrão, sem corrigir os pares que ficam abertos ou colados.",
+      "sintoma": "Buracos visíveis entre letras no título grande; palavra que parece partida.",
+      "causa": "Espaçamento da fonte pensado para tamanho de texto, não de título.",
+      "camada": 1,
+      "verificador": "parcial",
+      "tipos": [
+        "vinheta",
+        "anuncio",
+        "lyric",
+        "slide",
+        "evento"
+      ],
+      "gravidade": 2,
+      "eixos": [
+        "fonte",
+        "escrita"
+      ],
+      "assinatura": "kerning|letter-?spacing|tracking",
+      "fontes": [
+        "https://graphicdesign.stackexchange.com/questions/26476",
+        "https://graphicdesign.stackexchange.com/questions/25426",
+        "https://graphicdesign.stackexchange.com/questions/2606"
+      ],
+      "relatos": 22,
+      "relatos_exemplo": [
+        "https://stackoverflow.com/questions/25464162/how-can-i-automatically-embed-commit-information-into-a-subtitles-file-that-im",
+        "https://graphicdesign.stackexchange.com/questions/2606/difference-between-kerning-vs-letter-spacing",
+        "https://graphicdesign.stackexchange.com/questions/26526/my-xylophone-is-off-key-understanding-this-kerning"
+      ],
+      "frequencia": 3,
+      "casos": 20,
+      "casos_conservador": 20
+    },
+    {
+      "id": "K-DES-06",
+      "area": "design",
+      "origem": "agente",
+      "titulo": "Texto demais por tela",
+      "erro": "Parágrafos inteiros, listas longas ou legenda com muitas palavras por vez.",
+      "sintoma": "Ninguém lê a tempo; a tela parece slide de reunião.",
+      "causa": "Conteúdo do roteiro ou do site copiado para a tela.",
+      "camada": 2,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "dados",
+        "lyric",
+        "podcast",
+        "documental",
+        "evento",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 4,
+      "eixos": [
+        "densidade",
+        "fala",
+        "formato"
+      ],
+      "assinatura": "too much text|wall of text",
+      "fontes": [
+        "https://news.ycombinator.com/item?id=50099583",
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/references/types/vertical.md",
+        "https://www.bbc.co.uk/accessibility/forproducts/guides/subtitles/"
+      ],
+      "cara_de_ia": true,
+      "no_lugar": "Uma ideia por tela; o texto na tela reforça a fala em poucas palavras.",
+      "assinatura_texto": "wall of text|too much text|verbose",
+      "relatos": 6,
+      "relatos_exemplo": [
+        "https://news.ycombinator.com/item?id=49444218",
+        "https://news.ycombinator.com/item?id=48269907",
+        "https://news.ycombinator.com/item?id=46571166"
+      ],
+      "frequencia": 2,
+      "casos": 48,
+      "casos_conservador": 12
+    },
+    {
+      "id": "K-DES-07",
+      "area": "design",
+      "origem": "agente",
+      "titulo": "Texto pequeno demais para o formato",
+      "erro": "Tamanhos de site num vídeo vertical visto no celular.",
+      "sintoma": "Texto ilegível na tela pequena.",
+      "causa": "Escala de tela de computador.",
+      "camada": 4,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "podcast",
+        "tutorial",
+        "demo"
+      ],
+      "gravidade": 4,
+      "eixos": [
+        "formato",
+        "densidade",
+        "resolucao"
+      ],
+      "assinatura": "too small|readab|legib|unreadable|illegible|font sizes?",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/references/types/vertical.md",
+        "https://www.bbc.co.uk/accessibility/forproducts/guides/subtitles/"
+      ],
+      "relatos": 15,
+      "relatos_exemplo": [
+        "https://graphicdesign.stackexchange.com/questions/69591/what-is-the-optimal-contrast-ratio-for-best-readability",
+        "https://video.stackexchange.com/questions/26209/how-to-convert-scc-closed-caption-subtitles-into-human-readable-text",
+        "https://github.com/heygen-com/hyperframes/issues/6331"
+      ],
+      "frequencia": 3,
+      "casos": 48,
+      "casos_conservador": 16
+    },
+    {
+      "id": "K-DES-08",
+      "area": "design",
+      "origem": "agente",
+      "titulo": "Texto sobre o rosto",
+      "erro": "Título, legenda ou cartão em cima do rosto do apresentador.",
+      "sintoma": "O rosto some atrás do texto; texto difícil de ler sobre a pele.",
+      "causa": "Posição fixa do texto sem saber onde está o rosto.",
+      "camada": 4,
+      "verificador": "sim",
+      "tipos": [
+        "apresentador",
+        "podcast",
+        "reel",
+        "anuncio",
+        "evento",
+        "documental"
+      ],
+      "gravidade": 4,
+      "eixos": [
+        "rosto",
+        "formato",
+        "densidade"
+      ],
+      "assinatura": "covers? the (face|speaker)|over the (face|speaker)|on (the )?face",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/references/captions.md",
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/media-use/audio/references/captions/authoring.md"
+      ],
+      "relatos": 0,
+      "relatos_exemplo": [],
+      "frequencia": 1,
+      "casos": 80,
+      "casos_conservador": 20
+    },
+    {
+      "id": "K-DES-09",
+      "area": "design",
+      "origem": "agente",
+      "titulo": "Texto sobre fundo movimentado sem apoio",
+      "erro": "Texto direto sobre foto ou vídeo cheio de detalhe, sem placa, sombra ou escurecimento.",
+      "sintoma": "Letras que somem em partes da imagem; leitura muda conforme o quadro.",
+      "causa": "Contraste conferido contra a cor média, não contra o fundo real em cada quadro.",
+      "camada": 1,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "documental",
+        "evento",
+        "apresentador",
+        "lyric"
+      ],
+      "gravidade": 4,
+      "eixos": [
+        "fundo",
+        "paleta",
+        "densidade"
+      ],
+      "assinatura": "over (a )?(busy|photo|image|video)|text (on|over) (image|video)",
+      "fontes": [
+        "https://graphicdesign.stackexchange.com/questions/94955",
+        "https://graphicdesign.stackexchange.com/questions/125240",
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/references/captions.md"
+      ],
+      "relatos": 2,
+      "relatos_exemplo": [
+        "https://stackoverflow.com/questions/64025016/how-to-upload-and-overlay-animation-html-file-from-system-and-overlay-over-video",
+        "https://graphicdesign.stackexchange.com/questions/94955/how-do-i-make-objects-and-text-stand-out-over-a-busy-photo-background"
+      ],
+      "frequencia": 1,
+      "casos": 64,
+      "casos_conservador": 16
+    },
+    {
+      "id": "K-DES-10",
+      "area": "design",
+      "origem": "agente",
+      "titulo": "Peso e contraste tipográfico fracos",
+      "erro": "Título em peso leve, cinza sobre cinza, ou duas fontes parecidas demais.",
+      "sintoma": "Título sem força; parece rascunho.",
+      "causa": "Escolha de peso e par de fontes sem contraste.",
+      "camada": 1,
+      "verificador": "parcial",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "explicativo",
+        "demo",
+        "dados",
+        "lyric",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 2,
+      "eixos": [
+        "fonte",
+        "paleta"
+      ],
+      "assinatura": "font pairing|pairing|weight",
+      "fontes": [
+        "https://graphicdesign.stackexchange.com/questions/22341",
+        "https://graphicdesign.stackexchange.com/questions/107628"
+      ],
+      "relatos": 5,
+      "relatos_exemplo": [
+        "https://graphicdesign.stackexchange.com/questions/22341/help-with-font-pairing-kursivschrift",
+        "https://github.com/heygen-com/hyperframes/issues/3083",
+        "https://github.com/heygen-com/hyperframes/issues/1749"
+      ],
+      "frequencia": 2,
+      "casos": 16,
+      "casos_conservador": 16
+    },
+    {
+      "id": "K-DES-11",
+      "area": "design",
+      "origem": "agente",
+      "titulo": "Elemento redundante na tela",
+      "erro": "Repete na tela o que já está dito e mostrado, ou soma ícone, rótulo e título para a mesma coisa.",
+      "sintoma": "Tela poluída sem informação nova.",
+      "causa": "Composição por acúmulo.",
+      "camada": 4,
+      "verificador": "parcial",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "explicativo",
+        "demo",
+        "dados",
+        "lyric",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 2,
+      "eixos": [
+        "densidade"
+      ],
+      "assinatura": "redundant|clutter",
+      "fontes": [
+        "https://github.com/remotion-dev/skills/blob/HEAD/skills/remotion-create/video-layout.md"
+      ],
+      "relatos": 2,
+      "relatos_exemplo": [
+        "https://github.com/heygen-com/hyperframes/issues/3294",
+        "https://github.com/remotion-dev/remotion/issues/11606"
+      ],
+      "frequencia": 1,
+      "casos": 4,
+      "casos_conservador": 4
+    },
+    {
+      "id": "K-DES-12",
+      "area": "design",
+      "origem": "agente",
+      "titulo": "Legenda centralizada pela metade com corte na borda",
+      "erro": "A legenda é centrada deslocando metade da largura, e linhas longas saem da tela.",
+      "sintoma": "Texto cortado nas laterais em vídeos verticais.",
+      "causa": "Centralização pelo deslocamento em vez de caixa de largura total com texto centrado.",
+      "camada": 1,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "apresentador",
+        "podcast",
+        "lyric"
+      ],
+      "gravidade": 4,
+      "eixos": [
+        "formato",
+        "escrita",
+        "densidade"
+      ],
+      "assinatura": "cut off|clips at|outside the frame|off ?screen",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/references/captions.md"
+      ],
+      "relatos": 5,
+      "relatos_exemplo": [
+        "https://github.com/heygen-com/hyperframes/issues/5582",
+        "https://github.com/heygen-com/hyperframes/issues/3248",
+        "https://github.com/remotion-dev/remotion/issues/7124"
+      ],
+      "frequencia": 2,
+      "casos": 80,
+      "casos_conservador": 20
+    },
+    {
+      "id": "K-DES-13",
+      "area": "design",
+      "origem": "agente",
+      "titulo": "Descida das letras cortada pela máscara",
+      "erro": "Máscara ou caixa de revelação com altura justa corta a parte de baixo de g, j, p, q, y.",
+      "sintoma": "Letras sem a perna; acentos e cedilha somem.",
+      "causa": "Altura da máscara igual ao corpo da fonte, sem folga para descendentes e acentos.",
+      "camada": 1,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "explicativo",
+        "demo",
+        "dados",
+        "lyric",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "fonte",
+        "escrita"
+      ],
+      "assinatura": "descender|clips? (the )?(text|letters|glyphs)|text (is )?clipp",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/issues/5231",
+        "https://graphicdesign.stackexchange.com/questions/76260"
+      ],
+      "relatos": 3,
+      "relatos_exemplo": [
+        "https://github.com/remotion-dev/remotion/issues/7090",
+        "https://github.com/remotion-dev/remotion/issues/7101"
+      ],
+      "frequencia": 2,
+      "casos": 20,
+      "casos_conservador": 20
+    },
+    {
+      "id": "K-DES-14",
+      "area": "design",
+      "origem": "agente",
+      "titulo": "Texto da tela com erro ou diferente da fala",
+      "erro": "Palavra com erro de grafia, nome próprio errado ou texto da tela que não diz o mesmo que a fala.",
+      "sintoma": "Erro publicado que só sai cortando o trecho; quem assiste perde a confiança.",
+      "causa": "Texto da tela escrito à parte do roteiro e da transcrição, sem conferência entre os dois.",
+      "camada": 4,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "dados",
+        "lyric",
+        "podcast",
+        "documental",
+        "evento",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 4,
+      "eixos": [
+        "escrita",
+        "densidade"
+      ],
+      "assinatura": "",
+      "fontes": [
+        "https://www.reddit.com/r/editors/comments/1e6odc8/"
+      ],
+      "relatos": 0,
+      "relatos_exemplo": [],
+      "frequencia": 1,
+      "casos": 20,
+      "casos_conservador": 20
+    },
+    {
+      "id": "K-COR-01",
+      "area": "cor",
+      "origem": "agente",
+      "titulo": "Contraste insuficiente",
+      "erro": "Texto ou ícone com cor muito próxima do fundo.",
+      "sintoma": "Leitura difícil, ainda pior no celular ao sol e na compressão.",
+      "causa": "Cor escolhida pela estética sem medir a razão de contraste.",
+      "camada": 1,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "dados",
+        "lyric",
+        "podcast",
+        "documental",
+        "evento",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 4,
+      "eixos": [
+        "paleta",
+        "fundo",
+        "densidade"
+      ],
+      "assinatura": "contrast",
+      "fontes": [
+        "https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html",
+        "https://graphicdesign.stackexchange.com/questions/69591",
+        "https://graphicdesign.stackexchange.com/questions/119006",
+        "https://graphicdesign.stackexchange.com/questions/144002"
+      ],
+      "relatos": 17,
+      "relatos_exemplo": [
+        "https://graphicdesign.stackexchange.com/questions/81360/why-is-the-w3c-contrast-score-recommending-hard-to-read-text",
+        "https://graphicdesign.stackexchange.com/questions/41507/how-to-compensate-for-perceived-color-differences-do-to-simultaneous-contrast",
+        "https://graphicdesign.stackexchange.com/questions/69591/what-is-the-optimal-contrast-ratio-for-best-readability"
+      ],
+      "frequencia": 3,
+      "casos": 64,
+      "casos_conservador": 16
+    },
+    {
+      "id": "K-COR-02",
+      "area": "cor",
+      "origem": "agente",
+      "titulo": "Paleta fora da marca",
+      "erro": "Cores inventadas ou de modelo, em vez das cores do manual da marca.",
+      "sintoma": "Vídeo que não parece da empresa; cor de destaque diferente do site.",
+      "causa": "Paleta não declarada como restrição.",
+      "camada": 4,
+      "verificador": "sim",
+      "tipos": [
+        "anuncio",
+        "explicativo",
+        "demo",
+        "evento",
+        "vinheta",
+        "slide",
+        "dados"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "paleta",
+        "tipo"
+      ],
+      "assinatura": "brand|palette|colou?r scheme",
+      "fontes": [
+        "https://graphicdesign.stackexchange.com/questions/18454",
+        "https://graphicdesign.stackexchange.com/questions/161041",
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/themes/CONTRACT.md"
+      ],
+      "relatos": 10,
+      "relatos_exemplo": [
+        "https://graphicdesign.stackexchange.com/questions/68351/what-are-some-design-strategies-to-make-a-dull-colour-palette-feel-more-vibran",
+        "https://graphicdesign.stackexchange.com/questions/35515/creating-a-color-scheme-that-looks-good-on-screen-and-when-photocopied-in-black",
+        "https://graphicdesign.stackexchange.com/questions/18454/how-to-choose-a-color-palette-for-a-website"
+      ],
+      "frequencia": 3,
+      "casos": 28,
+      "casos_conservador": 28
+    },
+    {
+      "id": "K-COR-03",
+      "area": "cor",
+      "origem": "agente",
+      "titulo": "Banding no gradiente",
+      "erro": "Gradiente suave e escuro ou de cores próximas em 8 bits, sem ruído, depois comprimido.",
+      "sintoma": "Faixas visíveis no degradê, que pioram na plataforma.",
+      "causa": "Poucos degraus de cor no intervalo e compressão que achata.",
+      "camada": 1,
+      "verificador": "sim",
+      "tipos": [
+        "vinheta",
+        "anuncio",
+        "lyric",
+        "slide",
+        "explicativo"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "fundo",
+        "resolucao",
+        "plataforma"
+      ],
+      "assinatura": "banding|band(s)? of colou?r",
+      "fontes": [
+        "https://graphicdesign.stackexchange.com/questions/8108",
+        "https://graphicdesign.stackexchange.com/questions/16246",
+        "https://graphicdesign.stackexchange.com/questions/8426",
+        "https://en.wikipedia.org/wiki/Colour_banding",
+        "https://www.reddit.com/r/ColorGrading/comments/1wo5o23/",
+        "https://www.reddit.com/r/ColorGrading/comments/1vkz19z/",
+        "https://www.reddit.com/r/ColorGrading/comments/1iy3g8g/"
+      ],
+      "relatos": 21,
+      "relatos_exemplo": [
+        "https://graphicdesign.stackexchange.com/questions/8108/is-it-really-impossible-to-have-gradient-without-banding",
+        "https://graphicdesign.stackexchange.com/questions/8426/gradient-banding-in-chrome",
+        "https://graphicdesign.stackexchange.com/questions/35529/how-to-remove-strange-banding-from-png-export-with-radial-gradient"
+      ],
+      "frequencia": 3,
+      "casos": 48,
+      "casos_conservador": 12
+    },
+    {
+      "id": "K-COR-04",
+      "area": "cor",
+      "origem": "agente",
+      "titulo": "Cor que muda entre cenas",
+      "erro": "O mesmo elemento ou a mesma pele com cor diferente de uma cena para outra.",
+      "sintoma": "Salto de cor na emenda; marca com dois tons.",
+      "causa": "Valores escritos à mão em cada cena ou gradação diferente por trecho.",
+      "camada": 5,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "dados",
+        "lyric",
+        "podcast",
+        "documental",
+        "evento",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "paleta",
+        "cenas",
+        "midia"
+      ],
+      "assinatura": "inconsistent colou?r|colou?r (changes|jumps)|different colou?r",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/media-use/references/media-treatments.md",
+        "https://graphicdesign.stackexchange.com/questions/15494"
+      ],
+      "relatos": 2,
+      "relatos_exemplo": [
+        "https://graphicdesign.stackexchange.com/questions/94730/why-does-using-save-as-and-print-to-pdf-in-ai-give-different-color-output",
+        "https://github.com/remotion-dev/remotion/issues/8036"
+      ],
+      "frequencia": 1,
+      "casos": 64,
+      "casos_conservador": 16
+    },
+    {
+      "id": "K-COR-05",
+      "area": "cor",
+      "origem": "agente",
+      "titulo": "HDR tratado como SDR",
+      "erro": "Material HDR ou HLG processado e exportado como se fosse SDR, ou misturado sem conversão.",
+      "sintoma": "Imagem cinza e lavada, ou estourada; legenda com brilho diferente do vídeo.",
+      "causa": "Conversão de espaço de cor e transferência ignorada.",
+      "camada": 3,
+      "verificador": "sim",
+      "tipos": [
+        "documental",
+        "evento",
+        "reel",
+        "anuncio"
+      ],
+      "gravidade": 4,
+      "eixos": [
+        "midia",
+        "plataforma"
+      ],
+      "assinatura": "\\bhdr\\b|\\bhlg\\b|\\bpq\\b|tone ?map",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/media-use/references/media-treatments.md",
+        "https://github.com/heygen-com/hyperframes/issues/5102",
+        "https://trac.ffmpeg.org/wiki/colorspace"
+      ],
+      "relatos": 9,
+      "relatos_exemplo": [
+        "https://github.com/heygen-com/hyperframes/issues/6556",
+        "https://github.com/heygen-com/hyperframes/issues/5554",
+        "https://github.com/heygen-com/hyperframes/issues/5005"
+      ],
+      "frequencia": 2,
+      "casos": 16,
+      "casos_conservador": 16
+    },
+    {
+      "id": "K-COR-06",
+      "area": "cor",
+      "origem": "agente",
+      "titulo": "Efeito de cor quando a queixa era outra",
+      "erro": "Pedem ajuste de tempo ou de brilho e o agente aplica filtro estilizado ou muda toda a cor.",
+      "sintoma": "Vídeo com cara diferente da aprovada; problema original continua.",
+      "causa": "Correção escolhida pelo efeito, não pela queixa.",
+      "camada": 5,
+      "verificador": "parcial",
+      "tipos": [
+        "documental",
+        "evento",
+        "apresentador",
+        "reel"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "midia",
+        "paleta"
+      ],
+      "assinatura": "",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/media-use/references/media-treatments.md"
+      ],
+      "relatos": 0,
+      "relatos_exemplo": [],
+      "frequencia": 1,
+      "casos": 16,
+      "casos_conservador": 16
+    },
+    {
+      "id": "K-AUD-01",
+      "area": "audio",
+      "origem": "agente",
+      "titulo": "Trilha cobrindo a voz",
+      "erro": "Música no mesmo nível durante a fala, sem abaixar quando alguém fala.",
+      "sintoma": "Voz difícil de entender; legenda vira obrigação.",
+      "causa": "Sem redução da trilha nos trechos de fala.",
+      "camada": 2,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "podcast",
+        "documental",
+        "evento",
+        "lyric"
+      ],
+      "gravidade": 4,
+      "eixos": [
+        "trilha",
+        "fala",
+        "bpm"
+      ],
+      "assinatura": "music (too )?loud|background music|duck(ing)?|voice (drowned|hard to hear)",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/media-use/references/mixing.md"
+      ],
+      "relatos": 3,
+      "relatos_exemplo": [
+        "https://stackoverflow.com/questions/76954137/how-to-i-add-a-background-music-to-a-video-in-react-native",
+        "https://stackoverflow.com/questions/41013454/ffmpeg-how-to-concat-audio-files-and-add-background-music-in-a-single-command",
+        "https://github.com/remotion-dev/remotion/issues/3102"
+      ],
+      "frequencia": 2,
+      "casos": 36,
+      "casos_conservador": 9
+    },
+    {
+      "id": "K-AUD-02",
+      "area": "audio",
+      "origem": "agente",
+      "titulo": "Loudness fora do alvo",
+      "erro": "Volume integrado longe do alvo da plataforma (muito baixo ou estourando).",
+      "sintoma": "Vídeo bem mais baixo que os vizinhos no feed, ou distorcido; a plataforma normaliza e esmaga.",
+      "causa": "Mixagem sem medir a sonoridade integrada.",
+      "camada": 3,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "dados",
+        "lyric",
+        "podcast",
+        "documental",
+        "evento",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "plataforma",
+        "trilha"
+      ],
+      "assinatura": "\\blufs\\b|loudness|too quiet|volume (low|too)|normaliz",
+      "fontes": [
+        "https://en.wikipedia.org/wiki/EBU_R_128",
+        "https://video.stackexchange.com/questions/20504",
+        "https://video.stackexchange.com/questions/30572",
+        "https://support.google.com/youtube/answer/1722171"
+      ],
+      "relatos": 5,
+      "relatos_exemplo": [
+        "https://video.stackexchange.com/questions/30572/normalizing-audio-output-loudness-lkfs-lufs-in-davinci-resolve-16",
+        "https://video.stackexchange.com/questions/20504/loudness-control-lufs-level-adjustments",
+        "https://video.stackexchange.com/questions/17702/app-to-quickly-analyze-audio-loudness-of-several-video-files"
+      ],
+      "frequencia": 2,
+      "casos": 12,
+      "casos_conservador": 12
+    },
+    {
+      "id": "K-AUD-03",
+      "area": "audio",
+      "origem": "agente",
+      "titulo": "Clipping e distorção",
+      "erro": "Somar faixas sem reserva de nível, ou aumentar ganho de grupo depois do volume.",
+      "sintoma": "Estalos e chiado nos picos.",
+      "causa": "Ganho aplicado na ordem errada e sem limitador.",
+      "camada": 3,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "podcast",
+        "documental",
+        "evento",
+        "lyric",
+        "vinheta"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "trilha",
+        "fala"
+      ],
+      "assinatura": "audio clipping|clipping audio|distort(ed|ion)|crackl|boosted",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/issues/6609"
+      ],
+      "relatos": 6,
+      "relatos_exemplo": [
+        "https://graphicdesign.stackexchange.com/questions/66752/how-to-create-distorted-gradient-banding",
+        "https://github.com/remotion-dev/remotion/issues/10468",
+        "https://github.com/remotion-dev/remotion/issues/12015"
+      ],
+      "frequencia": 2,
+      "casos": 9,
+      "casos_conservador": 9
+    },
+    {
+      "id": "K-AUD-04",
+      "area": "audio",
+      "origem": "agente",
+      "titulo": "Som que entra ou sai sem fade",
+      "erro": "Trilha ou efeito que começa ou termina no corte seco.",
+      "sintoma": "Clique no início e no fim; música interrompida.",
+      "causa": "Sem rampa de volume nos limites.",
+      "camada": 3,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "podcast",
+        "documental",
+        "evento",
+        "lyric",
+        "vinheta"
+      ],
+      "gravidade": 2,
+      "eixos": [
+        "trilha",
+        "cenas"
+      ],
+      "assinatura": "fade (in|out)|abrupt(ly)?",
+      "fontes": [
+        "https://stackoverflow.com/questions/37200534",
+        "https://github.com/remotion-dev/skills/blob/HEAD/skills/remotion-markup/audio.md"
+      ],
+      "relatos": 3,
+      "relatos_exemplo": [
+        "https://github.com/remotion-dev/remotion/issues/7461",
+        "https://github.com/remotion-dev/remotion/issues/9097",
+        "https://github.com/remotion-dev/remotion/issues/930"
+      ],
+      "frequencia": 2,
+      "casos": 12,
+      "casos_conservador": 12
+    },
+    {
+      "id": "K-AUD-05",
+      "area": "audio",
+      "origem": "agente",
+      "titulo": "Som encurtado para caber",
+      "erro": "O efeito ou a trilha é cortado ou acelerado para caber no espaço em vez de ganhar faixa própria.",
+      "sintoma": "Efeito pela metade, trilha acelerada com voz de esquilo.",
+      "causa": "Faixa única para tudo.",
+      "camada": 2,
+      "verificador": "parcial",
+      "tipos": [
+        "anuncio",
+        "vinheta",
+        "evento",
+        "reel"
+      ],
+      "gravidade": 2,
+      "eixos": [
+        "trilha",
+        "duracao"
+      ],
+      "assinatura": "playbackRate|speed up audio|tempo",
+      "fontes": [
+        "https://github.com/remotion-dev/skills/blob/HEAD/skills/remotion-markup/video-editing.md",
+        "https://stackoverflow.com/questions/35213770"
+      ],
+      "relatos": 19,
+      "relatos_exemplo": [
+        "https://stackoverflow.com/questions/35213770/audio-going-out-of-sync-when-using-setpts-and-tempo-in-ffmpeg",
+        "https://github.com/remotion-dev/remotion/issues/12577",
+        "https://github.com/remotion-dev/remotion/issues/5564"
+      ],
+      "frequencia": 3,
+      "casos": 15,
+      "casos_conservador": 15
+    },
+    {
+      "id": "K-AUD-06",
+      "area": "audio",
+      "origem": "agente",
+      "titulo": "Transcrição ruim usada sem ler",
+      "erro": "A transcrição sai com palavras sem sentido ou só marcas de música e mesmo assim vira legenda e corte.",
+      "sintoma": "Legendas absurdas, cortes no lugar errado.",
+      "causa": "Ninguém conferiu a transcrição antes de usar.",
+      "camada": 2,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "podcast",
+        "documental",
+        "evento",
+        "lyric"
+      ],
+      "gravidade": 4,
+      "eixos": [
+        "fala",
+        "escrita",
+        "trilha"
+      ],
+      "assinatura": "transcri(pt|ption)s? (wrong|bad|garbage|quality|incorrect)|hallucinat|whisper (wrong|hallucin|accuracy)",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/media-use/audio/references/captions/transcript-handling.md"
+      ],
+      "relatos": 0,
+      "relatos_exemplo": [],
+      "frequencia": 1,
+      "casos": 45,
+      "casos_conservador": 15
+    },
+    {
+      "id": "K-AUD-07",
+      "area": "audio",
+      "origem": "agente",
+      "titulo": "Velocidade da voz ignorada",
+      "erro": "Pede voz sintética mais rápida ou lenta e o tempo das cenas segue o da voz normal.",
+      "sintoma": "Cenas que acabam antes ou depois da fala.",
+      "causa": "Velocidade aplicada em um lugar e não no outro.",
+      "camada": 2,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "podcast",
+        "documental",
+        "evento"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "fala",
+        "duracao"
+      ],
+      "assinatura": "(voice|tts|speech) speed|speaking rate|tts (speed|rate)|ignores speed",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/issues/4927",
+        "https://github.com/remotion-dev/skills/blob/HEAD/skills/remotion-markup/voiceover.md"
+      ],
+      "relatos": 2,
+      "relatos_exemplo": [
+        "https://github.com/heygen-com/hyperframes/issues/4926"
+      ],
+      "frequencia": 1,
+      "casos": 15,
+      "casos_conservador": 15
+    },
+    {
+      "id": "K-ACE-01",
+      "area": "acessibilidade",
+      "origem": "agente",
+      "titulo": "Piscada acima do limite",
+      "erro": "Flashes, cortes rápidos de claro para escuro ou listras que alternam mais de três vezes por segundo em área grande.",
+      "sintoma": "Desconforto e risco de crise em pessoas fotossensíveis; a plataforma pode recusar.",
+      "causa": "Efeitos de impacto e estroboscópio sem medir frequência e área.",
+      "camada": 4,
+      "verificador": "sim",
+      "tipos": [
+        "anuncio",
+        "vinheta",
+        "lyric",
+        "evento",
+        "reel"
+      ],
+      "gravidade": 5,
+      "eixos": [
+        "bpm",
+        "fps",
+        "paleta"
+      ],
+      "assinatura": "strob|seizure|epilep|photosensitiv|(black|white|blank) flash|flash(es)? (blank|black|white)",
+      "fontes": [
+        "https://www.w3.org/WAI/WCAG22/Understanding/three-flashes-or-below-threshold.html"
+      ],
+      "relatos": 2,
+      "relatos_exemplo": [
+        "https://github.com/heygen-com/hyperframes/issues/1731",
+        "https://github.com/remotion-dev/remotion/issues/5912"
+      ],
+      "frequencia": 1,
+      "casos": 48,
+      "casos_conservador": 12
+    },
+    {
+      "id": "K-ACE-02",
+      "area": "acessibilidade",
+      "origem": "agente",
+      "titulo": "Vídeo falado sem legenda",
+      "erro": "Vídeo com fala sem legenda, ou legenda que cobre só parte da fala.",
+      "sintoma": "Quem assiste sem som ou não ouve perde o conteúdo.",
+      "causa": "Legenda tratada como enfeite opcional.",
+      "camada": 2,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "podcast",
+        "documental",
+        "evento"
+      ],
+      "gravidade": 4,
+      "eixos": [
+        "fala",
+        "escrita",
+        "plataforma"
+      ],
+      "assinatura": "(no|missing|without) (captions|subtitles)",
+      "fontes": [
+        "https://www.w3.org/WAI/WCAG22/Understanding/captions-prerecorded.html",
+        "https://www.bbc.co.uk/accessibility/forproducts/guides/subtitles/"
+      ],
+      "relatos": 0,
+      "relatos_exemplo": [],
+      "frequencia": 1,
+      "casos": 60,
+      "casos_conservador": 15
+    },
+    {
+      "id": "K-ACE-03",
+      "area": "acessibilidade",
+      "origem": "agente",
+      "titulo": "Legenda rápida demais para ler",
+      "erro": "Muitas palavras por segundo, blocos que trocam antes de dar tempo, linhas longas.",
+      "sintoma": "Ninguém acompanha; a legenda vira ruído.",
+      "causa": "Legenda gerada palavra por palavra ou em blocos sem limite de leitura.",
+      "camada": 2,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "podcast",
+        "documental",
+        "evento",
+        "lyric"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "fala",
+        "escrita",
+        "legenda"
+      ],
+      "assinatura": "reading speed|too fast to read|caption(s)? (too fast|speed)|characters per (second|line)",
+      "fontes": [
+        "https://www.bbc.co.uk/accessibility/forproducts/guides/subtitles/",
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/references/captions.md"
+      ],
+      "relatos": 0,
+      "relatos_exemplo": [],
+      "frequencia": 1,
+      "casos": 45,
+      "casos_conservador": 15
+    },
+    {
+      "id": "K-ACE-04",
+      "area": "acessibilidade",
+      "origem": "agente",
+      "titulo": "Movimento forte que causa enjoo",
+      "erro": "Zoom rápido, parallax grande ou giro de câmera em tela cheia por muito tempo.",
+      "sintoma": "Enjoo e desconforto; quem tem sensibilidade abandona.",
+      "causa": "Movimento de câmera usado como impacto contínuo.",
+      "camada": 4,
+      "verificador": "parcial",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "vinheta",
+        "evento",
+        "demo"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "formato",
+        "duracao"
+      ],
+      "assinatura": "motion sickness|nausea|parallax|vestibular",
+      "fontes": [
+        "https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions.html",
+        "https://developer.apple.com/design/human-interface-guidelines/motion"
+      ],
+      "relatos": 0,
+      "relatos_exemplo": [],
+      "frequencia": 1,
+      "casos": 20,
+      "casos_conservador": 20
+    },
+    {
+      "id": "K-ACE-05",
+      "area": "acessibilidade",
+      "origem": "agente",
+      "titulo": "Cor como único sinal",
+      "erro": "Diferença entre itens só por cor (vermelho e verde) em gráfico ou destaque.",
+      "sintoma": "Quem não distingue as cores não entende o gráfico ou o destaque.",
+      "causa": "Legenda e forma não acompanham a cor.",
+      "camada": 1,
+      "verificador": "sim",
+      "tipos": [
+        "dados",
+        "explicativo",
+        "slide",
+        "tutorial"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "paleta",
+        "densidade"
+      ],
+      "assinatura": "colou?r ?blind|red.?green",
+      "fontes": [
+        "https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html"
+      ],
+      "relatos": 0,
+      "relatos_exemplo": [],
+      "frequencia": 1,
+      "casos": 16,
+      "casos_conservador": 16
+    },
+    {
+      "id": "K-PLA-01",
+      "area": "plataforma",
+      "origem": "agente",
+      "titulo": "Fora da zona segura",
+      "erro": "Texto, legenda ou logotipo na faixa que a interface da plataforma cobre (botões à direita, descrição embaixo, cabeçalho em cima).",
+      "sintoma": "Legenda escondida atrás dos botões do Reels, TikTok ou Shorts.",
+      "causa": "Composição pensada para o quadro inteiro.",
+      "camada": 4,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "podcast",
+        "lyric",
+        "demo"
+      ],
+      "gravidade": 4,
+      "eixos": [
+        "plataforma",
+        "formato",
+        "densidade"
+      ],
+      "assinatura": "safe ?(zone|area)|title safe|action safe|ui overlay",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/SKILL.md",
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/references/captions.md",
+        "https://support.google.com/youtube/answer/1722171"
+      ],
+      "relatos": 0,
+      "relatos_exemplo": [],
+      "frequencia": 2,
+      "casos": 64,
+      "casos_conservador": 16
+    },
+    {
+      "id": "K-PLA-02",
+      "area": "plataforma",
+      "origem": "agente",
+      "titulo": "Formato reaproveitado sem reenquadrar",
+      "erro": "Vídeo horizontal posto no vertical com faixas, ou corte central automático que tira o assunto do quadro.",
+      "sintoma": "Tarjas pretas ou desfocadas; rosto cortado.",
+      "causa": "Mesma composição exportada para formatos diferentes.",
+      "camada": 4,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "dados",
+        "lyric",
+        "podcast",
+        "documental",
+        "evento",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 4,
+      "eixos": [
+        "formato",
+        "rosto"
+      ],
+      "assinatura": "letterbox|reframe|crop(ped)? (the )?face|aspect",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/references/types/vertical.md",
+        "https://github.com/heygen-com/hyperframes/issues/5230"
+      ],
+      "relatos": 10,
+      "relatos_exemplo": [
+        "https://stackoverflow.com/questions/35597083/how-to-build-ffmpeg-with-burn-text-on-hls-output-while-maintaining-the-aspect-ra",
+        "https://github.com/heygen-com/hyperframes/issues/3612",
+        "https://github.com/heygen-com/hyperframes/issues/2455"
+      ],
+      "frequencia": 3,
+      "casos": 20,
+      "casos_conservador": 20
+    },
+    {
+      "id": "K-PLA-03",
+      "area": "plataforma",
+      "origem": "agente",
+      "titulo": "Codificação recusada ou recomprimida",
+      "erro": "Taxa de bits, perfil, quadros por segundo ou contêiner fora do que a plataforma aceita.",
+      "sintoma": "Vídeo recomprimido com blocos, áudio fora, envio recusado.",
+      "causa": "Saída escolhida sem o perfil da plataforma.",
+      "camada": 3,
+      "verificador": "sim",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "dados",
+        "lyric",
+        "podcast",
+        "documental",
+        "evento",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "plataforma",
+        "resolucao",
+        "fps"
+      ],
+      "assinatura": "upload|instagram|tiktok|youtube|bitrate|re-?encod",
+      "fontes": [
+        "https://support.google.com/youtube/answer/1722171"
+      ],
+      "relatos": 35,
+      "relatos_exemplo": [
+        "https://stackoverflow.com/questions/78750762/how-to-programmatically-click-play-button-in-youtube-via-puppeteer",
+        "https://stackoverflow.com/questions/73669425/i-want-to-auto-generate-video-subtitle-using-npm-package-ffmpeg-fluent-in-node-j",
+        "https://stackoverflow.com/questions/68567486/sharedarraybuffer-error-in-edge-and-firefox-but-not-in-chrome-when-uploading-wit"
+      ],
+      "frequencia": 4,
+      "casos": 36,
+      "casos_conservador": 12
+    },
+    {
+      "id": "K-IA-01",
+      "area": "cara-de-ia",
+      "origem": "agente",
+      "titulo": "Gradiente roxo e azul genérico",
+      "erro": "Fundo ou destaque em degradê de roxo para azul ou violeta, sem relação com a marca.",
+      "sintoma": "Vídeo com a cara de mil páginas geradas; ninguém lembra de quem é.",
+      "causa": "É a combinação mais comum nos modelos de interface que treinaram os geradores.",
+      "camada": 4,
+      "verificador": "parcial",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "explicativo",
+        "demo",
+        "dados",
+        "lyric",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 2,
+      "eixos": [
+        "paleta",
+        "tipo"
+      ],
+      "assinatura": "",
+      "fontes": [
+        "https://news.ycombinator.com/item?id=48507540",
+        "https://news.ycombinator.com/item?id=47865416",
+        "https://news.ycombinator.com/item?id=45895818"
+      ],
+      "cara_de_ia": true,
+      "no_lugar": "Partir da paleta da marca; se não houver, uma cor dominante, um acento e neutros escolhidos pelo assunto.",
+      "assinatura_texto": "purple|violet|indigo|gradient",
+      "relatos": 38,
+      "relatos_exemplo": [
+        "https://news.ycombinator.com/item?id=42048704",
+        "https://news.ycombinator.com/item?id=49700993",
+        "https://news.ycombinator.com/item?id=49512342"
+      ],
+      "frequencia": 4,
+      "casos": 32,
+      "casos_conservador": 32
+    },
+    {
+      "id": "K-IA-02",
+      "area": "cara-de-ia",
+      "origem": "agente",
+      "titulo": "Tudo centralizado",
+      "erro": "Todo título, texto e bloco centrado no meio da tela, cena após cena.",
+      "sintoma": "Composição estática e previsível; nenhuma tela guia o olhar.",
+      "causa": "Centralizar é a saída que nunca erra muito, e vira padrão.",
+      "camada": 4,
+      "verificador": "parcial",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "explicativo",
+        "demo",
+        "dados",
+        "lyric",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 2,
+      "eixos": [
+        "formato",
+        "densidade"
+      ],
+      "assinatura": "",
+      "fontes": [
+        "https://news.ycombinator.com/item?id=47865416",
+        "https://news.ycombinator.com/item?id=46957514"
+      ],
+      "cara_de_ia": true,
+      "no_lugar": "Alinhar por um eixo lateral com grade, e centrar só o que pede (uma palavra de impacto).",
+      "assinatura_texto": "center(ed)? (hero|everything|layout|text)|everything (is )?cent(e|r)",
+      "relatos": 2,
+      "relatos_exemplo": [],
+      "frequencia": 1,
+      "casos": 16,
+      "casos_conservador": 16
+    },
+    {
+      "id": "K-IA-03",
+      "area": "cara-de-ia",
+      "origem": "agente",
+      "titulo": "Layout de site no vídeo",
+      "erro": "Cartões com cantos arredondados, botões, seções de herói, grade de ícones e faixa de números, como numa página de produto.",
+      "sintoma": "O vídeo parece uma página rolando, não um filme.",
+      "causa": "O agente sabe fazer páginas e leva o vocabulário de site para o quadro.",
+      "camada": 4,
+      "verificador": "parcial",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "explicativo",
+        "demo",
+        "dados",
+        "lyric",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "formato",
+        "densidade",
+        "tipo"
+      ],
+      "assinatura": "",
+      "fontes": [
+        "https://news.ycombinator.com/item?id=49715737",
+        "https://news.ycombinator.com/item?id=50014484",
+        "https://news.ycombinator.com/item?id=47865416",
+        "https://news.ycombinator.com/item?id=49330562"
+      ],
+      "cara_de_ia": true,
+      "no_lugar": "Pensar em plano e cena: um assunto por quadro, tipografia grande, imagem e movimento no lugar de cartões.",
+      "assinatura_texto": "shadcn|tailwind ?ui|bento|hero section|landing page template|cards? grid|rounded (corners?|cards?)",
+      "relatos": 14,
+      "relatos_exemplo": [
+        "https://news.ycombinator.com/item?id=48279968",
+        "https://news.ycombinator.com/item?id=46971022",
+        "https://news.ycombinator.com/item?id=49958875"
+      ],
+      "frequencia": 3,
+      "casos": 128,
+      "casos_conservador": 16
+    },
+    {
+      "id": "K-IA-04",
+      "area": "cara-de-ia",
+      "origem": "agente",
+      "titulo": "Fonte segura de sempre",
+      "erro": "Sempre a mesma sans geométrica popular, em todos os pesos, para tudo.",
+      "sintoma": "Tipografia sem voz; igual a qualquer outro vídeo gerado.",
+      "causa": "Fonte padrão dos modelos de interface e das bibliotecas de componentes.",
+      "camada": 4,
+      "verificador": "parcial",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "explicativo",
+        "demo",
+        "dados",
+        "lyric",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 2,
+      "eixos": [
+        "fonte",
+        "escrita"
+      ],
+      "assinatura": "",
+      "fontes": [
+        "https://news.ycombinator.com/item?id=49330562",
+        "https://news.ycombinator.com/item?id=48508171",
+        "https://news.ycombinator.com/item?id=48549181"
+      ],
+      "cara_de_ia": true,
+      "no_lugar": "Escolher a fonte pela marca e pelo tom; um par com contraste (título com caráter, texto neutro).",
+      "assinatura_texto": "\\binter\\b (font|typeface)|\\bpoppins\\b|montserrat|same font|system font",
+      "relatos": 7,
+      "relatos_exemplo": [
+        "https://news.ycombinator.com/item?id=47807706",
+        "https://news.ycombinator.com/item?id=47051624",
+        "https://news.ycombinator.com/item?id=47050348"
+      ],
+      "frequencia": 2,
+      "casos": 20,
+      "casos_conservador": 20
+    },
+    {
+      "id": "K-IA-05",
+      "area": "cara-de-ia",
+      "origem": "agente",
+      "titulo": "Brilho e vidro à toa",
+      "erro": "Brilho neon, halo, vidro fosco e desfoque de fundo em cartões sem função.",
+      "sintoma": "Aparência de tema de painel; efeito pesado que atrapalha a leitura e o render.",
+      "causa": "Efeitos da moda tratados como acabamento padrão.",
+      "camada": 4,
+      "verificador": "parcial",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "explicativo",
+        "demo",
+        "dados",
+        "lyric",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 2,
+      "eixos": [
+        "fundo",
+        "paleta"
+      ],
+      "assinatura": "",
+      "fontes": [
+        "https://news.ycombinator.com/item?id=49313277",
+        "https://news.ycombinator.com/item?id=45963579",
+        "https://news.ycombinator.com/item?id=46872388"
+      ],
+      "cara_de_ia": true,
+      "no_lugar": "Usar profundidade só quando separa planos de verdade; preferir contraste, escala e cor chapada.",
+      "assinatura_texto": "\\bglow(y|ing)?\\b|neon|sparkle|glassmorphism|frosted|liquid glass",
+      "relatos": 6,
+      "relatos_exemplo": [
+        "https://news.ycombinator.com/item?id=47071286",
+        "https://news.ycombinator.com/item?id=42048704",
+        "https://news.ycombinator.com/item?id=49117565"
+      ],
+      "frequencia": 2,
+      "casos": 16,
+      "casos_conservador": 16
+    },
+    {
+      "id": "K-IA-06",
+      "area": "cara-de-ia",
+      "origem": "agente",
+      "titulo": "Emoji como ícone",
+      "erro": "Emoji no lugar de ícone ou de ilustração em títulos e listas.",
+      "sintoma": "Aparência informal e repetida; emoji muda de desenho conforme o sistema.",
+      "causa": "Atalho fácil de imagem no texto.",
+      "camada": 4,
+      "verificador": "parcial",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "explicativo",
+        "demo",
+        "dados",
+        "lyric",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 2,
+      "eixos": [
+        "escrita",
+        "densidade"
+      ],
+      "assinatura": "",
+      "fontes": [
+        "https://news.ycombinator.com/item?id=44780249",
+        "https://news.ycombinator.com/item?id=48549181",
+        "https://news.ycombinator.com/item?id=45872833"
+      ],
+      "cara_de_ia": true,
+      "no_lugar": "Ícone desenhado no estilo da marca, ou nenhum: a palavra e a imagem bastam.",
+      "assinatura_texto": "emoji",
+      "relatos": 5,
+      "relatos_exemplo": [
+        "https://news.ycombinator.com/item?id=47059439",
+        "https://news.ycombinator.com/item?id=46428595"
+      ],
+      "frequencia": 2,
+      "casos": 20,
+      "casos_conservador": 20
+    },
+    {
+      "id": "K-IA-07",
+      "area": "cara-de-ia",
+      "origem": "agente",
+      "titulo": "Caixa alta espaçada em todo rótulo",
+      "erro": "Rótulos pequenos em caixa alta com espaçamento largo acima de cada título.",
+      "sintoma": "Tela com cara de modelo; o rótulo compete com o título.",
+      "causa": "Padrão de seções de página de produto.",
+      "camada": 4,
+      "verificador": "parcial",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "explicativo",
+        "demo",
+        "dados",
+        "lyric",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 1,
+      "eixos": [
+        "fonte",
+        "densidade"
+      ],
+      "assinatura": "",
+      "fontes": [
+        "https://news.ycombinator.com/item?id=48549181",
+        "https://news.ycombinator.com/item?id=47865416",
+        "https://news.ycombinator.com/item?id=45165897"
+      ],
+      "cara_de_ia": true,
+      "no_lugar": "Rótulo só quando informa algo; senão, o título sozinho com boa hierarquia.",
+      "assinatura_texto": "all[- ]caps|uppercase heading|letter-spacing",
+      "relatos": 2,
+      "relatos_exemplo": [],
+      "frequencia": 1,
+      "casos": 16,
+      "casos_conservador": 16
+    },
+    {
+      "id": "K-IA-08",
+      "area": "cara-de-ia",
+      "origem": "agente",
+      "titulo": "Tema escuro com acento vibrante por padrão",
+      "erro": "Fundo quase preto com um roxo, verde ou ciano saturado, qualquer que seja o assunto.",
+      "sintoma": "Todos os vídeos parecem de tecnologia, mesmo os de padaria.",
+      "causa": "Estética de ferramenta de programador virou padrão.",
+      "camada": 4,
+      "verificador": "parcial",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "explicativo",
+        "demo",
+        "dados",
+        "lyric",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 2,
+      "eixos": [
+        "paleta",
+        "tipo"
+      ],
+      "assinatura": "",
+      "fontes": [
+        "https://news.ycombinator.com/item?id=48507540",
+        "https://news.ycombinator.com/item?id=46262540",
+        "https://news.ycombinator.com/item?id=50202197"
+      ],
+      "cara_de_ia": true,
+      "no_lugar": "Escolher claro ou escuro pelo assunto e pela marca.",
+      "assinatura_texto": "dark (mode|theme)",
+      "relatos": 10,
+      "relatos_exemplo": [
+        "https://news.ycombinator.com/item?id=42048704",
+        "https://news.ycombinator.com/item?id=47483372",
+        "https://news.ycombinator.com/item?id=47807706"
+      ],
+      "frequencia": 3,
+      "casos": 32,
+      "casos_conservador": 32
+    },
+    {
+      "id": "K-IA-09",
+      "area": "cara-de-ia",
+      "origem": "agente",
+      "titulo": "Mesmice",
+      "erro": "O vídeo segue a mesma estrutura, os mesmos efeitos e a mesma composição de qualquer outro gerado.",
+      "sintoma": "Quem assiste reconhece na hora como feito por máquina e desconfia do conteúdo.",
+      "causa": "O agente escolhe o caminho mais provável em cada decisão.",
+      "camada": 4,
+      "verificador": "parcial",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "dados",
+        "lyric",
+        "podcast",
+        "documental",
+        "evento",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "tipo",
+        "paleta",
+        "fonte"
+      ],
+      "assinatura": "",
+      "fontes": [
+        "https://news.ycombinator.com/item?id=48269907",
+        "https://news.ycombinator.com/item?id=50046561",
+        "https://news.ycombinator.com/item?id=49006872",
+        "https://www.reddit.com/r/web_design/comments/1q73fox/",
+        "https://www.reddit.com/r/web_design/comments/1w2308l/",
+        "https://www.reddit.com/r/Design/comments/1sy5cgc/"
+      ],
+      "cara_de_ia": true,
+      "no_lugar": "Decisões declaradas pelo responsável (referência, marca, tom) como restrição da cena, e conferência contra a lista destes sinais.",
+      "assinatura_texto": "all look the same|same look|cookie[- ]cutter|samey|homogen",
+      "relatos": 15,
+      "relatos_exemplo": [
+        "https://news.ycombinator.com/item?id=48838010",
+        "https://news.ycombinator.com/item?id=50257195",
+        "https://news.ycombinator.com/item?id=49643876"
+      ],
+      "frequencia": 3,
+      "casos": 208,
+      "casos_conservador": 52
+    },
+    {
+      "id": "K-IA-10",
+      "area": "cara-de-ia",
+      "origem": "agente",
+      "titulo": "Assinatura empilhada no fim",
+      "erro": "Logotipo, slogan, site, redes e chamada empilhados e centralizados na última tela, todos do mesmo tamanho.",
+      "sintoma": "Fim poluído; nada se destaca, nada se lê a tempo.",
+      "causa": "Tudo que o cliente mandou entra na tela final sem escolher.",
+      "camada": 4,
+      "verificador": "parcial",
+      "tipos": [
+        "anuncio",
+        "explicativo",
+        "demo",
+        "evento",
+        "vinheta",
+        "reel"
+      ],
+      "gravidade": 2,
+      "eixos": [
+        "densidade",
+        "formato"
+      ],
+      "assinatura": "",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/hyperframes/references/types/vertical.md",
+        "https://news.ycombinator.com/item?id=47865416"
+      ],
+      "cara_de_ia": true,
+      "no_lugar": "Uma ação e a marca; o resto vai para a descrição do post.",
+      "relatos": 0,
+      "relatos_exemplo": [],
+      "frequencia": 1,
+      "casos": 16,
+      "casos_conservador": 16
+    },
+    {
+      "id": "K-IA-11",
+      "area": "cara-de-ia",
+      "origem": "agente",
+      "titulo": "Faixa de números e contadores sem dado",
+      "erro": "Números grandes animados contando (mais de mil clientes, 99 por cento) sem fonte nem contexto.",
+      "sintoma": "Parece propaganda genérica; quem assiste não acredita.",
+      "causa": "Padrão de página de produto replicado.",
+      "camada": 4,
+      "verificador": "parcial",
+      "tipos": [
+        "anuncio",
+        "explicativo",
+        "demo",
+        "dados",
+        "evento"
+      ],
+      "gravidade": 3,
+      "eixos": [
+        "densidade",
+        "tipo"
+      ],
+      "assinatura": "",
+      "fontes": [
+        "https://news.ycombinator.com/item?id=47865416"
+      ],
+      "cara_de_ia": true,
+      "no_lugar": "Mostrar um número só se ele for real, com a origem, e no tempo em que é dito.",
+      "assinatura_texto": "stats? banner|big numbers|fake (stats|numbers|testimonials)",
+      "relatos": 1,
+      "relatos_exemplo": [],
+      "frequencia": 1,
+      "casos": 20,
+      "casos_conservador": 20
+    },
+    {
+      "id": "K-IA-12",
+      "area": "cara-de-ia",
+      "origem": "agente",
+      "titulo": "Destaque colorido em toda frase",
+      "erro": "Uma palavra colorida ou sublinhada em cada linha de legenda ou título.",
+      "sintoma": "Destaque perde o sentido; a tela fica carnavalesca.",
+      "causa": "Ênfase aplicada por regra, não pelo sentido da fala.",
+      "camada": 4,
+      "verificador": "parcial",
+      "tipos": [
+        "reel",
+        "apresentador",
+        "podcast",
+        "anuncio",
+        "lyric"
+      ],
+      "gravidade": 2,
+      "eixos": [
+        "fala",
+        "densidade",
+        "legenda"
+      ],
+      "assinatura": "",
+      "fontes": [
+        "https://github.com/heygen-com/hyperframes/blob/HEAD/skills/media-use/audio/references/captions/motion.md",
+        "https://news.ycombinator.com/item?id=48748541"
+      ],
+      "cara_de_ia": true,
+      "no_lugar": "Destacar só a palavra que a fala enfatiza, poucas vezes no vídeo, e variar o jeito do destaque.",
+      "assinatura_texto": "left[- ]border|highlight(ed)? (word|every)",
+      "relatos": 1,
+      "relatos_exemplo": [],
+      "frequencia": 1,
+      "casos": 36,
+      "casos_conservador": 12
+    },
+    {
+      "id": "K-IA-13",
+      "area": "cara-de-ia",
+      "origem": "agente",
+      "titulo": "Texto com estrutura de máquina",
+      "erro": "Frases da tela no molde «não é X, é Y», travessões em série, três adjetivos em fila.",
+      "sintoma": "O texto soa gerado e tira a credibilidade do vídeo.",
+      "causa": "Vícios de redação dos modelos de linguagem.",
+      "camada": 4,
+      "verificador": "parcial",
+      "tipos": [
+        "reel",
+        "anuncio",
+        "apresentador",
+        "explicativo",
+        "tutorial",
+        "demo",
+        "dados",
+        "lyric",
+        "podcast",
+        "documental",
+        "evento",
+        "vinheta",
+        "slide"
+      ],
+      "gravidade": 2,
+      "eixos": [
+        "escrita",
+        "densidade"
+      ],
+      "assinatura": "",
+      "fontes": [
+        "https://news.ycombinator.com/item?id=48748541",
+        "https://news.ycombinator.com/item?id=49205870",
+        "https://news.ycombinator.com/item?id=44780249"
+      ],
+      "cara_de_ia": true,
+      "no_lugar": "Texto curto escrito na voz do cliente; revisar contra a lista de vícios.",
+      "assinatura_texto": "em[- ]dash|not x but y",
+      "relatos": 8,
+      "relatos_exemplo": [
+        "https://news.ycombinator.com/item?id=48324515",
+        "https://news.ycombinator.com/item?id=47762782",
+        "https://news.ycombinator.com/item?id=47226426"
+      ],
+      "frequencia": 2,
+      "casos": 20,
+      "casos_conservador": 20
+    }
+  ],
+  "colheita": {
+    "data": "2026-10-31",
+    "relatos": 4826,
+    "relatos_por_fonte": {
+      "stackoverflow": 496,
+      "github-issues": 3142,
+      "hackernews": 815,
+      "reddit-rss": 373
+    },
+    "relatos_casados": 663,
+    "paginas_lidas": 107,
+    "classes": 106,
+    "de_agente": 94,
+    "de_ferramenta": 12,
+    "casos": 3727,
+    "casos_conservador": 1658,
+    "casos_com_intensidade": 9311,
+    "metodo": "docs/pesquisa/erros-de-agentes.md, seções 1 a 3"
+  }
+}

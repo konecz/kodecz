@@ -1,0 +1,14 @@
+{
+  "bloco": "transicao-deslizar",
+  "checagens": [
+    {
+      "id": "deslizar.inteira",
+      "prioridade": "P0",
+      "seletor": ".kz-desliza-entra",
+      "quando": "fim-da-transicao",
+      "medida": "inteira",
+      "maximo": 0,
+      "mensagem": "t={t} · {onde} · no fim do deslize a cena que entra não está no lugar → mesma --duracao nas duas camadas e --desliza-x de 100% ou -100%"
+    }
+  ]
+}

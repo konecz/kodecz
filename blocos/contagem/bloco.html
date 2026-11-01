@@ -1,0 +1,12 @@
+<!-- contagem (H13). <link rel="stylesheet" href="⟨blocos⟩/contagem/bloco.css"> no <head>.
+     Contando: de 0 a ⟨valor⟩ do ⟨inicio⟩ ao ⟨fim⟩ (quadros); o número fica no valor depois. data-valor repete o
+     valor (para a conferência). --prefixo e --sufixo são textos entre aspas ('R$ ', ' %').
+     Regressiva: --de números, um por segundo, de ⟨de⟩ até 1; o --fim é ⟨inicio⟩ + ⟨de⟩ × qps (para a conferência). -->
+<div class="kz-contagem" data-bloco="contagem" style="--inicio: ⟨inicio⟩; --fim: ⟨fim⟩; --valor: ⟨valor⟩; --sufixo: ''">
+  <b class="kz-contagem-num" data-valor="⟨valor⟩"></b>
+  <span class="kz-contagem-rotulo">⟨o que o número conta⟩</span>
+</div>
+
+<div class="kz-contagem kz-regressiva" data-bloco="contagem" style="--inicio: ⟨inicio⟩; --de: 3; --fim: ⟨inicio + 3 × qps⟩">
+  <b class="kz-contagem-num" data-valor="1"></b>
+</div>

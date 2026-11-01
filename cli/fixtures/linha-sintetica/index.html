@@ -1,0 +1,86 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Linha sintética</title>
+<!-- P10: composição sintética em linha do tempo declarada, para os testes do comando (R01: nada de cliente).
+     Conteúdo nos três caminhos do motor (CSS @keyframes, element.animate e o gancho motor_quadro com canvas) e uma
+     tarja de N em cada um, para conferir que os três chegam ao quadro N junto com a marca:
+       y 524: tarja de element.animate; y 508: tarja de CSS @keyframes; y 492: tarja desenhada no canvas.
+     Na linha de cima, quadrados de 32 px para casos que o teste confere pelo pixel do centro:
+       x 0: animação de 30 ms sem fill (vermelha só no quadro 0, mesmo que a página demore a ficar pronta);
+       x 40: <img> local (verde em todos os quadros);
+       x 80: transição de CSS de 10 s ligada pelo motor_quadro no quadro 30 (azul do 30 em diante: vai ao fim).
+     Tarja = faixa do M03 (nativo/src/marca.rs): blocos de 16 px, branco, preto, 24 bits de N e o complemento. -->
+<script type="application/json" id="motor-video">
+{ "id": "LinhaSintetica", "largura": 960, "altura": 540, "qps": 30, "quadros": 60 }
+</script>
+<style>
+  /* Fonte embutida (cli/fixtures/fonte-padrao): o quadro não depende das fontes da máquina. */
+  @font-face { font-family: 'Teste Sans'; font-weight: 400; src: url('fonte/DejaVuSans.woff2') format('woff2'); }
+  @font-face { font-family: 'Teste Sans'; font-weight: 700; src: url('fonte/DejaVuSans-Bold.woff2') format('woff2'); }
+  html, body { margin: 0; width: 960px; height: 540px; overflow: hidden; background: #10163a; }
+  .titulo { position: absolute; left: 80px; top: 120px; font: 700 64px 'Teste Sans', sans-serif; color: #fff;
+            animation: entra 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both; }
+  @keyframes entra { from { transform: translateX(-200px); opacity: 0; } to { transform: none; opacity: 1; } }
+  .caixa { position: absolute; left: 600px; top: 260px; width: 160px; height: 160px; border-radius: 24px;
+           background: linear-gradient(135deg, #ff8c3c, #ff3c78); }
+  .tarja { position: absolute; left: 0; display: flex; height: 16px; }
+  .tarja i { width: 16px; height: 16px; background: #000; position: relative; }
+  .tarja b { position: absolute; inset: 0; background: #fff; opacity: 0; }
+  canvas { position: absolute; left: 0; }
+  .canto { position: absolute; top: 0; width: 32px; height: 32px; }
+  #pulso { left: 0; background: #ff0000; opacity: 0; }
+  #transicao { left: 80px; background: #0000ff; opacity: 0; transition: opacity 10s linear; }
+</style>
+<div class="titulo">Linha do tempo</div>
+<div class="caixa" id="caixa"></div>
+<div class="tarja" id="tarja-waapi" style="top: 524px"></div>
+<div class="tarja" id="tarja-css" style="top: 508px"></div>
+<div class="canto" id="pulso"></div>
+<img class="canto" src="quadrado.svg" style="left: 40px" alt="">
+<div class="canto" id="transicao"></div>
+<canvas id="tela" width="800" height="16" style="top: 492px"></canvas>
+<script>
+  const QPS = 30, QUADROS = 60, BITS = 24, Q = 1000 / QPS;
+  const bitDoBloco = (i, n) => i === 0 ? 1 : i === 1 ? 0 : i < 2 + BITS ? (n >> (BITS - 1 - (i - 2))) & 1 : 1 - ((n >> (BITS - 1 - (i - 2 - BITS))) & 1);
+
+  // Página lenta: 200 ms presos assim que o pulso começa (ready), bem mais que os 30 ms dele. Com a linha do tempo
+  // andando no relógio real, o pulso acabaria antes do primeiro quadro do motor.
+  document.getElementById('pulso').animate([{ opacity: 1 }, { opacity: 1 }], { duration: 30 })
+    .ready.then(() => { for (const t = performance.now(); performance.now() - t < 200;); });
+  document.getElementById('caixa').animate(
+    [{ transform: 'rotate(0deg) scale(0.6)' }, { transform: 'rotate(180deg) scale(1.1)' }],
+    { delay: 300, duration: 1200, easing: 'cubic-bezier(0.65, 0, 0.35, 1)', fill: 'both' });
+
+  // Bloco i de 2 + 2 × 24: o bit b de N vale 1 na segunda metade de cada período de 2^(b+1) quadros (o complemento,
+  // ao contrário); o atraso de −½ quadro põe cada quadro no meio do seu degrau.
+  const css = [];
+  for (const [id, jeito] of [['tarja-waapi', 'waapi'], ['tarja-css', 'css']]) {
+    const tarja = document.getElementById(id);
+    for (let i = 0; i < 2 + 2 * BITS; i++) {
+      const bloco = document.createElement('i'), branco = document.createElement('b');
+      bloco.append(branco);
+      tarja.append(bloco);
+      if (i < 2) { branco.style.opacity = i === 0 ? '1' : '0'; continue; }
+      const complemento = i >= 2 + BITS;
+      const b = BITS - 1 - (i - 2 - (complemento ? BITS : 0));
+      if (2 ** b >= QUADROS + 1) { branco.style.opacity = complemento ? '1' : '0'; continue; }
+      const [lo, hi] = complemento ? [1, 0] : [0, 1], periodo = 2 ** (b + 1) * Q;
+      if (jeito === 'waapi') {
+        branco.animate([{ opacity: lo, offset: 0 }, { opacity: lo, offset: 0.5 }, { opacity: hi, offset: 0.5 }, { opacity: hi, offset: 1 }],
+          { duration: periodo, iterations: Infinity, delay: -0.5 * Q, fill: 'both' });
+      } else {
+        css.push(`@keyframes bit${i} { 0% { opacity: ${lo}; } 50%, 100% { opacity: ${hi}; } }`,
+          `#tarja-css i:nth-child(${i + 1}) b { animation: bit${i} ${periodo}ms step-end ${-0.5 * Q}ms infinite both; }`);
+      }
+    }
+  }
+  const estilo = document.createElement('style');
+  estilo.textContent = css.join('\n');
+  document.head.append(estilo);
+
+  const tela = document.getElementById('tela').getContext('2d');
+  window.motor_quadro = (n) => {
+    document.getElementById('transicao').style.opacity = n >= 30 ? '1' : '0';
+    for (let i = 0; i < 2 + 2 * BITS; i++) { tela.fillStyle = bitDoBloco(i, n) ? '#fff' : '#000'; tela.fillRect(i * 16, 0, 16, 16); }
+  };
+</script>

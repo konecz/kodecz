@@ -1,0 +1,15 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Linha fonte</title>
+<!-- Achado do P07: composição sintética em linha do tempo com uma fonte do Google (Roboto, pelo <link> do CSS),
+     para o teste da fonte fora do cache (R01: nada de cliente). O CSS vem de fonts.googleapis.com e o arquivo da
+     fonte de fonts.gstatic.com: os dois saem do cache do motor, e o que faltar o comando de render baixa uma vez. -->
+<script type="application/json" id="motor-video">
+{ "id": "LinhaFonte", "largura": 960, "altura": 540, "qps": 30, "quadros": 2 }
+</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=block">
+<style>
+  html, body { margin: 0; width: 960px; height: 540px; overflow: hidden; background: #10163a; }
+  .titulo { position: absolute; left: 40px; top: 230px; font: 700 64px 'Roboto', sans-serif; color: #fff; }
+</style>
+<div class="titulo">Fonte</div>

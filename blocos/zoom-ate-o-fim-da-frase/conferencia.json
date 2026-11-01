@@ -1,0 +1,23 @@
+{
+  "bloco": "zoom-ate-o-fim-da-frase",
+  "checagens": [
+    {
+      "id": "zoom.ordem",
+      "prioridade": "P0",
+      "seletor": ".kz-zoom",
+      "quando": "fim-do-bloco",
+      "medida": "fim-menos-inicio",
+      "minimo": 1,
+      "mensagem": "t={t} · {onde} · o zoom sai {valor} quadros depois de entrar → --fim é a pausa depois do fim da frase da palavra de ênfase, depois do --inicio (G21)"
+    },
+    {
+      "id": "zoom.volta",
+      "prioridade": "P0",
+      "seletor": ".kz-zoom",
+      "quando": "fim-do-bloco",
+      "medida": "escala",
+      "maximo": 1.001,
+      "mensagem": "t={t} · {onde} · no último quadro em que aparece, o zoom ainda está em {valor}× → o zoom volta na pausa depois da frase; conferir --fim e --saida (G21)"
+    }
+  ]
+}

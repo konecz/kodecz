@@ -1,0 +1,21 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>transicao-deslizar · exemplo</title>
+<!-- H07: a cena b empurra a a para a esquerda, do quadro 30 ao 45. Servir a pasta blocos/. -->
+<script type="application/json" id="motor-video">
+{ "id": "ExemploDeslizar", "largura": 1920, "altura": 1080, "qps": 30, "quadros": 75 }
+</script>
+<link rel="stylesheet" href="../marca/marca.css">
+<link rel="stylesheet" href="../cena/bloco.css">
+<link rel="stylesheet" href="bloco.css">
+<style>
+  :root { --qps: 30; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--color-ground); }
+  .fundo { position: absolute; inset: 0; }
+</style>
+<section class="kz-cena" data-bloco="cena" style="--inicio: 0; --fim: 45">
+  <div class="kz-desliza-sai" data-bloco="transicao-deslizar" style="--duracao: 15"><div class="fundo" style="background: var(--color-surface)"></div></div>
+</section>
+<section class="kz-cena" data-bloco="cena" style="--inicio: 30; --fim: 75">
+  <div class="kz-desliza-entra" data-bloco="transicao-deslizar" style="--duracao: 15"><div class="fundo" style="background: var(--color-accent)"></div></div>
+</section>

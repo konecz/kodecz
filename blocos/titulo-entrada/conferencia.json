@@ -1,0 +1,33 @@
+{
+  "bloco": "titulo-entrada",
+  "checagens": [
+    {
+      "id": "titulo.uma-linha",
+      "prioridade": "P1",
+      "seletor": ".kz-titulo-principal",
+      "quando": "visivel",
+      "medida": "linhas",
+      "maximo": 1,
+      "mensagem": "t={t} · {onde} · o título quebrou em {valor} linhas → encurtar (até seis palavras) ou usar --font-title (G18)"
+    },
+    {
+      "id": "titulo.sub-linhas",
+      "prioridade": "P1",
+      "seletor": ".kz-titulo-sub",
+      "quando": "visivel",
+      "medida": "linhas",
+      "maximo": 2,
+      "mensagem": "t={t} · {onde} · o subtítulo tem {valor} linhas → uma frase curta (G18)"
+    },
+    {
+      "id": "titulo.zona-segura",
+      "prioridade": "P0",
+      "seletor": ".kz-titulo > *",
+      "quando": "visivel-parado",
+      "medida": "fora-da-margem",
+      "maximo": 0,
+      "margem": "--spacing-safe",
+      "mensagem": "t={t} · {onde} · o texto sai {valor} px da zona segura → mudar --titulo-topo ou encurtar (G19)"
+    }
+  ]
+}

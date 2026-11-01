@@ -1,0 +1,9 @@
+/* transicao-fade (H05): a cena que entra aparece por cima da anterior, de transparente a opaca, em --duracao quadros
+   a partir do --inicio da cena. A camada pinta o fundo (--color-ground) para cobrir a cena de baixo. */
+.kz-fade {
+  position: absolute; inset: 0;
+  background: var(--color-ground);
+  animation: kz-fade-entra calc(var(--duracao, 15) * 1s / var(--qps)) linear
+             calc(var(--inicio) * 1s / var(--qps)) both;
+}
+@keyframes kz-fade-entra { from { opacity: 0; } to { opacity: 1; } }

@@ -1,0 +1,80 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Linha com GSAP</title>
+<!-- S01: composição sintética com GSAP, para os testes do comando (R01: nada de cliente). O GSAP NÃO está nesta pasta
+     nem no repositório (parecer jurídico, J5): o teste copia esta página para uma pasta temporária junto com o
+     gsap.min.js do cache local (cli/fixtures/bibliotecas.ts), como o cliente traria o dele.
+     Do jeito que uma página com GSAP é escrita, sem nada do motor além do bloco de declaração:
+       y 524: tarja de N por uma timeline pausada ({ paused: true }) de gsap.set, meio quadro antes de cada mudança;
+       y 508: tarja de N escrita pelo onUpdate de um contador (tween na raiz, sem pausa).
+     Na linha de cima, quadrados de 32 px conferidos pelo pixel do centro:
+       x 0: tween de 30 ms na raiz (vermelho só no quadro 0; a raiz do GSAP remove a que acabou, e o render fora de
+            ordem volta a ela);
+       x 40: set no tempo 0 de uma timeline (verde em todos os quadros);
+       x 80: set com atraso de 29,5 quadros (azul do 30 em diante).
+     Título e caixa animados pelo GSAP (x, opacidade, rotação, escala) para o R03 fora de ordem.
+     Tarja = faixa do M03 (nativo/src/marca.rs): blocos de 16 px, branco, preto, 24 bits de N e o complemento. -->
+<script type="application/json" id="motor-video">
+{ "id": "LinhaGsap", "largura": 960, "altura": 540, "qps": 30, "quadros": 60 }
+</script>
+<style>
+  /* Fonte embutida (cli/fixtures/fonte-padrao): o quadro não depende das fontes da máquina. */
+  @font-face { font-family: 'Teste Sans'; font-weight: 400; src: url('fonte/DejaVuSans.woff2') format('woff2'); }
+  @font-face { font-family: 'Teste Sans'; font-weight: 700; src: url('fonte/DejaVuSans-Bold.woff2') format('woff2'); }
+  html, body { margin: 0; width: 960px; height: 540px; overflow: hidden; background: #10163a; }
+  .titulo { position: absolute; left: 80px; top: 120px; font: 700 64px 'Teste Sans', sans-serif; color: #fff; }
+  .caixa { position: absolute; left: 600px; top: 260px; width: 160px; height: 160px; border-radius: 24px;
+           background: linear-gradient(135deg, #ff8c3c, #ff3c78); }
+  .tarja { position: absolute; left: 0; display: flex; height: 16px; }
+  .tarja i { width: 16px; height: 16px; background: #000; position: relative; }
+  .tarja b { position: absolute; inset: 0; background: #fff; opacity: 0; }
+  .canto { position: absolute; top: 0; width: 32px; height: 32px; opacity: 0; }
+  #pulso { left: 0; background: #ff0000; opacity: 1; }
+  #verde { left: 40px; background: #00ff00; }
+  #azul { left: 80px; background: #0000ff; }
+</style>
+<div class="titulo" id="titulo">GSAP na linha</div>
+<div class="caixa" id="caixa"></div>
+<div class="tarja" id="tarja-pausada" style="top: 524px"></div>
+<div class="tarja" id="tarja-contador" style="top: 508px"></div>
+<div class="canto" id="pulso"></div>
+<div class="canto" id="verde"></div>
+<div class="canto" id="azul"></div>
+<script src="gsap.min.js"></script>
+<script>
+  const QPS = 30, QUADROS = 60, BITS = 24;
+  const bitDoBloco = (i, n) => i === 0 ? 1 : i === 1 ? 0 : i < 2 + BITS ? (n >> (BITS - 1 - (i - 2))) & 1 : 1 - ((n >> (BITS - 1 - (i - 2 - BITS))) & 1);
+  const blocos = (id) => {
+    const tarja = document.getElementById(id), lista = [];
+    for (let i = 0; i < 2 + 2 * BITS; i++) {
+      const bloco = document.createElement('i'), branco = document.createElement('b');
+      bloco.append(branco);
+      tarja.append(bloco);
+      lista.push(branco);
+    }
+    return lista;
+  };
+
+  // y 524: timeline pausada, com um gsap.set por bloco que muda, meio quadro antes do quadro em que muda.
+  const pausada = gsap.timeline({ paused: true });
+  blocos('tarja-pausada').forEach((b, i) => {
+    pausada.set(b, { opacity: bitDoBloco(i, 0) }, 0);
+    for (let n = 1; n < QUADROS; n++) if (bitDoBloco(i, n) !== bitDoBloco(i, n - 1)) pausada.set(b, { opacity: bitDoBloco(i, n) }, (n - 0.5) / QPS);
+  });
+
+  // y 508: contador de 0 a 60 em 2 s, linear; o onUpdate escreve a tarja do valor arredondado.
+  const contador = blocos('tarja-contador'), estado = { n: 0 };
+  gsap.to(estado, { n: QUADROS, duration: QUADROS / QPS, ease: 'none', onUpdate: () => {
+    const n = Math.round(estado.n);
+    contador.forEach((b, i) => { b.style.opacity = bitDoBloco(i, n); });
+  } });
+
+  gsap.to('#pulso', { opacity: 0, duration: 0.03, ease: 'none' });
+  gsap.timeline().set('#verde', { opacity: 1 }, 0);
+  gsap.set('#azul', { opacity: 1, delay: 29.5 / QPS });
+  gsap.from('#titulo', { x: -200, opacity: 0, duration: 1, delay: 0.2, ease: 'power3.out' });
+  gsap.fromTo('#caixa', { rotation: 0, scale: 0.6 }, { rotation: 180, scale: 1.1, duration: 1.2, delay: 0.3, ease: 'power2.inOut' });
+
+  // Página lenta: 200 ms presos depois de criar as animações. Com o ticker do GSAP andando, o pulso já teria acabado.
+  for (const t = performance.now(); performance.now() - t < 200;);
+</script>

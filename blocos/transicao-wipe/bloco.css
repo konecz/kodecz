@@ -1,0 +1,11 @@
+/* transicao-wipe (H06): a cena que entra é revelada por uma borda reta que atravessa o quadro (clip-path), em
+   --duracao quadros a partir do --inicio da cena. --wipe-de diz de onde vem a borda:
+   da esquerda inset(0 100% 0 0) (padrão), da direita inset(0 0 0 100%), de cima inset(0 0 100% 0), de baixo
+   inset(100% 0 0 0). */
+.kz-wipe {
+  position: absolute; inset: 0;
+  background: var(--color-ground);
+  animation: kz-wipe-entra calc(var(--duracao, 15) * 1s / var(--qps)) var(--motion-easing-move, cubic-bezier(0.65, 0, 0.35, 1))
+             calc(var(--inicio) * 1s / var(--qps)) both;
+}
+@keyframes kz-wipe-entra { from { clip-path: var(--wipe-de, inset(0 100% 0 0)); } to { clip-path: inset(0); } }

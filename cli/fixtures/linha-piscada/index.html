@@ -1,0 +1,20 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Piscada</title>
+<!-- Brilho por quadro (cli/brilho.ts, docs/formatos/brilho.md): composição sintética (R01) com uma piscada de um quadro
+     só, como o quadro perdido do vídeo reprovado do S04. Cena escura; no quadro 12 (400 ms a 30 q/s, por 1/30 s) um
+     clarão branco na tela toda. O render tem de acusar a piscada no quadro 12 e só nele. A irmã, linha-sem-piscada,
+     tem o que não é piscada (clarão de dois quadros e corte seco) e não acusa nada. -->
+<script type="application/json" id="motor-video">
+{ "id": "LinhaPiscada", "largura": 960, "altura": 540, "qps": 30, "quadros": 30 }
+</script>
+<style>
+  html, body { margin: 0; width: 960px; height: 540px; overflow: hidden; background: #1a1d2e; }
+  .caixa { position: absolute; left: 80px; top: 100px; width: 160px; height: 160px; border-radius: 24px; background: #3b4a7a;
+           animation: anda 1s linear both; }
+  @keyframes anda { from { transform: none; } to { transform: translateX(320px); } }
+  .clarao { position: absolute; inset: 0; background: #fff; visibility: hidden; animation: aparece 33ms linear 400ms; }
+  @keyframes aparece { from, to { visibility: visible; } }
+</style>
+<div class="caixa"></div>
+<div class="clarao"></div>

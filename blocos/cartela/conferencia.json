@@ -1,0 +1,24 @@
+{
+  "bloco": "cartela",
+  "checagens": [
+    {
+      "id": "cartela.cabe",
+      "prioridade": "P0",
+      "seletor": ".kz-cartela-texto",
+      "quando": "visivel",
+      "medida": "transborda",
+      "maximo": 0,
+      "mensagem": "t={t} · {onde} · a chamada passa {valor} px da largura → uma chamada curta, numa linha"
+    },
+    {
+      "id": "cartela.zona-segura",
+      "prioridade": "P0",
+      "seletor": ".kz-cartela > *",
+      "quando": "visivel-parado",
+      "medida": "fora-da-margem",
+      "maximo": 0,
+      "margem": "--spacing-safe",
+      "mensagem": "t={t} · {onde} · o texto sai {valor} px da zona segura → encurtar a chamada (G18, G19)"
+    }
+  ]
+}

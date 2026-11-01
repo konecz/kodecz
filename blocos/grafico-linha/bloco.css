@@ -1,0 +1,32 @@
+/* grafico-linha (H12): uma série que se desenha da esquerda para a direita em --duracao quadros, os pontos aparecendo
+   quando o traço passa por eles e o último valor contando junto. O SVG e a contagem do número (element.animate) são
+   montados uma vez, na carga, pelo bloco.js (a partir de data-valores); o traço e os pontos andam por aqui
+   (stroke-dashoffset com pathLength="1"). */
+@property --kz-valor { syntax: '<integer>'; inherits: false; initial-value: 0; }
+.kz-linha {
+  --duracao: initial; /* nada herdado de uma transição em volta; no style do bloco vale */
+  position: absolute; margin: 0;
+  left: var(--linha-x, var(--spacing-margin, 96px)); top: var(--linha-topo, 30%);
+  width: var(--linha-largura, 52%); height: var(--linha-altura, 46%);
+  border-bottom: 3px solid var(--color-surface, var(--color-muted));
+}
+.kz-linha svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.kz-linha-traco {
+  fill: none; stroke: var(--linha-cor, var(--color-accent-2, var(--color-accent))); stroke-width: var(--linha-espessura, 8);
+  stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1;
+  animation: kz-linha-desenha calc(var(--duracao, 45) * 1s / var(--qps)) linear calc(var(--inicio) * 1s / var(--qps)) both;
+}
+.kz-linha-ponto {
+  fill: var(--linha-cor, var(--color-accent-2, var(--color-accent))); transform-box: fill-box; transform-origin: center;
+  animation: kz-linha-ponto calc(8 * 1s / var(--qps)) var(--motion-easing-enter, cubic-bezier(0.16, 1, 0.3, 1))
+             calc((var(--inicio) + var(--ordem) / var(--pontos) * var(--duracao, 45)) * 1s / var(--qps)) both;
+}
+.kz-linha-num {
+  position: absolute; right: 0; bottom: calc(100% + 16px);
+  font-family: var(--font-title, var(--font-display)); font-weight: var(--font-title-weight, 700);
+  font-size: var(--font-title-size, 64px); line-height: 1; color: var(--color-ink); white-space: nowrap;
+  counter-reset: kz-linha var(--kz-valor);
+}
+.kz-linha-num::before { content: counter(kz-linha) var(--sufixo, ""); }
+@keyframes kz-linha-desenha { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes kz-linha-ponto { from { transform: scale(0); } to { transform: none; } }

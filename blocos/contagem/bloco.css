@@ -1,0 +1,32 @@
+/* contagem (H13): número grande que entra no --inicio e conta de 0 até --valor até o --fim (desacelerando no fim), ou, com
+   .kz-regressiva, contagem regressiva de --de até 1, um número por segundo, cada um com um pulso. Inteiro, pelo
+   contador do CSS sobre uma propriedade registrada (@property). */
+@property --kz-valor { syntax: '<integer>'; inherits: false; initial-value: 0; }
+.kz-contagem {
+  position: absolute; left: var(--contagem-x, 50%); top: var(--contagem-topo, 50%); transform: translate(-50%, -50%);
+  display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;
+  animation: kz-contagem-entra var(--motion-duration-enter, 500ms) var(--motion-easing-enter, cubic-bezier(0.16, 1, 0.3, 1))
+             calc(var(--inicio) * 1s / var(--qps)) both;
+}
+.kz-contagem-num {
+  font-family: var(--font-display); font-weight: var(--font-display-weight, 800);
+  font-size: calc(var(--font-display-size, 112px) * var(--contagem-tamanho, 1.6)); line-height: 1;
+  letter-spacing: var(--font-display-letter-spacing, normal); color: var(--color-accent); white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  counter-reset: kz-contagem var(--kz-valor);
+  animation: kz-conta calc((var(--fim) - var(--inicio)) * 1s / var(--qps)) cubic-bezier(0.33, 1, 0.68, 1)
+             calc(var(--inicio) * 1s / var(--qps)) both;
+}
+.kz-contagem-num::before { content: var(--prefixo, "") counter(kz-contagem) var(--sufixo, ""); }
+.kz-contagem-rotulo {
+  font-family: var(--font-body); font-weight: var(--font-body-weight, 400); font-size: var(--font-body-size, 36px);
+  color: var(--color-muted, var(--color-ink)); white-space: nowrap;
+}
+.kz-regressiva .kz-contagem-num {
+  animation: kz-regride calc(var(--de) * 1s) steps(var(--de), jump-none) calc(var(--inicio) * 1s / var(--qps)) both,
+             kz-pulso 1s var(--motion-easing-enter, cubic-bezier(0.16, 1, 0.3, 1)) calc(var(--inicio) * 1s / var(--qps)) var(--de) both;
+}
+@keyframes kz-contagem-entra { from { opacity: 0; translate: 0 0.5em; } to { opacity: 1; translate: none; } }
+@keyframes kz-conta { from { --kz-valor: 0; } to { --kz-valor: var(--valor); } }
+@keyframes kz-regride { from { --kz-valor: var(--de); } to { --kz-valor: 1; } }
+@keyframes kz-pulso { 0% { transform: scale(1.25); opacity: 0.4; } 40%, 100% { transform: none; opacity: 1; } }

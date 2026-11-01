@@ -1,0 +1,25 @@
+{
+  "bloco": "contagem",
+  "checagens": [
+    {
+      "id": "contagem.chega-no-alvo",
+      "prioridade": "P0",
+      "seletor": ".kz-contagem-num",
+      "quando": "fim",
+      "medida": "distancia-do-alvo",
+      "maximo": 0,
+      "propriedade": "--kz-valor",
+      "mensagem": "t={t} · {onde} · no --fim o número está {valor} longe do data-valor → --valor (ou 1, na regressiva) igual ao data-valor; na regressiva, --fim = --inicio + --de × qps"
+    },
+    {
+      "id": "contagem.zona-segura",
+      "prioridade": "P0",
+      "seletor": ".kz-contagem",
+      "quando": "visivel-parado",
+      "medida": "fora-da-margem",
+      "maximo": 0,
+      "margem": "--spacing-safe",
+      "mensagem": "t={t} · {onde} · o número sai {valor} px da zona segura → mudar --contagem-tamanho ou a posição (G19)"
+    }
+  ]
+}

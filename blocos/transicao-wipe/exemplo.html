@@ -1,0 +1,22 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>transicao-wipe · exemplo</title>
+<!-- H06: a cena b entra por wipe da esquerda (quadros 20 a 35) e a c por wipe de baixo (50 a 65). Servir blocos/. -->
+<script type="application/json" id="motor-video">
+{ "id": "ExemploWipe", "largura": 1920, "altura": 1080, "qps": 30, "quadros": 80 }
+</script>
+<link rel="stylesheet" href="../marca/marca.css">
+<link rel="stylesheet" href="../cena/bloco.css">
+<link rel="stylesheet" href="bloco.css">
+<style>
+  :root { --qps: 30; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--color-ground); }
+  .fundo { position: absolute; inset: 0; }
+</style>
+<section class="kz-cena" data-bloco="cena" style="--inicio: 0; --fim: 35"><div class="fundo" style="background: var(--color-surface)"></div></section>
+<section class="kz-cena" data-bloco="cena" style="--inicio: 20; --fim: 65">
+  <div class="kz-wipe" data-bloco="transicao-wipe" style="--duracao: 15"><div class="fundo" style="background: var(--color-accent)"></div></div>
+</section>
+<section class="kz-cena" data-bloco="cena" style="--inicio: 50; --fim: 80">
+  <div class="kz-wipe" data-bloco="transicao-wipe" style="--duracao: 15; --wipe-de: inset(100% 0 0 0)"><div class="fundo" style="background: var(--color-accent-2)"></div></div>
+</section>

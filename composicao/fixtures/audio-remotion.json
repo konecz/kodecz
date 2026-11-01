@@ -1,0 +1,172 @@
+{
+ "origem": "saídas do @remotion/renderer 4.0.536 (calculateAssetPositions + flattenVolumeArray, ffmpegVolumeExpression, calculateATempo, stringifyFfmpegFilter) para as entradas do composicao/audio.test.ts, gravadas em 2026-10-31 antes de o Remotion sair do motor",
+ "trechos": [
+  {
+   "src": "http://127.0.0.1:1/public/b.wav",
+   "type": "audio",
+   "duration": 4,
+   "id": "b",
+   "startInVideo": 0,
+   "trimLeft": 0,
+   "volume": 0.4,
+   "playbackRate": 1,
+   "toneFrequency": 1,
+   "audioStartFrame": 0,
+   "audioStreamIndex": 0
+  },
+  {
+   "src": "http://127.0.0.1:1/public/a.wav",
+   "type": "audio",
+   "duration": 8,
+   "id": "a",
+   "startInVideo": 2,
+   "trimLeft": 5,
+   "volume": [
+    0,
+    0.25,
+    0.5,
+    0.75,
+    1,
+    1,
+    1,
+    1
+   ],
+   "playbackRate": 1.5,
+   "toneFrequency": 1,
+   "audioStartFrame": 5,
+   "audioStreamIndex": 0
+  },
+  {
+   "src": "http://127.0.0.1:1/public/c.wav",
+   "type": "audio",
+   "duration": 1,
+   "id": "c",
+   "startInVideo": 5,
+   "trimLeft": 5,
+   "volume": 1,
+   "playbackRate": 1,
+   "toneFrequency": 1,
+   "audioStartFrame": 0,
+   "audioStreamIndex": 0
+  },
+  {
+   "src": "http://127.0.0.1:1/public/b.wav",
+   "type": "audio",
+   "duration": 6,
+   "id": "b",
+   "startInVideo": 6,
+   "trimLeft": 6,
+   "volume": 0.4,
+   "playbackRate": 1,
+   "toneFrequency": 1,
+   "audioStartFrame": 0,
+   "audioStreamIndex": 0
+  }
+ ],
+ "volume": [
+  {
+   "eval": "once",
+   "value": "1"
+  },
+  {
+   "eval": "once",
+   "value": "0.5"
+  },
+  {
+   "eval": "once",
+   "value": "0.3"
+  },
+  {
+   "eval": "frame",
+   "value": "'if(between(t,0.3833,0.4167),0,if(between(t,0.4167,0.4500),0.247,if(between(t,0.4500,0.4833),0.505,if(between(t,0.4833,0.5167),0.753,1))))'"
+  },
+  {
+   "eval": "frame",
+   "value": "'if(between(t,2.7833,2.8167),1,if(between(t,3.3833,3.4167),0.804,if(between(t,3.6167,3.6500),0.835,if(between(t,4.1167,4.1500),0.412,if(between(t,4.9500,4.9833),0.485,if(between(t,5.0167,5.0500),0.629,if(between(t,5.3500,5.3833),0.371,if(between(t,6.4833,6.5167),0.948,if(between(t,6.6833,6.7167),0.887,if(between(t,8.0167,8.0500),0.649,if(between(t,11.0167,11.0500),0.938,if(between(t,11.1500,11.1833),0.701,if(between(t,11.4833,11.5167),0.103,if(between(t,12.0500,12.0833),0.268,if(between(t,2.6167,2.6500)+between(t,3.0500,3.0833),0.67,if(between(t,2.9500,2.9833)+between(t,3.8167,3.8500),0.381,if(between(t,3.4167,3.4500)+between(t,9.1833,9.2167),0.144,if(between(t,3.4833,3.5167)+between(t,9.8500,9.8833),0.711,if(between(t,3.8833,3.9167)+between(t,9.9833,10.0167),0.794,if(between(t,4.2500,4.2833)+between(t,7.6833,7.7167),0.351,if(between(t,4.3500,4.3833)+between(t,8.7167,8.7500),0.402,if(between(t,4.4167,4.4500)+between(t,7.1167,7.1500),0.237,if(between(t,5.0833,5.1167)+between(t,6.3167,6.3500),0.227,if(between(t,5.7167,5.7500)+between(t,6.8833,6.9167),0.175,if(between(t,5.9167,5.9500)+between(t,11.7833,11.8167),0.361,if(between(t,5.9833,6.0167)+between(t,11.6500,11.6833),0.423,if(between(t,7.0167,7.0500)+between(t,10.5500,10.5833),0.134,if(between(t,7.2167,7.2500)+between(t,8.8167,8.8500),0.186,if(between(t,7.3500,7.3833)+between(t,12.3500,12.3833),0.907,if(between(t,7.7833,7.8167)+between(t,8.2500,8.2833),0.474,if(between(t,8.3500,8.3833)+between(t,10.0167,10.0500),0.753,if(between(t,8.7833,8.8167)+between(t,11.4500,11.4833),0.443,if(between(t,10.4500,10.4833)+between(t,12.2167,12.2500),0.536,if(between(t,10.9833,11.0167)+between(t,11.2833,11.3167),0.959,if(between(t,5.1833,5.2167)+between(t,5.9500,5.9833)+between(t,9.4500,9.4833),0,if(between(t,2.5500,2.5833)+between(t,11.0833,11.1167)+between(t,11.8500,11.8833),0.546,if(between(t,2.6833,2.7167)+between(t,3.5500,3.5833)+between(t,11.0500,11.0833),0.866,if(between(t,2.8500,2.8833)+between(t,4.0167,4.0500)+between(t,5.1167,5.1500),0.196,if(between(t,3.6833,3.7167)+between(t,11.1167,11.1500)+between(t,11.4167,11.4500),0.041,if(between(t,3.7833,3.8167)+between(t,7.0500,7.0833)+between(t,9.0167,9.0500),0.66,if(between(t,4.0500,4.0833)+between(t,6.7167,6.7500)+between(t,9.7500,9.7833),0.464,if(between(t,4.2833,4.3167)+between(t,6.2167,6.2500)+between(t,10.1167,10.1500),0.722,if(between(t,4.9167,4.9500)+between(t,6.9167,6.9500)+between(t,7.3833,7.4167),0.247,if(between(t,4.9833,5.0167)+between(t,6.3833,6.4167)+between(t,6.6167,6.6500),0.392,if(between(t,5.0500,5.0833)+between(t,7.4167,7.4500)+between(t,9.3500,9.3833),0.68,if(between(t,5.3167,5.3500)+between(t,8.2833,8.3167)+between(t,9.3167,9.3500),0.433,if(between(t,5.4500,5.4833)+between(t,5.7833,5.8167)+between(t,7.1833,7.2167),0.289,if(between(t,6.2500,6.2833)+between(t,7.9167,7.9500)+between(t,9.8167,9.8500),0.979,if(between(t,6.9833,7.0167)+between(t,8.1833,8.2167)+between(t,11.5500,11.5833),0.052,if(between(t,7.2833,7.3167)+between(t,10.3500,10.3833)+between(t,10.5833,10.6167),0.639,if(between(t,7.5167,7.5500)+between(t,8.4500,8.4833)+between(t,10.8500,10.8833),0.33,if(between(t,8.0500,8.0833)+between(t,8.8833,8.9167)+between(t,12.1167,12.1500),0.165,if(between(t,8.4833,8.5167)+between(t,9.2500,9.2833)+between(t,12.0167,12.0500),0.093,if(between(t,8.6833,8.7167)+between(t,11.3167,11.3500)+between(t,12.0833,12.1167),0.01,if(between(t,9.0833,9.1167)+between(t,10.4167,10.4500)+between(t,10.4833,10.5167),0.856,if(between(t,9.7167,9.7500)+between(t,10.2500,10.2833)+between(t,12.1500,12.1833),0.32,if(between(t,2.5167,2.5500)+between(t,3.8500,3.8833)+between(t,4.1500,4.1833)+between(t,4.5833,4.6167),0.299,if(between(t,2.7167,2.7500)+between(t,6.5833,6.6167)+between(t,7.3167,7.3500)+between(t,10.8833,10.9167),0.918,if(between(t,2.7500,2.7833)+between(t,3.0167,3.0500)+between(t,3.3500,3.3833)+between(t,7.9500,7.9833),0.072,if(between(t,2.8167,2.8500)+between(t,3.2833,3.3167)+between(t,4.7167,4.7500)+between(t,11.6167,11.6500),0.206,if(between(t,2.9833,3.0167)+between(t,3.4500,3.4833)+between(t,9.3833,9.4167)+between(t,11.2500,11.2833),0.031,if(between(t,3.1167,3.1500)+between(t,3.5833,3.6167)+between(t,7.0833,7.1167)+between(t,8.7500,8.7833),0.814,if(between(t,3.2167,3.2500)+between(t,4.8500,4.8833)+between(t,5.1500,5.1833)+between(t,10.7500,10.7833),0.619,if(between(t,3.7167,3.7500)+between(t,6.7500,6.7833)+between(t,6.9500,6.9833)+between(t,11.5833,11.6167),0.34,if(between(t,3.7500,3.7833)+between(t,8.3833,8.4167)+between(t,9.6500,9.6833)+between(t,9.9167,9.9500),0.155,if(between(t,4.4500,4.4833)+between(t,4.6500,4.6833)+between(t,10.0833,10.1167)+between(t,11.1833,11.2167),0.082,if(between(t,4.6833,4.7167)+between(t,5.2500,5.2833)+between(t,5.8833,5.9167)+between(t,10.6833,10.7167),0.773,if(between(t,4.8167,4.8500)+between(t,7.7500,7.7833)+between(t,8.0833,8.1167)+between(t,11.2167,11.2500),0.608,if(between(t,5.2833,5.3167)+between(t,8.1167,8.1500)+between(t,8.5833,8.6500),0.763,if(between(t,5.3833,5.4167)+between(t,6.4500,6.4833)+between(t,6.5500,6.5833)+between(t,10.5167,10.5500),0.505,if(between(t,5.4167,5.4500)+between(t,6.2833,6.3167)+between(t,9.2167,9.2500)+between(t,10.3167,10.3500),0.258,if(between(t,5.6500,5.6833)+between(t,7.5833,7.6167)+between(t,9.2833,9.3167)+between(t,10.7833,10.8167),0.691,if(between(t,5.7500,5.7833)+between(t,7.4833,7.5167)+between(t,8.3167,8.3500)+between(t,11.8167,11.8500),0.825,if(between(t,6.0167,6.0500)+between(t,7.6167,7.6500)+between(t,9.1167,9.1500)+between(t,10.2167,10.2500),0.113,if(between(t,6.4167,6.4500)+between(t,6.5167,6.5500)+between(t,11.6833,11.7500),0.784,if(between(t,9.7833,9.8167)+between(t,10.6167,10.6500)+between(t,11.5167,11.5500)+between(t,11.8833,11.9167),0.515,if(between(t,2.6500,2.6833)+between(t,4.5167,4.5500)+between(t,10.6500,10.6833)+between(t,11.9833,12.0167)+between(t,12.2833,12.3167),0.526,if(between(t,3.1500,3.1833)+between(t,3.5167,3.5500)+between(t,3.6500,3.6833)+between(t,6.7833,6.8167)+between(t,10.1500,10.1833),0.742,if(between(t,3.2500,3.2833)+between(t,6.3500,6.3833)+between(t,9.5167,9.5500)+between(t,10.0500,10.0833)+between(t,10.9167,10.9500),0.495,if(between(t,3.3167,3.3500)+between(t,6.1833,6.2167)+between(t,6.8167,6.8500)+between(t,8.2167,8.2500)+between(t,8.4167,8.4500),0.897,if(between(t,3.9167,3.9500)+between(t,7.5500,7.5833)+between(t,8.9833,9.0167)+between(t,9.6167,9.6500)+between(t,12.1833,12.2167),0.309,if(between(t,3.9500,3.9833)+between(t,5.6167,5.6500)+between(t,6.8500,6.8833)+between(t,10.8167,10.8500)+between(t,10.9500,10.9833),0.876,if(between(t,4.3167,4.3500)+between(t,4.4833,4.5167)+between(t,6.6500,6.6833)+between(t,7.9833,8.0167)+between(t,8.1500,8.1833),0.588,if(between(t,4.5500,4.5833)+between(t,4.6167,4.6500)+between(t,5.6833,5.7167)+between(t,5.8500,5.8833)+between(t,7.8833,7.9167),0.454,if(between(t,4.7500,4.7833)+between(t,7.4500,7.4833)+between(t,9.0500,9.0833)+between(t,9.4833,9.5167)+between(t,11.9167,11.9500),0.124,if(between(t,5.2167,5.2500)+between(t,5.5167,5.5500)+between(t,6.0833,6.1167)+between(t,7.7167,7.7500)+between(t,9.9500,9.9833),0.278,if(between(t,5.8167,5.8500)+between(t,8.5167,8.5500)+between(t,8.8500,8.8833)+between(t,9.6833,9.7167)+between(t,10.2833,10.3167),0.216,if(between(t,3.0833,3.1167)+between(t,4.8833,4.9167)+between(t,7.8500,7.8833)+between(t,11.7500,11.7833)+between(t,12.3833,12.4500),0.928,if(between(t,3.9833,4.0167)+between(t,7.1500,7.1833)+between(t,7.8167,7.8500)+between(t,10.3833,10.4167)+between(t,12.4500,12.5167),0.557,if(between(t,4.1833,4.2167)+between(t,4.7833,4.8167)+between(t,5.4833,5.5167)+between(t,7.6500,7.6833)+between(t,11.3500,11.4167),0.845,if(between(t,2.4833,2.5167)+between(t,4.2167,4.2500)+between(t,5.5500,5.5833)+between(t,6.1500,6.1833)+between(t,7.2500,7.2833)+between(t,8.9167,8.9500)+between(t,9.8833,9.9167),0.598,if(between(t,2.5833,2.6167)+between(t,2.8833,2.9167)+between(t,6.0500,6.0833)+between(t,9.1500,9.1833)+between(t,9.5833,9.6167)+between(t,10.7167,10.7500)+between(t,12.2500,12.2833),0.99,if(between(t,2.9167,2.9500)+between(t,3.1833,3.2167)+between(t,5.5833,5.6167)+between(t,8.5500,8.5833)+between(t,9.4167,9.4500)+between(t,9.5500,9.5833)+between(t,10.1833,10.2167),0.062,0.577)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))'"
+  },
+  {
+   "eval": "frame",
+   "value": "'if(between(t,-0.0208,0.0208),0,if(between(t,0.0208,0.0625),0.01,if(between(t,0.0625,0.1042),0.021,if(between(t,0.1042,0.1458),0.031,if(between(t,0.1458,0.1875),0.041,if(between(t,0.1875,0.2292),0.052,if(between(t,0.2292,0.2708),0.072,if(between(t,0.2708,0.3125),0.082,if(between(t,0.3125,0.3542),0.093,if(between(t,0.3542,0.3958),0.103,if(between(t,0.3958,0.4375),0.113,if(between(t,0.4375,0.4792),0.124,if(between(t,0.4792,0.5208),0.134,if(between(t,0.5208,0.5625),0.144,if(between(t,0.5625,0.6042),0.155,if(between(t,0.6042,0.6458),0.165,if(between(t,0.6458,0.6875),0.175,if(between(t,0.6875,0.7292),0.196,if(between(t,0.7292,0.7708),0.206,if(between(t,0.7708,0.8125),0.216,if(between(t,0.8125,0.8542),0.227,if(between(t,0.8542,0.8958),0.237,if(between(t,0.8958,0.9375),0.247,if(between(t,0.9375,0.9792),0.258,if(between(t,0.9792,1.0208),0.268,if(between(t,1.0208,1.0625),0.278,if(between(t,1.0625,1.1042),0.289,if(between(t,1.1042,1.1458),0.299,if(between(t,1.1458,1.1875),0.32,if(between(t,1.1875,1.2292),0.33,if(between(t,1.2292,1.2708),0.34,if(between(t,1.2708,1.3125),0.351,if(between(t,1.3125,1.3542),0.361,if(between(t,1.3542,1.3958),0.371,if(between(t,1.3958,1.4375),0.381,if(between(t,1.4375,1.4792),0.392,if(between(t,1.4792,1.5208),0.402,if(between(t,1.5208,1.5625),0.412,if(between(t,1.5625,1.6042),0.423,if(between(t,1.6042,1.6458),0.443,if(between(t,1.6458,1.6875),0.454,if(between(t,1.6875,1.7292),0.464,if(between(t,1.7292,1.7708),0.474,if(between(t,1.7708,1.8125),0.485,if(between(t,1.8125,1.8542),0.495,if(between(t,1.8542,1.8958),0.505,if(between(t,1.8958,1.9375),0.515,if(between(t,1.9375,1.9792),0.526,if(between(t,1.9792,2.0208),0.536,if(between(t,2.0208,2.0625),0.546,if(between(t,2.0625,2.1042),0.557,if(between(t,2.1042,2.1458),0.577,if(between(t,2.1458,2.1875),0.588,if(between(t,2.1875,2.2292),0.598,if(between(t,2.2292,2.2708),0.608,if(between(t,2.2708,2.3125),0.619,if(between(t,2.3125,2.3542),0.629,if(between(t,2.3542,2.3958),0.639,if(between(t,2.3958,2.4375),0.649,if(between(t,2.4375,2.4792),0.66,if(between(t,2.4792,2.5208),0.67,if(between(t,2.5208,2.5625),0.68,if(between(t,2.5625,2.6042),0.701,if(between(t,2.6042,2.6458),0.711,if(between(t,2.6458,2.6875),0.722,if(between(t,2.6875,2.7292),0.732,if(between(t,2.7292,2.7708),0.742,if(between(t,2.7708,2.8125),0.753,if(between(t,2.8125,2.8542),0.763,if(between(t,2.8542,2.8958),0.773,if(between(t,2.8958,2.9375),0.784,if(between(t,2.9375,2.9792),0.794,if(between(t,2.9792,3.0208),0.804,if(between(t,3.0208,3.0625),0.825,if(between(t,3.0625,3.1042),0.835,if(between(t,3.1042,3.1458),0.845,if(between(t,3.1458,3.1875),0.856,if(between(t,3.1875,3.2292),0.866,if(between(t,3.2292,3.2708),0.876,if(between(t,3.2708,3.3125),0.887,if(between(t,3.3125,3.3542),0.897,if(between(t,3.3542,3.3958),0.907,if(between(t,3.3958,3.4375),0.918,if(between(t,3.4375,3.4792),0.928,if(between(t,3.4792,3.5208),0.948,if(between(t,3.5208,3.5625),0.959,if(between(t,3.5625,3.6042),0.969,if(between(t,3.6042,3.6458),0.979,if(between(t,3.6458,3.6875),0.99,1)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))'"
+  }
+ ],
+ "atempo": [
+  null,
+  "atempo=0.50000",
+  "atempo=0.75000",
+  "atempo=1.25000",
+  "atempo=2.00000",
+  "atempo=1.73205,atempo=1.73205",
+  "atempo=0.50000,atempo=0.50000",
+  "atempo=1.45648,atempo=1.45648,atempo=1.45648,atempo=1.45648"
+ ],
+ "filtros": [
+  {
+   "filter": "[0:a]aformat=sample_fmts=s16:sample_rates=48000,atrim=0us:133333.33333333334us,volume=0.4:eval=once[a0]",
+   "pad_start": null,
+   "pad_end": "apad=pad_len=12800"
+  },
+  {
+   "filter": "[0:a]aformat=sample_fmts=s16:sample_rates=48000,atrim=0us:133333.33333333334us,volume=0.4:eval=once[a0]",
+   "pad_start": "adelay=25|25|25",
+   "pad_end": "apad=pad_len=12800"
+  },
+  {
+   "filter": "[0:a]aformat=sample_fmts=s16:sample_rates=48000,atrim=0us:133333.33333333334us,volume=0.4:eval=once[a0]",
+   "pad_start": null,
+   "pad_end": "apad=pad_len=12800"
+  },
+  {
+   "filter": "[0:a]aformat=sample_fmts=s16:sample_rates=48000,atrim=0us:100000us,volume=0.4:eval=once[a0]",
+   "pad_start": null,
+   "pad_end": "apad=pad_len=14400"
+  },
+  {
+   "filter": "[0:a]aformat=sample_fmts=s16:sample_rates=48000,atempo=1.50000,atrim=111111.11111111111us:377777.77777777775us,volume='if(between(t,0.0944,0.1278),0,if(between(t,0.1278,0.1611),0.247,if(between(t,0.1611,0.1944),0.505,if(between(t,0.1944,0.2278),0.753,1))))':eval=frame[a0]",
+   "pad_start": "adelay=67|67",
+   "pad_end": "apad=pad_len=3200"
+  },
+  {
+   "filter": "[0:a]aformat=sample_fmts=s16:sample_rates=48000,atempo=1.50000,atrim=111111.11111111111us:377777.77777777775us,volume='if(between(t,0.0944,0.1278),0,if(between(t,0.1278,0.1611),0.247,if(between(t,0.1611,0.1944),0.505,if(between(t,0.1944,0.2278),0.753,1))))':eval=frame[a0]",
+   "pad_start": "adelay=67|67|67",
+   "pad_end": "apad=pad_len=3200"
+  },
+  {
+   "filter": "[0:a]aformat=sample_fmts=s16:sample_rates=48000,atempo=1.50000,atrim=111111.11111111111us:377777.77777777775us,volume='if(between(t,0.0944,0.1278),0,if(between(t,0.1278,0.1611),0.247,if(between(t,0.1611,0.1944),0.505,if(between(t,0.1944,0.2278),0.753,1))))':eval=frame[a0]",
+   "pad_start": "adelay=67|67|67",
+   "pad_end": "apad=pad_len=3200"
+  },
+  null,
+  {
+   "filter": "[0:a]aformat=sample_fmts=s16:sample_rates=48000,atrim=166666.66666666666us:200000us[a0]",
+   "pad_start": "adelay=167|167",
+   "pad_end": "apad=pad_len=9600"
+  },
+  {
+   "filter": "[0:a]aformat=sample_fmts=s16:sample_rates=48000,atrim=166666.66666666666us:200000us[a0]",
+   "pad_start": "adelay=167|167|167",
+   "pad_end": "apad=pad_len=9600"
+  },
+  {
+   "filter": "[0:a]aformat=sample_fmts=s16:sample_rates=48000,atrim=166666.66666666666us:200000us[a0]",
+   "pad_start": "adelay=167|167|167",
+   "pad_end": "apad=pad_len=9600"
+  },
+  null,
+  {
+   "filter": "[0:a]aformat=sample_fmts=s16:sample_rates=48000,atrim=200000us:400000us,volume=0.4:eval=once[a0]",
+   "pad_start": "adelay=200|200",
+   "pad_end": null
+  },
+  {
+   "filter": "[0:a]aformat=sample_fmts=s16:sample_rates=48000,atrim=200000us:400000us,volume=0.4:eval=once[a0]",
+   "pad_start": "adelay=200|200|200",
+   "pad_end": null
+  },
+  {
+   "filter": "[0:a]aformat=sample_fmts=s16:sample_rates=48000,atrim=200000us:400000us,volume=0.4:eval=once[a0]",
+   "pad_start": "adelay=200|200|200",
+   "pad_end": null
+  },
+  null
+ ]
+}

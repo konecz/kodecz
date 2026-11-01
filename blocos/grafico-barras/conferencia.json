@@ -1,0 +1,34 @@
+{
+  "bloco": "grafico-barras",
+  "checagens": [
+    {
+      "id": "barras.chega-no-alvo",
+      "prioridade": "P0",
+      "seletor": ".kz-barra-num",
+      "quando": "fim-do-bloco",
+      "medida": "distancia-do-alvo",
+      "maximo": 0,
+      "propriedade": "--kz-valor",
+      "mensagem": "t={t} · {onde} · o número para {valor} longe do data-valor → --valor da barra igual ao data-valor do número, e a cena só corta depois de a última barra crescer"
+    },
+    {
+      "id": "barras.zona-segura",
+      "prioridade": "P0",
+      "seletor": ".kz-barras",
+      "quando": "visivel-parado",
+      "medida": "fora-da-margem",
+      "maximo": 0,
+      "margem": "--spacing-safe",
+      "mensagem": "t={t} · {onde} · o gráfico sai {valor} px da zona segura → mudar --barras-topo ou --barras-altura (G19)"
+    },
+    {
+      "id": "barras.rotulo-cabe",
+      "prioridade": "P1",
+      "seletor": ".kz-barra-rotulo",
+      "quando": "visivel",
+      "medida": "transborda",
+      "maximo": 0,
+      "mensagem": "t={t} · {onde} · o rótulo passa {valor} px da largura da barra → rótulo de uma palavra"
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+<!doctype html>
+<html data-destino="reels">
+<meta charset="utf-8">
+<title>Conferência: passa</title>
+<!-- S04: composição sintética em linha do tempo, 9:16, que passa nas três regras e sem aviso (R01: nada de cliente).
+     Apresentador: rosto.jpg, o retrato de domínio público posto por node conferencia/preparar.ts (NASA, S69-31741).
+     Rosto no alto, dentro da zona segura; faixa logo acima da legenda; legenda numa linha embaixo do queixo;
+     punch-in de 1,2 em «muda» (quadros 27 a 33) que sai na pausa entre as frases (quadros 54 a 60), com a faixa
+     saindo junto (some no 56). Falas em window.motor_falas, no tempo do vídeo. -->
+<script type="application/json" id="motor-video">
+{ "id": "ConfPassa", "largura": 810, "altura": 1440, "qps": 30, "quadros": 90 }
+</script>
+<style>
+  html, body { margin: 0; width: 810px; height: 1440px; overflow: hidden; background: #0d1020; font-family: sans-serif; }
+  .palco { position: absolute; inset: 0; overflow: hidden; }
+  .take { position: absolute; left: 0; top: 120px; width: 810px; height: 1012px; transform-origin: 494px 275px; }
+  .take img { width: 810px; height: 1012px; object-fit: cover; display: block; }
+  .faixa { position: absolute; left: 0; right: 0; top: 770px; text-align: center; opacity: 0; }
+  .faixa span { background: #ffcc00; color: #111; font: 700 30px sans-serif; padding: 6px 16px; border-radius: 8px; }
+  .legenda { position: absolute; left: 0; right: 0; top: 850px; text-align: center; color: #fff; font: 700 44px sans-serif;
+             white-space: nowrap; opacity: 0; text-shadow: 0 2px 6px #000; }
+</style>
+<div class="palco">
+  <div class="take" id="take"><img data-papel="apresentador" src="rosto.jpg" alt=""></div>
+</div>
+<div class="faixa" id="faixa" data-papel="faixa"><span>Tema do vídeo</span></div>
+<div class="legenda" id="l1" data-papel="legenda">Isto muda tudo.</div>
+<div class="legenda" id="l2" data-papel="legenda">Agora veja.</div>
+<script>
+  const QPS = 30, QUADROS = 90, DUR = (QUADROS * 1000) / QPS;
+  // Visível de [de, ate) em quadros, sem meio-termo (opacidade 0 ou 1).
+  const janela = (id, de, ate) => document.getElementById(id).animate([
+    { opacity: 0, offset: 0 }, { opacity: 0, offset: de / QUADROS }, { opacity: 1, offset: de / QUADROS },
+    { opacity: 1, offset: ate / QUADROS }, { opacity: 0, offset: ate / QUADROS }, { opacity: 0, offset: 1 },
+  ], { duration: DUR, fill: 'both' });
+  janela('l1', 15, 50);
+  janela('l2', 66, 90);
+  janela('faixa', 20, 56);
+  document.getElementById('take').animate([
+    { transform: 'scale(1)', offset: 0 }, { transform: 'scale(1)', offset: 27 / QUADROS }, { transform: 'scale(1.2)', offset: 33 / QUADROS },
+    { transform: 'scale(1.2)', offset: 54 / QUADROS }, { transform: 'scale(1)', offset: 60 / QUADROS }, { transform: 'scale(1)', offset: 1 },
+  ], { duration: DUR, fill: 'both' });
+  window.motor_falas = [
+    { t: 'Isto', ini: 0.5, fim: 0.8, bloco: 1 }, { t: 'muda', ini: 0.8, fim: 1.1, bloco: 1 }, { t: 'tudo.', ini: 1.1, fim: 1.6, bloco: 1 },
+    { t: 'Agora', ini: 2.2, fim: 2.6, bloco: 2 }, { t: 'veja.', ini: 2.6, fim: 2.9, bloco: 2 },
+  ];
+</script>

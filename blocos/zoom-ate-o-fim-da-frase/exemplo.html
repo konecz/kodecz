@@ -1,0 +1,19 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>zoom-ate-o-fim-da-frase · exemplo</title>
+<!-- H02: um retângulo no lugar do apresentador (sem mídia), zoom da palavra de ênfase (quadro 20) à pausa depois da
+     frase (quadro 50). Servir a pasta blocos/. -->
+<script type="application/json" id="motor-video">
+{ "id": "ExemploZoom", "largura": 1920, "altura": 1080, "qps": 30, "quadros": 90 }
+</script>
+<link rel="stylesheet" href="../marca/marca.css">
+<link rel="stylesheet" href="bloco.css">
+<style>
+  :root { --qps: 30; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--color-ground); }
+  .plano { position: absolute; inset: 0; background: var(--color-surface); }
+  .rosto { position: absolute; left: 850px; top: 300px; width: 220px; height: 280px; border-radius: 110px; background: var(--color-muted); }
+</style>
+<div class="kz-zoom" data-bloco="zoom-ate-o-fim-da-frase" style="--inicio: 20; --fim: 50; --zoom-origem: 50% 40%">
+  <div class="plano"><div class="rosto"></div></div>
+</div>

@@ -1,0 +1,39 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Linha parada</title>
+<!-- P10.3: composição sintética em linha do tempo declarada com trechos parados, para o teste do quadro repetido
+     (R01: nada de cliente). Sem motor_quadro: o motor sabe pelos intervalos das animações quais quadros repetem o
+     anterior. Quatro intervalos, a 30 qps:
+       0–300 ms: a caixa entra (element.animate, fill both);
+       400–500 ms: o quadrado pisca (element.animate sem fill: aparece e some);
+       1000–1300 ms: o título aparece (CSS @keyframes, fill both);
+       1500–1700 ms: a barra cresce (CSS @keyframes com animation-delay, fill both).
+     Dá 25 quadros parados nos 60 (parados.test.mjs do M04). -->
+<script type="application/json" id="motor-video">
+{ "id": "LinhaParada", "largura": 960, "altura": 540, "qps": 30, "quadros": 60 }
+</script>
+<style>
+  /* Fonte embutida (cli/fixtures/fonte-padrao): o quadro não depende das fontes da máquina. */
+  @font-face { font-family: 'Teste Sans'; font-weight: 400; src: url('fonte/DejaVuSans.woff2') format('woff2'); }
+  @font-face { font-family: 'Teste Sans'; font-weight: 700; src: url('fonte/DejaVuSans-Bold.woff2') format('woff2'); }
+  html, body { margin: 0; width: 960px; height: 540px; overflow: hidden; background: #10163a; }
+  .caixa { position: absolute; left: 80px; top: 80px; width: 160px; height: 160px; border-radius: 24px;
+           background: linear-gradient(135deg, #ff8c3c, #ff3c78); }
+  .pisca { position: absolute; left: 320px; top: 80px; width: 64px; height: 64px; background: #3cff8c; opacity: 0; }
+  .titulo { position: absolute; left: 80px; top: 300px; font: 700 64px 'Teste Sans', sans-serif; color: #fff;
+            animation: aparece 300ms ease-out 1000ms both; }
+  @keyframes aparece { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: none; } }
+  .barra { position: absolute; left: 80px; top: 440px; width: 800px; height: 24px; background: #3c8cff;
+           transform-origin: left; animation: cresce 200ms linear 1500ms both; }
+  @keyframes cresce { from { transform: scaleX(0.1); } to { transform: scaleX(1); } }
+</style>
+<div class="caixa" id="caixa"></div>
+<div class="pisca" id="pisca"></div>
+<div class="titulo">Parada</div>
+<div class="barra"></div>
+<script>
+  document.getElementById('caixa').animate(
+    [{ transform: 'translateX(-200px) rotate(-30deg)' }, { transform: 'none' }],
+    { duration: 300, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'both' });
+  document.getElementById('pisca').animate([{ opacity: 1 }, { opacity: 1 }], { delay: 400, duration: 100 });
+</script>
