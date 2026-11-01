@@ -1,0 +1,22 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>terco-inferior · exemplo errado</title>
+<!-- H10, errado de propósito: o cartão ainda no ar quando a legenda começa (G16). A conferência tem de acusar
+     terco.sem-legenda nos quadros 40 a 59. -->
+<script type="application/json" id="motor-video">
+{ "id": "ExemploTercoErrado", "largura": 1920, "altura": 1080, "qps": 30, "quadros": 80 }
+</script>
+<link rel="stylesheet" href="../marca/marca.css">
+<link rel="stylesheet" href="bloco.css">
+<link rel="stylesheet" href="../legenda-uma-linha/bloco.css">
+<style>
+  :root { --qps: 30; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--color-muted); }
+</style>
+<div class="kz-terco" data-bloco="terco-inferior" style="--inicio: 10; --fim: 60">
+  <p class="kz-terco-nome">Nome Inventado</p>
+  <p class="kz-terco-cargo">Cargo de exemplo</p>
+</div>
+<div class="kz-legendas" data-bloco="legenda-uma-linha">
+  <p class="kz-legenda" data-papel="legenda" style="--inicio: 40; --fim: 80"><span class="kz-palavra" style="--inicio: 40; --fim: 80">Cedo demais.</span></p>
+</div>

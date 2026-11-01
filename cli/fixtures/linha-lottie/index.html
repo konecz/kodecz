@@ -1,0 +1,59 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Linha com Lottie</title>
+<!-- S01: composição sintética com Lottie, para os testes do comando (R01: nada de cliente). O lottie-web NÃO está nesta
+     pasta nem no repositório (o cliente traz o dele): o teste copia esta página para uma pasta
+     temporária junto com o lottie.min.js do cache local (cli/fixtures/bibliotecas.ts). As animações Lottie são JSON
+     escritos por nós: as tarjas montadas aqui embaixo e o quadrado.json (um quadrado verde, carregado por path).
+     Quatro tarjas, uma animação Lottie (SVG) cada, para conferir a conversão de quadros e o laço:
+       y 524: 60 quadros por segundo, sem laço: a tarja mostra N (o quadro 2N da animação);
+       y 508: 30 qps, 10 quadros, loop true: N mod 10;
+       y 492: 30 qps, 20 quadros, sem laço: min(N, 19) (para no último quadro);
+       y 476: 30 qps, 10 quadros, loop 2 (três voltas): N mod 10 até o 29, depois 9.
+     Quadrado de 32 px no canto (x 40, y 0), do quadrado.json: verde em todos os quadros.
+     Tarja = faixa do M03 (nativo/src/marca.rs): blocos de 16 px, branco, preto, 24 bits de N e o complemento. -->
+<script type="application/json" id="motor-video">
+{ "id": "LinhaLottie", "largura": 960, "altura": 540, "qps": 30, "quadros": 60 }
+</script>
+<style>
+  html, body { margin: 0; width: 960px; height: 540px; overflow: hidden; background: #10163a; }
+  .tarja { position: absolute; left: 0; width: 800px; height: 16px; background: #000; }
+  #quadrado { position: absolute; left: 40px; top: 0; width: 32px; height: 32px; }
+</style>
+<div class="tarja" id="t524" style="top: 524px"></div>
+<div class="tarja" id="t508" style="top: 508px"></div>
+<div class="tarja" id="t492" style="top: 492px"></div>
+<div class="tarja" id="t476" style="top: 476px"></div>
+<div id="quadrado"></div>
+<script src="lottie.min.js"></script>
+<script>
+  const BITS = 24;
+  const bitDoBloco = (i, n) => i === 0 ? 1 : i === 1 ? 0 : i < 2 + BITS ? (n >> (BITS - 1 - (i - 2))) & 1 : 1 - ((n >> (BITS - 1 - (i - 2 - BITS))) & 1);
+  const fixo = (k) => ({ a: 0, k });
+  // Uma camada por bloco branco: retângulo de 16 px com a opacidade em degraus (keyframes "h": 1), cada mudança meio
+  // quadro da animação antes do quadro em que vale.
+  function tarja(fr, quadros, valor) {
+    const camadas = [];
+    for (let i = 0; i < 2 + 2 * BITS; i++) {
+      const k = [{ t: 0, s: [100 * bitDoBloco(i, valor(0))], h: 1 }];
+      for (let q = 1; q < quadros; q++) {
+        const b = bitDoBloco(i, valor(q));
+        if (b !== bitDoBloco(i, valor(q - 1))) k.push({ t: q - 0.5, s: [100 * b], h: 1 });
+      }
+      if (k.length === 1 && k[0].s[0] === 0) continue;
+      camadas.push({ ddd: 0, ind: camadas.length + 1, ty: 4, nm: 'b' + i, sr: 1, ao: 0, ip: 0, op: quadros, st: 0, bm: 0,
+        ks: { o: k.length === 1 ? fixo(k[0].s[0]) : { a: 1, k }, r: fixo(0), p: fixo([16 * i + 8, 8, 0]), a: fixo([0, 0, 0]), s: fixo([100, 100, 100]) },
+        shapes: [{ ty: 'gr', nm: 'g', it: [
+          { ty: 'rc', d: 1, s: fixo([16, 16]), p: fixo([0, 0]), r: fixo(0) },
+          { ty: 'fl', c: fixo([1, 1, 1, 1]), o: fixo(100), r: 1 },
+          { ty: 'tr', p: fixo([0, 0]), a: fixo([0, 0]), s: fixo([100, 100]), r: fixo(0), o: fixo(100), sk: fixo(0), sa: fixo(0) }] }] });
+    }
+    return { v: '5.7.0', fr, ip: 0, op: quadros, w: 800, h: 16, nm: 'tarja', ddd: 0, assets: [], layers: camadas };
+  }
+  const carregar = (id, dados, loop) => lottie.loadAnimation({ container: document.getElementById(id), renderer: 'svg', loop, autoplay: true, animationData: dados });
+  carregar('t524', tarja(60, 120, (q) => Math.floor(q / 2)), false);
+  carregar('t508', tarja(30, 10, (q) => q), true);
+  carregar('t492', tarja(30, 20, (q) => q), false);
+  carregar('t476', tarja(30, 10, (q) => q), 2);
+  lottie.loadAnimation({ container: document.getElementById('quadrado'), renderer: 'svg', loop: true, autoplay: true, path: 'quadrado.json' });
+</script>

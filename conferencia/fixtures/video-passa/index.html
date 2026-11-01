@@ -1,0 +1,20 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Conferência: apresentador em vídeo</title>
+<!-- S04: composição sintética em linha do tempo, 16:9, com o apresentador num <video> (P10.5) que só entra no quadro
+     10 e sai no 80 (data-inicio e data-quadros), e um rosto que anda dentro do take (rosto.mp4, feito do retrato de
+     domínio público por node conferencia/preparar.ts). Passa nas três regras e sem aviso (R01: nada de cliente). -->
+<script type="application/json" id="motor-video">
+{ "id": "ConfVideoPassa", "largura": 960, "altura": 540, "qps": 30, "quadros": 90 }
+</script>
+<style>
+  html, body { margin: 0; width: 960px; height: 540px; overflow: hidden; background: #0d1020; font-family: sans-serif; }
+  .tela { position: absolute; left: 264px; top: 0; width: 432px; height: 540px; object-fit: cover; }
+  .chip { position: absolute; left: 40px; top: 40px; background: #ff3c78; color: #fff; font: 700 22px sans-serif;
+          padding: 6px 12px; border-radius: 6px; }
+  .legenda { position: absolute; left: 0; right: 0; top: 470px; text-align: center; color: #fff; font: 700 32px sans-serif;
+             white-space: nowrap; text-shadow: 0 2px 6px #000; }
+</style>
+<video class="tela" data-papel="apresentador" src="rosto.mp4" data-inicio="10" data-quadros="70" muted></video>
+<div class="chip">Longe</div>
+<div class="legenda" data-papel="legenda">Legenda numa linha.</div>

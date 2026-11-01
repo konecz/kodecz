@@ -1,0 +1,18 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Linha rastro</title>
+<!-- Composição sintética em linha do tempo declarada (R01: nada de cliente), no lugar da «Sintetica» do Remotion nos
+     testes do comando (cli/render.test.ts): 1920×1080 a 30 qps, fundo transparente (preto no MP4) e um círculo
+     rgba(0, 90, 255, 0.5) de 140 px em top 520 que anda de x = 100 (quadro 0) a x = 1600 (quadro 299), em laço, para
+     o quadro mudar sempre (sem quadro repetido) e o render durar o bastante para o SIGTERM no meio. Na CPU, o
+     semitransparente que se move não pode deixar rastro (regressão do fundo preto opaco do M08). -->
+<script type="application/json" id="motor-video">
+{ "id": "LinhaRastro", "largura": 1920, "altura": 1080, "qps": 30, "quadros": 900 }
+</script>
+<style>
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; }
+  .circulo { position: absolute; left: 100px; top: 520px; width: 140px; height: 140px; border-radius: 50%;
+             background: rgba(0, 90, 255, 0.5); animation: andar calc(299s / 30) linear infinite; }
+  @keyframes andar { from { transform: translateX(0); } to { transform: translateX(1500px); } }
+</style>
+<div class="circulo"></div>

@@ -1,0 +1,14 @@
+{
+  "bloco": "transicao-wipe",
+  "checagens": [
+    {
+      "id": "wipe.inteira",
+      "prioridade": "P0",
+      "seletor": ".kz-wipe",
+      "quando": "fim-da-transicao",
+      "medida": "inteira",
+      "maximo": 0,
+      "mensagem": "t={t} · {onde} · no fim do wipe a cena que entra não cobre o quadro → conferir --wipe-de (um inset) e a --duracao"
+    }
+  ]
+}

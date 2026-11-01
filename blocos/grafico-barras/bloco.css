@@ -1,0 +1,43 @@
+/* grafico-barras (H11): barras que crescem da base, uma depois da outra (--ordem × --passo quadros), com o número de
+   cada uma contando de 0 até o valor junto com ela (o número surge no primeiro quinto do crescimento: antes da
+   barra, não fica um «0» no chão). Altura = --valor / --maximo da área. Número inteiro, pelo
+   contador do CSS sobre uma propriedade registrada (@property): nada de script com relógio. */
+@property --kz-valor { syntax: '<integer>'; inherits: false; initial-value: 0; }
+.kz-barras {
+  --duracao: initial; --passo: initial; /* nada herdado de uma transição em volta; no style do bloco vale */
+  position: absolute; left: var(--barras-x, var(--spacing-margin, 96px)); right: var(--barras-direita, var(--spacing-margin, 96px));
+  top: var(--barras-topo, 30%); height: var(--barras-altura, 46%);
+  display: flex; align-items: stretch; gap: var(--barras-vao, 48px);
+  border-bottom: 3px solid var(--color-surface, var(--color-muted));
+}
+.kz-barra { position: relative; flex: 1; }
+.kz-barra-coluna {
+  position: absolute; left: 0; right: 0; bottom: 0; height: calc(var(--valor) / var(--maximo) * 100%);
+  border-radius: var(--barras-canto, 10px) var(--barras-canto, 10px) 0 0;
+  background: var(--barras-cor, var(--color-muted)); transform-origin: 50% 100%;
+}
+.kz-barra.kz-destaque .kz-barra-coluna { background: var(--color-accent); }
+.kz-barra-num {
+  position: absolute; left: 0; right: 0; bottom: calc(var(--valor) / var(--maximo) * 100% + 12px); text-align: center;
+  font-family: var(--font-title, var(--font-display)); font-weight: var(--font-title-weight, 700);
+  font-size: calc(var(--font-title-size, 64px) * 0.7); line-height: 1; color: var(--color-ink);
+  counter-reset: kz-barra var(--kz-valor); white-space: nowrap;
+}
+.kz-barra-num::before { content: counter(kz-barra) var(--sufixo, ""); }
+.kz-barra-rotulo {
+  position: absolute; left: 0; right: 0; top: calc(100% + 16px); text-align: center; font-style: normal;
+  font-family: var(--font-label, var(--font-body)); font-weight: var(--font-label-weight, 700);
+  font-size: var(--font-label-size, 28px); color: var(--color-muted, var(--color-ink)); white-space: nowrap;
+}
+.kz-barra-coluna, .kz-barra-num {
+  --kz-d: calc(var(--duracao, 27) * 1s / var(--qps));
+  --kz-t: calc((var(--inicio) + var(--ordem, 0) * var(--passo, 4)) * 1s / var(--qps));
+}
+.kz-barra-coluna { animation: kz-barra-cresce var(--kz-d) var(--motion-easing-enter, cubic-bezier(0.16, 1, 0.3, 1)) var(--kz-t) both; }
+.kz-barra-num { animation: kz-barra-conta var(--kz-d) var(--motion-easing-enter, cubic-bezier(0.16, 1, 0.3, 1)) var(--kz-t) both; }
+@keyframes kz-barra-cresce { from { transform: scaleY(0); } to { transform: none; } }
+@keyframes kz-barra-conta {
+  from { --kz-valor: 0; bottom: 12px; opacity: 0; }
+  20% { opacity: 1; }
+  to { --kz-valor: var(--valor); bottom: calc(var(--valor) / var(--maximo) * 100% + 12px); opacity: 1; }
+}

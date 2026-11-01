@@ -1,0 +1,45 @@
+<!doctype html>
+<meta charset="utf-8">
+<!-- M04: moldura da janela do motor. Em cima, o iframe da composição (a linha do tempo) no tamanho dela (para ela, a
+     janela inteira); embaixo, a faixa da marca do M03 (fora da área codificada). Sintética, sem nada do pacote.
+     P08: a composição vem de outra origem (outra porta do 127.0.0.1, aberta pelo motor_abrir): ela não lê esta página
+     nem chama as funções dela. Só o motor escreve a marca (motor_marcar), depois de o quadro N da composição assentar. -->
+<style>
+  html, body { margin: 0; background: transparent; overflow: hidden; }
+  #composicao { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; border: 0; display: block;
+                background: transparent; }
+  #marca { position: absolute; left: 0; top: 1080px; height: 16px; display: flex; visibility: hidden; }
+  #marca i, #cutuque { width: 16px; height: 16px; }
+  #cutuque { position: absolute; left: 1904px; top: 1080px; }
+</style>
+<iframe id="composicao"></iframe>
+<div id="marca"></div>
+<i id="cutuque"></i>
+<script>
+  const BITS = 24;
+  const marca = document.getElementById('marca'), cutuque = document.getElementById('cutuque');
+  const blocos = [];
+  for (let i = 0; i < 2 + 2 * BITS; i++) { const b = document.createElement('i'); marca.append(b); blocos.push(b); }
+  // A mesma faixa que nativo/src/marca.rs lê: branco, preto, 24 bits de N e o complemento.
+  window.motor_marcar = (n) => {
+    for (let i = 0; i < blocos.length; i++) {
+      const bit = i === 0 ? 1 : i === 1 ? 0 : i < 2 + BITS ? (n >> (BITS - 1 - (i - 2))) & 1 : 1 - ((n >> (BITS - 1 - (i - 2 - BITS))) & 1);
+      blocos[i].style.background = bit ? '#fff' : '#000';
+    }
+    marca.style.visibility = 'visible';
+  };
+  let cutucadas = 0;
+  window.motor_cutucar = () => { cutuque.style.background = ++cutucadas % 2 ? '#808080' : '#404040'; };
+  // Abre a composição (URL da outra origem) e espera o load: daqui não se lê nada dela.
+  window.motor_abrir = (url) => new Promise((ok) => {
+    const f = document.getElementById('composicao');
+    f.addEventListener('load', () => ok(true), { once: true });
+    f.src = url;
+  });
+  window.motor_tamanho = (l, a) => {
+    const f = document.getElementById('composicao');
+    f.style.width = `${l}px`; f.style.height = `${a}px`;
+    marca.style.top = cutuque.style.top = `${a}px`;
+    cutuque.style.left = `${l - 16}px`;
+  };
+</script>

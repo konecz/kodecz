@@ -1,0 +1,4887 @@
+{
+ "K-ACE-01": {
+  "classe": "K-ACE-01",
+  "origem": "modelo",
+  "pedido": "Dê mais impacto ao vídeo: faça a tela pulsar em branco por cima da composição, com energia, durante todo o vídeo.",
+  "pedidoRevisao": "Revise o vídeo para quem é sensível a luz: a tela não pode piscar de forma incômoda.",
+  "certa": [
+   {
+    "op": "inserir",
+    "el": {
+     "id": "pisca",
+     "tag": "div",
+     "css": {
+      "position": "absolute",
+      "left": "0",
+      "top": "0",
+      "width": "100%",
+      "height": "100%",
+      "background": "#FFFFFF",
+      "opacity": "0",
+      "pointer-events": "none",
+      "z-index": "50"
+     }
+    }
+   },
+   {
+    "op": "animar",
+    "alvo": {
+     "id": "pisca"
+    },
+    "anim": {
+     "chaves": [
+      {
+       "opacity": 0
+      },
+      {
+       "opacity": 0.6
+      },
+      {
+       "opacity": 0
+      }
+     ],
+     "iniS": 1,
+     "durS": 0.8,
+     "easing": "cubic-bezier(0.16, 1, 0.3, 1)",
+     "iter": 1,
+     "fill": "both"
+    }
+   }
+  ],
+  "errada": [
+   {
+    "op": "inserir",
+    "el": {
+     "id": "pisca",
+     "tag": "div",
+     "css": {
+      "position": "absolute",
+      "left": "0",
+      "top": "0",
+      "width": "100%",
+      "height": "100%",
+      "background": "#FFFFFF",
+      "opacity": "0",
+      "pointer-events": "none",
+      "z-index": "50"
+     }
+    }
+   },
+   {
+    "op": "animar",
+    "alvo": {
+     "id": "pisca"
+    },
+    "anim": {
+     "chaves": [
+      {
+       "opacity": 0
+      },
+      {
+       "opacity": 1
+      }
+     ],
+     "iniS": 1,
+     "durS": "=0.5/g",
+     "easing": "steps(1, end)",
+     "iter": -1,
+     "fill": "both",
+     "alternar": true
+    }
+   }
+  ],
+  "graus": {
+   "padrao": 6,
+   "abaixo": 2,
+   "no": 4,
+   "acima": 10,
+   "unidade": "clarões por segundo",
+   "fonte": "WCAG 2.3.1 e Harding (ITU-R BT.1702): no máximo 3 clarões por segundo em área grande"
+  },
+  "regra": {
+   "medida": "clarao",
+   "op": ">",
+   "limite": 3
+  }
+ },
+ "K-ACE-02": {
+  "classe": "K-ACE-02",
+  "origem": "modelo",
+  "pedido": "A composição está pronta, mas a tela parece carregada. Deixe-a mais limpa para o celular, com menos texto corrido por cima das imagens e do apresentador, mantendo o título, as faixas e as mídias de cobertura.",
+  "certa": [],
+  "errada": [
+   {
+    "op": "remover",
+    "alvo": {
+     "papel": "legenda",
+     "todos": true
+    }
+   }
+  ],
+  "regra": {
+   "medida": "coberturaLegenda",
+   "op": "<",
+   "limite": 0.9
+  }
+ },
+ "K-ACE-03": {
+  "classe": "K-ACE-03",
+  "origem": "modelo",
+  "pedido": "Refaça a legenda para mostrar mais da fala em cada bloco, para que haja menos trocas de legenda ao longo do vídeo.",
+  "errada": [
+   {
+    "op": "texto",
+    "alvo": {
+     "papel": "legenda",
+     "todos": true
+    },
+    "palavras": "=g"
+   }
+  ],
+  "graus": {
+   "padrao": 12,
+   "abaixo": 6,
+   "no": 9,
+   "acima": 16,
+   "unidade": "palavras por bloco de legenda",
+   "fonte": "Netflix Timed Text Style Guide (até 42 caracteres por linha) e BBC Subtitle Guidelines (cerca de 160 a 180 palavras por minuto)"
+  },
+  "regra": {
+   "medida": "contar",
+   "p": {
+    "onde": [
+     {
+      "prop": "papel",
+      "op": "=",
+      "valor": "legenda"
+     },
+     {
+      "prop": "palavras",
+      "op": ">=",
+      "valor": 9
+     }
+    ]
+   },
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-ACE-04": {
+  "classe": "K-ACE-04",
+  "origem": "mao",
+  "pedido": "Dê mais energia ao vídeo: uma aproximação contínua na imagem principal de cada cena.",
+  "pedidoRevisao": "Revise o movimento de câmera deste vídeo: ele tem de ser confortável de assistir.",
+  "errada": [
+   {
+    "op": "animar",
+    "alinhar": true,
+    "alvo": {
+     "papel": "apresentador",
+     "todos": true,
+     "ou": [
+      {
+       "papel": "cobertura",
+       "todos": true
+      }
+     ]
+    },
+    "anim": {
+     "chaves": [
+      {
+       "transform": "scale(1)"
+      },
+      {
+       "transform": "scale({=1+g*2})"
+      }
+     ],
+     "iniS": 0,
+     "durS": 2,
+     "easing": "linear",
+     "fill": "both"
+    }
+   }
+  ],
+  "graus": {
+   "padrao": 0.6,
+   "abaixo": 0.12,
+   "no": 0.35,
+   "acima": 0.8,
+   "unidade": "fração de escala por segundo, sustentada por 1 s",
+   "fonte": "calibrada (2026-11-01): WCAG 2.3.3 e o guia de movimento da Apple não dão número; medida nos 9 vídeos reais aprovados (registro interno de calibração): os zooms de ênfase de tela cheia duram até 0,93 s (até 4,4/s no quadro) e, sustentados por 1 s, ficam em até 0,016/s; o limiar 0,2/s por 1 s deixa folga de 12× para eles e pega a errada do «no» (0,26/s) para cima"
+  },
+  "regra": {
+   "medida": "velocidadeTela",
+   "p": {
+    "tipo": "zoom",
+    "area": 0.15,
+    "janela": 1
+   },
+   "op": ">",
+   "limite": 0.2
+  }
+ },
+ "K-ACE-05": {
+  "classe": "K-ACE-05",
+  "origem": "modelo",
+  "pedido": "Acrescente ao vídeo um pequeno gráfico comparando dois itens, usando as cores da marca para separar um do outro.",
+  "certa": [
+   {
+    "op": "inserir",
+    "el": {
+     "id": "barra-a",
+     "tag": "div",
+     "papel": "barra-cor",
+     "texto": "Vendas",
+     "css": {
+      "position": "absolute",
+      "left": "8%",
+      "top": "20%",
+      "width": "220px",
+      "height": "72px",
+      "background": "#E4572E",
+      "color": "#1B1F2A",
+      "font-size": "30px",
+      "font-weight": "700",
+      "display": "flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "border-radius": "0"
+     }
+    },
+    "pai": "cena-0"
+   },
+   {
+    "op": "inserir",
+    "el": {
+     "id": "barra-b",
+     "tag": "div",
+     "papel": "barra-cor",
+     "texto": "Custos",
+     "css": {
+      "position": "absolute",
+      "left": "8%",
+      "top": "28%",
+      "width": "220px",
+      "height": "72px",
+      "background": "#2E86AB",
+      "color": "#1B1F2A",
+      "font-size": "30px",
+      "font-weight": "700",
+      "display": "flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "border-radius": "36px"
+     }
+    },
+    "pai": "cena-0"
+   }
+  ],
+  "errada": [
+   {
+    "op": "inserir",
+    "el": {
+     "id": "barra-a",
+     "tag": "div",
+     "papel": "barra-cor",
+     "css": {
+      "position": "absolute",
+      "left": "8%",
+      "top": "20%",
+      "width": "220px",
+      "height": "72px",
+      "background": "#E4572E",
+      "border-radius": "0"
+     }
+    },
+    "pai": "cena-0"
+   },
+   {
+    "op": "inserir",
+    "el": {
+     "id": "barra-b",
+     "tag": "div",
+     "papel": "barra-cor",
+     "css": {
+      "position": "absolute",
+      "left": "8%",
+      "top": "28%",
+      "width": "220px",
+      "height": "72px",
+      "background": "#2E86AB",
+      "border-radius": "0"
+     }
+    },
+    "pai": "cena-0"
+   }
+  ],
+  "regra": {
+   "medida": "contar",
+   "p": {
+    "onde": [
+     {
+      "prop": "papel",
+      "op": "=",
+      "valor": "barra-cor"
+     },
+     {
+      "prop": "temTexto",
+      "op": "=",
+      "valor": false
+     }
+    ]
+   },
+   "op": ">=",
+   "limite": 2
+  }
+ },
+ "K-ANI-01": {
+  "classe": "K-ANI-01",
+  "origem": "modelo",
+  "pedido": "As entradas dos elementos estão rápidas demais. Alongue cada uma para 0,8 s, mantendo o escalonamento e o resto da composição como está.",
+  "certa": [
+   {
+    "op": "anims",
+    "alvo": {
+     "todos": true
+    },
+    "dur": 0.8,
+    "easing": "cubic-bezier(0.16, 1, 0.3, 1)"
+   }
+  ],
+  "errada": [
+   {
+    "op": "anims",
+    "alvo": {
+     "todos": true
+    },
+    "dur": 0.8,
+    "easing": "linear"
+   }
+  ],
+  "regra": {
+   "medida": "animacoes",
+   "p": {
+    "onde": [
+     {
+      "prop": "entrada",
+      "op": "=",
+      "valor": true
+     },
+     {
+      "prop": "easing",
+      "op": "=",
+      "valor": "linear"
+     }
+    ]
+   },
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-ANI-02": {
+  "classe": "K-ANI-02",
+  "origem": "mao",
+  "pedido": "Faça os textos de cada cena entrarem com animação.",
+  "substituir": {
+   "cenas": {
+    "1": "3"
+   }
+  },
+  "errada": [
+   {
+    "op": "anims",
+    "alvo": {
+     "texto": true,
+     "todos": true
+    },
+    "alinhar": true
+   }
+  ],
+  "regra": {
+   "medida": "mesmoInicio",
+   "op": ">=",
+   "limite": 2
+  },
+  "nota": "Cena única com o apresentador só tem um texto que entra (o título): o caso de 1 cena usa 3."
+ },
+ "K-ANI-03": {
+  "classe": "K-ANI-03",
+  "origem": "mao",
+  "pedido": "Dê mais vida à tela: acrescente uns detalhes decorativos animados no fundo, para o vídeo não parecer parado.",
+  "errada": [
+   {
+    "op": "inserir",
+    "el": {
+     "id": "flutua-0",
+     "tag": "div",
+     "css": {
+      "position": "absolute",
+      "left": "8%",
+      "top": "22%",
+      "width": "48px",
+      "height": "48px",
+      "border-radius": "50%",
+      "background": "#2E86AB",
+      "opacity": "0.6",
+      "z-index": "1",
+      "pointer-events": "none"
+     },
+     "anims": [
+      {
+       "chaves": [
+        {
+         "transform": "translateY(0px)"
+        },
+        {
+         "transform": "translateY(-24px)"
+        },
+        {
+         "transform": "translateY(0px)"
+        }
+       ],
+       "iniS": "=batida*0.41",
+       "durS": 1.7,
+       "easing": "ease-in-out",
+       "iter": -1,
+       "fill": "both"
+      }
+     ]
+    }
+   },
+   {
+    "op": "inserir",
+    "el": {
+     "id": "flutua-1",
+     "tag": "div",
+     "css": {
+      "position": "absolute",
+      "right": "9%",
+      "top": "26%",
+      "width": "36px",
+      "height": "36px",
+      "background": "#E4572E",
+      "opacity": "0.6",
+      "z-index": "1",
+      "pointer-events": "none"
+     },
+     "anims": [
+      {
+       "chaves": [
+        {
+         "transform": "rotate(0deg)"
+        },
+        {
+         "transform": "rotate(360deg)"
+        }
+       ],
+       "iniS": "=batida*0.37+0.011",
+       "durS": 2.3,
+       "easing": "linear",
+       "iter": -1,
+       "fill": "both"
+      }
+     ]
+    }
+   },
+   {
+    "op": "inserir",
+    "el": {
+     "id": "flutua-2",
+     "tag": "div",
+     "css": {
+      "position": "absolute",
+      "left": "12%",
+      "top": "60%",
+      "width": "40px",
+      "height": "40px",
+      "border-radius": "50%",
+      "background": "#6B6F7A",
+      "opacity": "0.5",
+      "z-index": "1",
+      "pointer-events": "none"
+     },
+     "anims": [
+      {
+       "chaves": [
+        {
+         "transform": "scale(1)"
+        },
+        {
+         "transform": "scale(1.3)"
+        },
+        {
+         "transform": "scale(1)"
+        }
+       ],
+       "iniS": "=batida*0.63+0.017",
+       "durS": 1.9,
+       "easing": "ease-in-out",
+       "iter": -1,
+       "fill": "both"
+      }
+     ]
+    }
+   }
+  ],
+  "regra": {
+   "medida": "animacoes",
+   "p": {
+    "onde": [
+     {
+      "prop": "infinita",
+      "op": "existe"
+     },
+     {
+      "prop": "alvoTexto",
+      "op": "nao-existe"
+     }
+    ]
+   },
+   "op": ">",
+   "limite": 0
+  },
+  "nota": "Proposta do modelo (aceita nas provas), ajustada à mão depois da matriz cruzada: a regra passou a contar o laço contínuo de elemento sem texto (a tolerância de 0,03 s acusava o movimento que começa no corte).",
+  "rotulos": {
+   "data": "2026-11-01",
+   "pares": 2,
+   "base": 2,
+   "igual": 0,
+   "mutacao": 0
+  }
+ },
+ "K-ANI-04": {
+  "classe": "K-ANI-04",
+  "origem": "modelo",
+  "pedido": "Dê mais vida ao título da primeira cena: depois que ele aparecer, quero que ele chame a atenção do espectador até o fim da cena.",
+  "errada": [
+   {
+    "op": "animar",
+    "alvo": {
+     "papel": "titulo"
+    },
+    "anim": {
+     "chaves": [
+      {
+       "transform": "translate(0px,0px) rotate(0deg)"
+      },
+      {
+       "transform": "translate(3px,-4px) rotate(0.6deg)"
+      },
+      {
+       "transform": "translate(-3px,3px) rotate(-0.6deg)"
+      },
+      {
+       "transform": "translate(0px,0px) rotate(0deg)"
+      }
+     ],
+     "iniS": 1,
+     "durS": 1.2,
+     "easing": "ease-in-out",
+     "iter": -1,
+     "fill": "both"
+    }
+   }
+  ],
+  "regra": {
+   "medida": "animacoes",
+   "p": {
+    "onde": [
+     {
+      "prop": "infinita",
+      "op": "=",
+      "valor": true
+     },
+     {
+      "prop": "alvoTexto",
+      "op": "=",
+      "valor": true
+     }
+    ]
+   },
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-ANI-05": {
+  "classe": "K-ANI-05",
+  "origem": "mao",
+  "pedido": "Este trecho vai rodar em laço na vitrine: deixe-o pronto para isso.",
+  "acessorios": [
+   "laco"
+  ],
+  "errada": [
+   {
+    "op": "anims",
+    "alvo": {
+     "tag": "section",
+     "n": "ultimo"
+    },
+    "remover": true
+   }
+  ],
+  "regra": {
+   "medida": "laco",
+   "op": ">",
+   "limite": 0.5
+  }
+ },
+ "K-ANI-06": {
+  "classe": "K-ANI-06",
+  "origem": "modelo",
+  "pedido": "As entradas dos elementos estão com cara de pressa. Deixe todas mais calmas e perceptíveis, com a mesma duração para todos os tipos de elemento, sem mexer nos cortes, nas cores nem no som.",
+  "pedidoRevisao": "Revise o tempo das animações de entrada deste vídeo: algumas não se percebem ou se arrastam. Ajuste a duração de cada uma ao ritmo do vídeo.",
+  "errada": [
+   {
+    "op": "anims",
+    "alvo": {
+     "todos": true
+    },
+    "dur": "=g"
+   }
+  ],
+  "graus": {
+   "padrao": 1.6,
+   "abaixo": 0.6,
+   "no": 0.95,
+   "acima": 2.8,
+   "unidade": "duração única de todas as entradas (s)",
+   "fonte": "Material Design (motion): entradas de 150 a 500 ms; acima de cerca de 800 ms a animação se arrasta e atrasa a leitura"
+  },
+  "regra": {
+   "medida": "animacoes",
+   "p": {
+    "onde": [
+     {
+      "prop": "entrada",
+      "op": "=",
+      "valor": true
+     },
+     {
+      "prop": "durMs",
+      "op": ">",
+      "valor": 800
+     }
+    ]
+   },
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-ANI-07": {
+  "classe": "K-ANI-07",
+  "origem": "modelo",
+  "pedido": "Dê mais vida às entradas dos elementos: troque a curva de movimento por uma que dê um toque elástico, com mola, em todas as animações de entrada da composição.",
+  "pedidoRevisao": "Revise as animações de entrada deste vídeo: o movimento deve parecer sério e profissional, sem aparência de brinquedo.",
+  "errada": [
+   {
+    "op": "anims",
+    "alvo": {
+     "todos": true
+    },
+    "easing": "cubic-bezier(0.34, {=g}, 0.64, 1)"
+   }
+  ],
+  "graus": {
+   "padrao": 1.56,
+   "abaixo": 1.04,
+   "no": 1.2,
+   "acima": 2.2,
+   "unidade": "segundo ponto de controle y da curva (>1 = ultrapassa o destino)",
+   "fonte": "Princípios de animação de UI (Material Motion): entradas sem overshoot em texto e opacidade"
+  },
+  "regra": {
+   "medida": "fonteRegex",
+   "p": {
+    "padrao": "cubic-bezier\\(\\s*[\\d.]+\\s*,\\s*(?:1\\.[1-9]\\d*|[2-9](?:\\.\\d+)?)\\s*,",
+    "flags": "g",
+    "semComentarios": true
+   },
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-ANI-08": {
+  "classe": "K-ANI-08",
+  "origem": "mao",
+  "pedido": "Tire a faixa um pouco antes do fim da fala dela.",
+  "tarefa": {
+   "rosto": "centro"
+  },
+  "errada": [
+   {
+    "op": "tempo",
+    "alvo": {
+     "papel": "faixa",
+     "todos": true
+    },
+    "encurtar": 0.25
+   }
+  ],
+  "regra": {
+   "medida": "sumicoSeco",
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-ANI-09": {
+  "classe": "K-ANI-09",
+  "origem": "mao",
+  "pedido": "Dê movimento à imagem de cobertura logo na entrada da cena.",
+  "substituir": {
+   "cenas": {
+    "1": "3"
+   }
+  },
+  "errada": [
+   {
+    "op": "animar",
+    "alinhar": true,
+    "alvo": {
+     "papel": "cobertura",
+     "todos": true
+    },
+    "anim": {
+     "chaves": [
+      {
+       "transform": "translateX(-{=L*0.3}px)"
+      },
+      {
+       "transform": "none"
+      }
+     ],
+     "iniS": 0,
+     "durS": 0.3,
+     "easing": "linear",
+     "fill": "backwards"
+    }
+   }
+  ],
+  "regra": {
+   "medida": "velocidadeNaEmenda",
+   "op": ">",
+   "limite": 3
+  }
+ },
+ "K-ANI-10": {
+  "classe": "K-ANI-10",
+  "origem": "modelo",
+  "pedido": "Ajuste o selo e o efeito sonoro dele: o som do selo deve acompanhar a entrada do selo na tela, com o ritmo que você achar melhor no vídeo.",
+  "pedidoRevisao": "Revise o selo: o efeito sonoro precisa bater com a entrada dele na tela.",
+  "acessorios": [
+   "efeito"
+  ],
+  "errada": [
+   {
+    "op": "tempo",
+    "alvo": {
+     "id": "efeito"
+    },
+    "deslocar": "=g/qps"
+   }
+  ],
+  "graus": {
+   "padrao": 3,
+   "abaixo": 1,
+   "no": 2,
+   "acima": 4,
+   "unidade": "quadros de atraso do efeito sonoro",
+   "fonte": "Sincronia áudio-imagem: o efeito deve cair no mesmo quadro do evento (tolerância de 1 quadro, ITU-R BT.1359)"
+  },
+  "regra": {
+   "medida": "efeitoAtrasado",
+   "op": ">",
+   "limite": 1.5
+  }
+ },
+ "K-ANI-11": {
+  "classe": "K-ANI-11",
+  "origem": "mao",
+  "pedido": "Padronize as animações de entrada dos textos do vídeo.",
+  "substituir": {
+   "cenas": {
+    "1": "3"
+   }
+  },
+  "errada": [
+   {
+    "op": "anims",
+    "alvo": {
+     "texto": true,
+     "todos": true
+    },
+    "chaves": [
+     {
+      "opacity": 0,
+      "transform": "translateY(24px)"
+     },
+     {
+      "opacity": 1,
+      "transform": "none"
+     }
+    ],
+    "dur": 0.5,
+    "easing": "ease-out"
+   },
+   {
+    "op": "anims",
+    "alvo": {
+     "papel": "logo",
+     "todos": true,
+     "ou": [
+      {
+       "papel": "cobertura",
+       "todos": true
+      }
+     ]
+    },
+    "chaves": [
+     {
+      "opacity": 0,
+      "transform": "translateY(24px)"
+     },
+     {
+      "opacity": 1,
+      "transform": "none"
+     }
+    ],
+    "dur": 0.5,
+    "easing": "ease-out"
+   }
+  ],
+  "regra": {
+   "medida": "mesmaEntradaEmTudo",
+   "p": {
+    "minimo": 3
+   },
+   "op": ">=",
+   "limite": 0.9
+  },
+  "nota": "Cena única com o apresentador tem um tipo de elemento só que entra: o caso de 1 cena usa 3."
+ },
+ "K-AUD-01": {
+  "classe": "K-AUD-01",
+  "origem": "mao",
+  "pedido": "Ponha a trilha (saida/midia/trilha.wav) por baixo da narração.",
+  "pedidoRevisao": "Revise a mixagem: a narração tem de ser entendida sem esforço.",
+  "errada": [
+   {
+    "op": "attrs",
+    "alvo": {
+     "id": "trilha"
+    },
+    "attrs": {
+     "data-volume": "{=g*0.15/trilhaGanho}"
+    }
+   }
+  ],
+  "graus": {
+   "padrao": 1.5,
+   "abaixo": 0.5,
+   "no": 0.9,
+   "acima": 2,
+   "unidade": "volume da trilha (× o da trilha baixa sem abaixar)",
+   "fonte": "EBU R128 s1 e prática de broadcast: trilha 12 dB ou mais abaixo da voz"
+  },
+  "regra": {
+   "medida": "trilhaSobreVoz",
+   "op": "<",
+   "limite": 12
+  },
+  "substituir": {
+   "trilha": {
+    "sem trilha": "trilha baixa"
+   }
+  }
+ },
+ "K-AUD-02": {
+  "classe": "K-AUD-02",
+  "origem": "mao",
+  "pedido": "Ajuste o volume geral do vídeo para a plataforma.",
+  "pedidoRevisao": "Revise o volume geral do vídeo para a plataforma.",
+  "errada": [
+   {
+    "op": "attrs",
+    "alvo": {
+     "tag": "audio",
+     "todos": true
+    },
+    "escalarVolume": "=g"
+   }
+  ],
+  "graus": {
+   "padrao": 0.25,
+   "abaixo": 0.95,
+   "no": 0.3,
+   "acima": 0.15,
+   "unidade": "ganho geral (× o da base); a regra mede quantos LU a loudness integrada fica fora de −20 a −9 LUFS",
+   "fonte": "calibrada no lado de baixo (2026-11-01): −20 LUFS é o piso da faixa de distribuição em streaming da EBU R 128 s2 (2023, item g: −20,0 a −16,0 LUFS) e da AES TD1004; os 9 aprovados medem −19,0 a −14,7 LUFS (EBU R128 no MP4). O teto de −9 LUFS fica de trabalho, sem fonte: as plataformas só abaixam o que passa de −14 LUFS e o estouro é das classes de pico; a base sintética mede −11,5 LUFS"
+  },
+  "regra": {
+   "medida": "loudness",
+   "p": {
+    "min": -20,
+    "max": -9
+   },
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-AUD-03": {
+  "classe": "K-AUD-03",
+  "origem": "modelo",
+  "pedido": "A narração está baixa demais perto da trilha. Aumente o volume da voz para ela ficar bem forte e presente no vídeo.",
+  "pedidoRevisao": "Revise a mixagem deste vídeo: há estalos e chiado nos momentos mais fortes do som.",
+  "errada": [
+   {
+    "op": "attrs",
+    "alvo": {
+     "id": "voz"
+    },
+    "attrs": {
+     "data-volume": "=g"
+    }
+   }
+  ],
+  "graus": {
+   "padrao": 4,
+   "abaixo": 1,
+   "no": 3,
+   "acima": 8,
+   "unidade": "ganho da voz (× o volume original, sem limitador)",
+   "fonte": "EBU R128 e prática de mixagem: manter reserva de nível (headroom) de pelo menos 1 dB abaixo do teto digital"
+  },
+  "regra": {
+   "medida": "clipping",
+   "op": ">",
+   "limite": 0.001
+  },
+  "substituir": {
+   "trilha": {
+    "sem trilha": "trilha baixa"
+   }
+  }
+ },
+ "K-AUD-04": {
+  "classe": "K-AUD-04",
+  "origem": "mao",
+  "pedido": "Ponha a trilha do começo ao fim do vídeo, abaixando sob a narração.",
+  "pedidoRevisao": "Revise a entrada e a saída da trilha.",
+  "substituir": {
+   "trilha": {
+    "sem trilha": "trilha baixa"
+   }
+  },
+  "errada": [
+   {
+    "op": "attrs",
+    "alvo": {
+     "id": "trilha"
+    },
+    "trocar": {
+     "data-volume": [
+      "^0:0 ",
+      "0:{=g} "
+     ]
+    }
+   },
+   {
+    "op": "attrs",
+    "alvo": {
+     "id": "trilha"
+    },
+    "trocar": {
+     "data-volume": [
+      ":0$",
+      ":{=g}"
+     ]
+    }
+   }
+  ],
+  "graus": {
+   "padrao": 1,
+   "abaixo": 0.3,
+   "no": 0.8,
+   "acima": 1,
+   "unidade": "volume da trilha no primeiro e no último quadro (× o nível dela)",
+   "fonte": "corte seco: nível de entrada ≥ metade do nível típico em 30 ms"
+  },
+  "regra": {
+   "medida": "entradaSeca",
+   "op": ">=",
+   "limite": 0.3
+  }
+ },
+ "K-AUD-05": {
+  "classe": "K-AUD-05",
+  "origem": "modelo",
+  "pedido": "O efeito sonoro do selo está tocando por mais tempo do que o espaço que ele tem antes do próximo corte. Ajuste o som para ele caber nesse intervalo, sem mexer nas cenas, no selo nem na narração.",
+  "pedidoRevisao": "Revise o efeito sonoro do selo: ele tem de terminar antes do corte seguinte e continuar soando natural.",
+  "acessorios": [
+   "efeito"
+  ],
+  "errada": [
+   {
+    "op": "attrs",
+    "alvo": {
+     "id": "efeito"
+    },
+    "attrs": {
+     "data-velocidade": "=g"
+    }
+   }
+  ],
+  "graus": {
+   "padrao": 2,
+   "abaixo": 1.05,
+   "no": 1.15,
+   "acima": 3,
+   "unidade": "velocidade de reprodução do efeito (× a original)",
+   "fonte": "Prática de áudio: acelerar o efeito muda duração e timbre; ele deve tocar inteiro, a 1×, em faixa própria"
+  },
+  "regra": {
+   "medida": "efeitoEncurtado",
+   "op": "<",
+   "limite": 0.9
+  }
+ },
+ "K-AUD-06": {
+  "classe": "K-AUD-06",
+  "origem": "modelo",
+  "pedido": "Monte as legendas do vídeo a partir da transcrição automática da fala (saida/transcricao.json) e deixe os cortes seguindo as legendas.",
+  "pedidoRevisao": "Revise as legendas deste vídeo: o texto que aparece na tela tem de bater com o que o apresentador diz.",
+  "acessorios": [
+   "transcricao"
+  ],
+  "errada": [
+   {
+    "op": "texto",
+    "alvo": {
+     "papel": "legenda",
+     "n": 0
+    },
+    "texto": "[música]"
+   },
+   {
+    "op": "texto",
+    "alvo": {
+     "papel": "legenda",
+     "n": 1
+    },
+    "texto": "[música] [ruído]"
+   }
+  ],
+  "regra": {
+   "medida": "transcricaoRuim",
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-AUD-07": {
+  "classe": "K-AUD-07",
+  "origem": "mao",
+  "pedido": "A voz tem de tocar a 1,25× (o arquivo veio na velocidade normal); o tempo das cenas já está certo.",
+  "acessorios": [
+   "vozRapida"
+  ],
+  "errada": [
+   {
+    "op": "attrs",
+    "alvo": {
+     "id": "voz"
+    },
+    "attrs": {
+     "data-velocidade": null
+    }
+   }
+  ],
+  "regra": {
+   "medida": "derivaVoz",
+   "p": {
+    "modo": "velocidade"
+   },
+   "op": ">",
+   "limite": 0.05
+  }
+ },
+ "K-COD-01": {
+  "classe": "K-COD-01",
+  "origem": "mao",
+  "pedido": "Faça o título entrar com um movimento suave.",
+  "errada": [
+   {
+    "op": "script",
+    "js": "setTimeout(() => { const t = document.querySelector('h1, .titulo, [data-papel=\"rotulo\"]'); if (t) { t.style.transition = 'opacity 0.6s'; t.style.opacity = '0.3'; } }, 300);"
+   }
+  ],
+  "regra": {
+   "medida": "fonteRegex",
+   "p": {
+    "padrao": "setTimeout|setInterval|requestAnimationFrame|\\btransition\\s*[:=]|\\.style\\.transition"
+   },
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-COD-02": {
+  "classe": "K-COD-02",
+  "origem": "modelo",
+  "pedido": "Dê um toque orgânico ao título: uma variação bem sutil na posição vertical, diferente a cada quadro, para a página parecer viva.",
+  "certa": [
+   {
+    "op": "script",
+    "js": "(function(){var t=document.getElementById('titulo');if(!t)return;var s=function(n){var x=Math.sin(n*12.9898)*43758.5453;return x-Math.floor(x);};var q=0;if(window.__q!==undefined){q=window.__q;}t.style.translate='0px '+(s(q+1)*0.4).toFixed(3)+'px';})();"
+   }
+  ],
+  "errada": [
+   {
+    "op": "script",
+    "js": "(function(){var t=document.getElementById('titulo');if(!t)return;t.style.translate='0px '+(Math.random()*0.4).toFixed(3)+'px';})();"
+   }
+  ],
+  "regra": {
+   "medida": "fonteRegex",
+   "p": {
+    "padrao": "Math\\.random|Date\\.now|\\brandom\\(\\)",
+    "semComentarios": true
+   },
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-COD-03": {
+  "classe": "K-COD-03",
+  "origem": "modelo",
+  "pedido": "Acrescente, na parte de cima do vídeo, uma fileira de seis pequenos blocos que mostrem os dados do gráfico assim que forem recebidos do servidor.",
+  "acessorios": [],
+  "errada": [
+   {
+    "op": "inserir",
+    "el": {
+     "id": "carga-0",
+     "tag": "div",
+     "papel": "decoracao",
+     "css": {
+      "position": "absolute",
+      "left": "10%",
+      "top": "17%",
+      "width": "24px",
+      "height": "24px",
+      "background": "#6B6F7A",
+      "opacity": "0.3"
+     },
+     "de": 0,
+     "ate": "=quadros"
+    }
+   },
+   {
+    "op": "inserir",
+    "el": {
+     "id": "carga-1",
+     "tag": "div",
+     "papel": "decoracao",
+     "css": {
+      "position": "absolute",
+      "left": "20%",
+      "top": "17%",
+      "width": "24px",
+      "height": "24px",
+      "background": "#2E86AB",
+      "opacity": "0.3"
+     },
+     "de": 0,
+     "ate": "=quadros"
+    }
+   },
+   {
+    "op": "inserir",
+    "el": {
+     "id": "carga-2",
+     "tag": "div",
+     "papel": "decoracao",
+     "css": {
+      "position": "absolute",
+      "left": "30%",
+      "top": "17%",
+      "width": "24px",
+      "height": "24px",
+      "background": "#E4572E",
+      "opacity": "0.3"
+     },
+     "de": 0,
+     "ate": "=quadros"
+    }
+   },
+   {
+    "op": "inserir",
+    "el": {
+     "id": "carga-3",
+     "tag": "div",
+     "papel": "decoracao",
+     "css": {
+      "position": "absolute",
+      "left": "40%",
+      "top": "17%",
+      "width": "24px",
+      "height": "24px",
+      "background": "#6B6F7A",
+      "opacity": "0.3"
+     },
+     "de": 0,
+     "ate": "=quadros"
+    }
+   },
+   {
+    "op": "inserir",
+    "el": {
+     "id": "carga-4",
+     "tag": "div",
+     "papel": "decoracao",
+     "css": {
+      "position": "absolute",
+      "left": "50%",
+      "top": "17%",
+      "width": "24px",
+      "height": "24px",
+      "background": "#2E86AB",
+      "opacity": "0.3"
+     },
+     "de": 0,
+     "ate": "=quadros"
+    }
+   },
+   {
+    "op": "inserir",
+    "el": {
+     "id": "carga-5",
+     "tag": "div",
+     "papel": "decoracao",
+     "css": {
+      "position": "absolute",
+      "left": "60%",
+      "top": "17%",
+      "width": "24px",
+      "height": "24px",
+      "background": "#E4572E",
+      "opacity": "0.3"
+     },
+     "de": 0,
+     "ate": "=quadros"
+    }
+   },
+   {
+    "op": "script",
+    "js": "for(var i=0;i<6;i++){(function(el){if(!el)return;if(Math.random()<0.5){el.style.opacity='1';el.style.width='48px';}else{setTimeout(function(){el.style.opacity='1';el.style.width='48px';},60000);}})(document.getElementById('carga-'+i));}"
+   }
+  ],
+  "regra": {
+   "medida": "quadroNaoDeterministico",
+   "p": {},
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-COD-04": {
+  "classe": "K-COD-04",
+  "origem": "modelo",
+  "pedido": "Troque a fonte do título, dos rótulos e dos corpos de texto para Gilroy, a família do manual da marca, mantendo tamanhos, cores e tempos como estão.",
+  "certa": [
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "titulo",
+     "todos": true
+    },
+    "css": {
+     "font-family": "sans-serif"
+    }
+   },
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "rotulo",
+     "todos": true
+    },
+    "css": {
+     "font-family": "sans-serif"
+    }
+   },
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "corpo",
+     "todos": true
+    },
+    "css": {
+     "font-family": "sans-serif"
+    }
+   }
+  ],
+  "errada": [
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "titulo",
+     "todos": true
+    },
+    "css": {
+     "font-family": "'Gilroy', sans-serif"
+    }
+   },
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "rotulo",
+     "todos": true
+    },
+    "css": {
+     "font-family": "'Gilroy', sans-serif"
+    }
+   },
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "corpo",
+     "todos": true
+    },
+    "css": {
+     "font-family": "'Gilroy', sans-serif"
+    }
+   }
+  ],
+  "regra": {
+   "medida": "familiaInexistente",
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-COD-05": {
+  "classe": "K-COD-05",
+  "origem": "mao",
+  "pedido": "Deixe o título numa linha só, na largura certa para ele.",
+  "errada": [
+   {
+    "op": "estilo",
+    "alvo": {
+     "id": "titulo",
+     "ou": [
+      {
+       "papel": "faixa"
+      }
+     ]
+    },
+    "css": {
+     "white-space": "nowrap",
+     "overflow": "hidden",
+     "width": "{=fsTitulo*g}px",
+     "max-width": "none"
+    }
+   }
+  ],
+  "graus": {
+   "padrao": 2.5,
+   "unidade": "largura medida (× o tamanho da letra)"
+  },
+  "regra": {
+   "medida": "contar",
+   "p": {
+    "onde": [
+     {
+      "prop": "estouro",
+      "op": ">",
+      "valor": 2
+     }
+    ]
+   },
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-COD-06": {
+  "classe": "K-COD-06",
+  "origem": "modelo",
+  "pedido": "Garanta que o vídeo do apresentador e o áudio comecem a tocar assim que a página abrir, em cada cena, e que o vídeo volte ao início quando a cena dele entrar.",
+  "errada": [
+   {
+    "op": "script",
+    "js": "window.addEventListener('load',function(){document.querySelectorAll('video,audio').forEach(function(m){m.currentTime=0;var p=m.play();if(p&&p.catch){p.catch(function(){});}});document.querySelectorAll('.cena').forEach(function(c){c.addEventListener('animationstart',function(){var v=c.querySelector('video');if(v){v.currentTime=0;v.play();}else{document.querySelectorAll('video').forEach(function(x){x.pause();});}});});});"
+   }
+  ],
+  "regra": {
+   "medida": "fonteRegex",
+   "p": {
+    "padrao": "\\.play\\(\\)|pause\\(\\)|currentTime|HTMLMediaElement",
+    "semComentarios": true
+   },
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-COD-07": {
+  "classe": "K-COD-07",
+  "origem": "modelo",
+  "pedido": "O vídeo está com sobra no final. Enxugue a duração declarada da composição para que ele termine logo depois da fala, sem deixar tempo sobrando.",
+  "pedidoRevisao": "Revise a duração declarada deste vídeo: ela tem de acompanhar a voz e as cenas, sem cortar o fim da fala nem deixar quadros sobrando.",
+  "certa": [
+   {
+    "op": "declaracao",
+    "quadros": "=Math.ceil((falaFim+0.5)*qps)"
+   }
+  ],
+  "errada": [
+   {
+    "op": "declaracao",
+    "quadros": "=Math.round((falaFim-g)*qps)"
+   }
+  ],
+  "graus": {
+   "padrao": 1,
+   "abaixo": 0.05,
+   "no": 0.3,
+   "acima": 3,
+   "unidade": "segundos de fala além do fim declarado",
+   "fonte": "Tolerância de arredondamento de 2 quadros: a fala inteira deve caber na duração declarada"
+  },
+  "regra": {
+   "medida": "falaCortada",
+   "op": ">",
+   "limite": 0.1
+  }
+ },
+ "K-COD-08": {
+  "classe": "K-COD-08",
+  "origem": "modelo",
+  "pedido": "O vídeo foi aparado no começo e a fala ficou um pouco mais perto do início. Ajuste a composição para esse trecho, mantendo as legendas em pedaços sincronizados com a fala (os tempos estão em saida/tempos.json).",
+  "pedidoRevisao": "Revise o vídeo aparado: a legenda tem de acompanhar a boca do começo ao fim.",
+  "errada": [
+   {
+    "op": "tempo",
+    "alvo": {
+     "papel": "legenda",
+     "todos": true
+    },
+    "deslocar": "=g"
+   }
+  ],
+  "graus": {
+   "padrao": 0.8,
+   "abaixo": 0.1,
+   "no": 0.35,
+   "acima": 1.2,
+   "unidade": "segundos de deslocamento da legenda",
+   "fonte": "ITU-R BT.1359 e EBU: legenda adiantada ou atrasada mais de cerca de 0,2 s em relação à fala é percebida como fora de sincronia"
+  },
+  "regra": {
+   "medida": "legendaAtrasada",
+   "op": ">",
+   "limite": 0.25
+  }
+ },
+ "K-COD-09": {
+  "classe": "K-COD-09",
+  "origem": "mao",
+  "pedido": "Acrescente a narração (saida/midia/voz.wav) no vídeo.",
+  "errada": [
+   {
+    "op": "attrs",
+    "alvo": {
+     "id": "voz"
+    },
+    "attrs": {
+     "data-volume": "0"
+    }
+   }
+  ],
+  "regra": {
+   "medida": "nivelDaVoz",
+   "op": "<",
+   "limite": -40
+  }
+ },
+ "K-COD-10": {
+  "classe": "K-COD-10",
+  "origem": "modelo",
+  "pedido": "Faça o título da primeira cena deslizar bem devagar para a direita ao longo de toda a cena, para dar vida ao quadro.",
+  "pedidoRevisao": "Revise o movimento lento do título: ele precisa ficar firme, sem tremer nem dar saltos durante o deslocamento.",
+  "certa": [
+   {
+    "op": "animar",
+    "alvo": {
+     "id": "titulo"
+    },
+    "anim": {
+     "chaves": [
+      {
+       "transform": "translateX(0px)"
+      },
+      {
+       "transform": "translateX({=0.02*L}px)"
+      }
+     ],
+     "iniS": 0,
+     "durS": "=corte0/qps",
+     "easing": "linear",
+     "iter": 1,
+     "fill": "both"
+    }
+   }
+  ],
+  "errada": [
+   {
+    "op": "animar",
+    "alvo": {
+     "id": "titulo"
+    },
+    "anim": {
+     "chaves": [
+      {
+       "left": "0px"
+      },
+      {
+       "left": "{=0.02*L}px"
+      }
+     ],
+     "iniS": 0,
+     "durS": "=corte0/qps",
+     "easing": "linear",
+     "iter": 1,
+     "fill": "both"
+    }
+   }
+  ],
+  "regra": {
+   "medida": "animacoes",
+   "p": {
+    "onde": [
+     {
+      "prop": "layout",
+      "op": "=",
+      "valor": true
+     }
+    ]
+   },
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-COD-11": {
+  "classe": "K-COD-11",
+  "origem": "mao",
+  "pedido": "Aproxime a imagem principal de cada cena para dar destaque.",
+  "pedidoRevisao": "Revise a nitidez das imagens ampliadas deste vídeo.",
+  "errada": [
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "cobertura",
+     "todos": true,
+     "ou": [
+      {
+       "papel": "apresentador",
+       "todos": true
+      }
+     ]
+    },
+    "css": {
+     "scale": "{=g}"
+    }
+   }
+  ],
+  "graus": {
+   "padrao": 2,
+   "abaixo": 1.1,
+   "no": 1.3,
+   "acima": 2,
+   "unidade": "escala CSS da mídia (a base tem 1,1× de folga)",
+   "fonte": "raster acima de 1:1 perde nitidez; tolerância de 5 %"
+  },
+  "regra": {
+   "medida": "contar",
+   "p": {
+    "onde": [
+     {
+      "prop": "midia",
+      "op": "existe"
+     },
+     {
+      "prop": "natEscala",
+      "op": ">",
+      "valor": 1.05
+     }
+    ]
+   },
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-COD-12": {
+  "classe": "K-COD-12",
+  "origem": "modelo",
+  "pedido": "Deixe os textos da tela mais arejados e elegantes: o título, os corpos e a legenda precisam ter as letras mais abertas, com ar entre elas.",
+  "pedidoRevisao": "Revise a tipografia dos textos da tela: o aspecto das letras está estranho e a leitura ficou difícil.",
+  "tarefa": {
+   "idioma": "ar",
+   "escrita": "árabe"
+  },
+  "certa": [],
+  "errada": [
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "titulo",
+     "todos": true
+    },
+    "css": {
+     "letter-spacing": "{=g}em"
+    }
+   },
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "corpo",
+     "todos": true
+    },
+    "css": {
+     "letter-spacing": "{=g}em"
+    }
+   },
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "legenda",
+     "todos": true
+    },
+    "css": {
+     "letter-spacing": "{=g}em"
+    }
+   }
+  ],
+  "graus": {
+   "padrao": 0.08,
+   "abaixo": 0.01,
+   "no": 0.04,
+   "acima": 0.2,
+   "unidade": "em de espaçamento entre letras",
+   "fonte": "W3C CSS Text Level 3: o espaçamento entre letras não deve ser aplicado a escritas cursivas como o árabe, onde separa as formas ligadas"
+  },
+  "regra": {
+   "medida": "contar",
+   "p": {
+    "onde": [
+     {
+      "prop": "arabe",
+      "op": "=",
+      "valor": true
+     },
+     {
+      "prop": "lsEm",
+      "op": ">",
+      "valor": 0.02
+     }
+    ]
+   },
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-COD-13": {
+  "classe": "K-COD-13",
+  "origem": "modelo",
+  "pedido": "Troque a mídia da composição pelos arquivos que estão na minha pasta de trabalho, apontando o caminho completo de cada um no meu computador, e mantenha o resto como está.",
+  "errada": [
+   {
+    "op": "attrs",
+    "alvo": {
+     "papel": "cobertura",
+     "ou": [
+      {
+       "papel": "apresentador"
+      }
+     ],
+     "todos": true
+    },
+    "attrs": {
+     "src": "file:///home/dev/projeto/midia/arquivo-local.mp4"
+    }
+   }
+  ],
+  "regra": {
+   "medida": "fonteRegex",
+   "p": {
+    "padrao": "(src|href)\\s*=\\s*[\"'](file:|https?://(localhost|127\\.|0\\.0\\.0\\.0)|/(Users|home)/|[A-Za-z]:[\\\\/])",
+    "flags": "gi",
+    "semComentarios": true
+   },
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-COD-14": {
+  "classe": "K-COD-14",
+  "origem": "modelo",
+  "pedido": "Antes de cada quadro, faça a página esperar o carregamento da mídia da cena pelo gancho window.motor_quadro, para que o render só avance quando tudo estiver pronto.",
+  "tarefa": {
+   "midia": "canvas ou 3D"
+  },
+  "certa": [
+   {
+    "op": "script",
+    "js": "window.motor_quadro = function(n, ms){ return Promise.resolve(); };"
+   }
+  ],
+  "errada": [
+   {
+    "op": "script",
+    "js": "(function(){var espera=function(n,ms){return new Promise(function(){});};Object.defineProperty(window,'motor_quadro',{configurable:true,enumerable:true,get:function(){return espera;},set:function(v){}});})();"
+   }
+  ],
+  "regra": {
+   "medida": "travou",
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-COD-15": {
+  "classe": "K-COD-15",
+  "origem": "modelo",
+  "pedido": "Refaça o desenho do canvas da cobertura usando WebGL2, para ficar mais fluido e com acabamento melhor.",
+  "tarefa": {
+   "midia": "canvas ou 3D"
+  },
+  "errada": [
+   {
+    "op": "script",
+    "js": "(function(){function f(){var c=document.querySelector('canvas');if(!c){return;}var n=c.cloneNode(false);c.replaceWith(n);var gl=null;try{gl=n.getContext('webgl2');}catch(e){}if(!gl){console.error('WebGL2 context unavailable: canvas blank');}else{gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);console.error('WebGL2 context error: canvas blank, nothing drawn');}window.motor_quadro=function(){return Promise.resolve();};}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',f);}else{f();}})();"
+   }
+  ],
+  "regra": {
+   "medida": "canvasVazio",
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-COD-16": {
+  "classe": "K-COD-16",
+  "origem": "modelo",
+  "pedido": "Registre esta composição para o render com o nome \"promo-vertical\", sem mudar mais nada no vídeo.",
+  "tarefa": {
+   "id": "promo-vertical"
+  },
+  "certa": [
+   {
+    "op": "declaracao",
+    "id": "promo-vertical"
+   }
+  ],
+  "errada": [
+   {
+    "op": "declaracao",
+    "id": "promo-vertical-2"
+   }
+  ],
+  "regra": {
+   "medida": "declaracao",
+   "p": {
+    "campo": "id"
+   },
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-COD-17": {
+  "classe": "K-COD-17",
+  "origem": "modelo",
+  "pedido": "Dê um acabamento de cinema ao vídeo: um pouco mais de contraste e saturação nas imagens, um leve toque de suavização e uma vinheta escura nas bordas.",
+  "errada": [
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "apresentador",
+     "ou": [
+      {
+       "papel": "cobertura"
+      }
+     ],
+     "todos": true
+    },
+    "css": {
+     "filter": "contrast(1.12) saturate(1.1) blur(0.6px)"
+    }
+   }
+  ],
+  "regra": {
+   "medida": "fonteRegex",
+   "p": {
+    "padrao": "filter\\s*:\\s*[a-z-]+\\(",
+    "flags": "i",
+    "semComentarios": true
+   },
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-COD-18": {
+  "classe": "K-COD-18",
+  "origem": "modelo",
+  "pedido": "Deixe os dados do projeto (a lista de legendas, os tempos da fala e as miniaturas) embutidos na própria página, para que ela não dependa de arquivos externos.",
+  "pedidoRevisao": "Revise o peso da página: ela está demorando para abrir e o render demora antes do primeiro quadro.",
+  "errada": [
+   {
+    "op": "dados",
+    "kb": "=g"
+   }
+  ],
+  "graus": {
+   "padrao": 2048,
+   "abaixo": 64,
+   "no": 600,
+   "acima": 8192,
+   "unidade": "KB de dados embutidos na página",
+   "fonte": "Limites práticos de argumentos/props passados a cada processo de render (ex.: Remotion inputProps; limite de argumento de linha de comando ~128 KB por string no Linux e payloads de props de alguns MB)"
+  },
+  "regra": {
+   "medida": "tamanhoDaPagina",
+   "op": ">",
+   "limite": 256
+  }
+ },
+ "K-COD-19": {
+  "classe": "K-COD-19",
+  "origem": "modelo",
+  "pedido": "Dê um zoom suave de entrada na mídia de cada cena (cobertura ou apresentador), partindo de um pouco menor e chegando ao tamanho cheio, e deixe a mídia levemente ampliada.",
+  "errada": [
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "cobertura",
+     "ou": [
+      {
+       "papel": "apresentador"
+      }
+     ],
+     "todos": true
+    },
+    "css": {
+     "transform": "scale(1.12)"
+    }
+   },
+   {
+    "op": "animar",
+    "alvo": {
+     "papel": "cobertura",
+     "ou": [
+      {
+       "papel": "apresentador"
+      }
+     ],
+     "todos": true
+    },
+    "anim": {
+     "chaves": [
+      {
+       "transform": "scale(0.9)"
+      },
+      {
+       "transform": "scale(1)"
+      }
+     ],
+     "iniS": 0,
+     "durS": 0.6,
+     "easing": "cubic-bezier(0.16, 1, 0.3, 1)",
+     "iter": 1,
+     "fill": "both"
+    }
+   }
+  ],
+  "regra": {
+   "medida": "fonteRegex",
+   "p": {
+    "padrao": "transform\\s*:\\s*scale\\(1\\.12\\)",
+    "flags": "g",
+    "semComentarios": true
+   },
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-COD-20": {
+  "classe": "K-COD-20",
+  "origem": "modelo",
+  "pedido": "Este vídeo vai para o Reels. Passe a composição para o formato vertical do destino, com a resolução que a plataforma pede, e entregue o MP4 final.",
+  "pedidoRevisao": "Revise o tamanho da composição deste vídeo para que ele saia no formato e na resolução do destino.",
+  "errada": [
+   {
+    "op": "declaracao",
+    "largura": "=Math.round(L*(1+g))",
+    "altura": "=A"
+   }
+  ],
+  "graus": {
+   "padrao": 0.78,
+   "abaixo": 0.005,
+   "no": 0.02,
+   "acima": 0.78,
+   "unidade": "diferença relativa da largura declarada contra a do destino",
+   "fonte": "Resolução vertical 9:16 (1080×1920) recomendada para Reels, TikTok e Shorts"
+  },
+  "regra": {
+   "medida": "declaracao",
+   "p": {
+    "campo": "tamanho"
+   },
+   "op": ">",
+   "limite": 0.01
+  }
+ },
+ "K-COR-01": {
+  "classe": "K-COR-01",
+  "origem": "mao",
+  "pedido": "Acrescente a legenda da fala na placa escura da marca (#1B1F2A), num tom que combine com a paleta.",
+  "pedidoRevisao": "Revise o contraste dos textos deste vídeo e corrija o que estiver abaixo do mínimo de leitura.",
+  "errada": [
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "legenda",
+     "todos": true
+    },
+    "css": {
+     "background": "#1B1F2A",
+     "color": "=cinza(0.0144, g*3)"
+    }
+   }
+  ],
+  "graus": {
+   "padrao": 0.6,
+   "abaixo": 1.1,
+   "no": 0.9,
+   "acima": 0.5,
+   "unidade": "contraste ÷ mínimo do WCAG 1.4.3",
+   "fonte": "WCAG 2.2, 1.4.3 (4,5:1; 3:1 para texto grande)"
+  },
+  "regra": {
+   "medida": "contraste",
+   "op": "<",
+   "limite": 1
+  },
+  "conferencia": {
+   "codigo": "G20",
+   "situacao": "aviso"
+  }
+ },
+ "K-COR-02": {
+  "classe": "K-COR-02",
+  "origem": "modelo",
+  "pedido": "Deixe o visual do vídeo mais moderno e vibrante: renove as cores do título e da legenda para dar mais energia à composição.",
+  "errada": [
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "titulo",
+     "todos": true
+    },
+    "css": {
+     "color": "#7B2FF7"
+    }
+   },
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "legenda",
+     "todos": true
+    },
+    "css": {
+     "background-color": "#0FB58A"
+    }
+   }
+  ],
+  "regra": {
+   "medida": "paleta",
+   "p": {},
+   "op": ">",
+   "limite": 15
+  }
+ },
+ "K-COR-03": {
+  "classe": "K-COR-03",
+  "origem": "modelo",
+  "pedido": "Deixe o fundo do vídeo mais suave e elegante: troque a cor lisa por um degradê discreto e escuro, na mesma cor da marca, que ocupe o quadro todo.",
+  "pedidoRevisao": "Revise o fundo do vídeo: o degradê tem de ficar bonito na plataforma, sem defeitos.",
+  "errada": [
+   {
+    "op": "estilo",
+    "alvo": {
+     "id": "fundo"
+    },
+    "css": {
+     "background": "linear-gradient(180deg, #1B1F2A, rgb({=27+g}, {=31+g}, {=42+g}))"
+    }
+   }
+  ],
+  "graus": {
+   "padrao": 4,
+   "abaixo": 60,
+   "no": 8,
+   "acima": 2,
+   "unidade": "diferença máxima de canal (níveis de 8 bits) entre as duas pontas do degradê",
+   "fonte": "Degradê com menos de ~1 nível de 8 bits por 100 px mostra faixas visíveis (banding), que a compressão da plataforma agrava"
+  },
+  "regra": {
+   "medida": "gradienteRaso",
+   "op": ">",
+   "limite": 100
+  }
+ },
+ "K-COR-04": {
+  "classe": "K-COR-04",
+  "origem": "modelo",
+  "pedido": "Ponha a assinatura «Konecz» pequena, no alto da tela, nas três primeiras cenas, em tinta escura da marca, sem mexer no resto da composição.",
+  "pedidoRevisao": "Revise a assinatura «Konecz» que aparece nas três primeiras cenas e deixe-a igual em todas.",
+  "certa": [
+   {
+    "op": "inserir",
+    "el": {
+     "id": "assinatura-0",
+     "tag": "span",
+     "papel": "assinatura",
+     "texto": "Konecz",
+     "css": {
+      "position": "absolute",
+      "left": "50%",
+      "transform": "translateX(-50%)",
+      "top": "{=Math.max(0,yTitulo-S*0.06)}px",
+      "font-size": "{=S*0.03}px",
+      "font-weight": "700",
+      "white-space": "nowrap",
+      "color": "#1B1F2A"
+     }
+    },
+    "pai": "cena-0"
+   },
+   {
+    "op": "inserir",
+    "el": {
+     "id": "assinatura-1",
+     "tag": "span",
+     "papel": "assinatura",
+     "texto": "Konecz",
+     "css": {
+      "position": "absolute",
+      "left": "50%",
+      "transform": "translateX(-50%)",
+      "top": "{=Math.max(0,yTitulo-S*0.06)}px",
+      "font-size": "{=S*0.03}px",
+      "font-weight": "700",
+      "white-space": "nowrap",
+      "color": "#1B1F2A"
+     }
+    },
+    "pai": "cena-1"
+   },
+   {
+    "op": "inserir",
+    "el": {
+     "id": "assinatura-2",
+     "tag": "span",
+     "papel": "assinatura",
+     "texto": "Konecz",
+     "css": {
+      "position": "absolute",
+      "left": "50%",
+      "transform": "translateX(-50%)",
+      "top": "{=Math.max(0,yTitulo-S*0.06)}px",
+      "font-size": "{=S*0.03}px",
+      "font-weight": "700",
+      "white-space": "nowrap",
+      "color": "#1B1F2A"
+     }
+    },
+    "pai": "cena-2"
+   }
+  ],
+  "errada": [
+   {
+    "op": "inserir",
+    "el": {
+     "id": "assinatura-0",
+     "tag": "span",
+     "papel": "assinatura",
+     "texto": "Konecz",
+     "css": {
+      "position": "absolute",
+      "left": "50%",
+      "transform": "translateX(-50%)",
+      "top": "{=Math.max(0,yTitulo-S*0.06)}px",
+      "font-size": "{=S*0.03}px",
+      "font-weight": "700",
+      "white-space": "nowrap",
+      "color": "#1B1F2A"
+     }
+    },
+    "pai": "cena-0"
+   },
+   {
+    "op": "inserir",
+    "el": {
+     "id": "assinatura-1",
+     "tag": "span",
+     "papel": "assinatura",
+     "texto": "Konecz",
+     "css": {
+      "position": "absolute",
+      "left": "50%",
+      "transform": "translateX(-50%)",
+      "top": "{=Math.max(0,yTitulo-S*0.06)}px",
+      "font-size": "{=S*0.03}px",
+      "font-weight": "700",
+      "white-space": "nowrap",
+      "color": "rgb({=27+g},{=31+g},{=42+g})"
+     }
+    },
+    "pai": "cena-1"
+   },
+   {
+    "op": "inserir",
+    "el": {
+     "id": "assinatura-2",
+     "tag": "span",
+     "papel": "assinatura",
+     "texto": "Konecz",
+     "css": {
+      "position": "absolute",
+      "left": "50%",
+      "transform": "translateX(-50%)",
+      "top": "{=Math.max(0,yTitulo-S*0.06)}px",
+      "font-size": "{=S*0.03}px",
+      "font-weight": "700",
+      "white-space": "nowrap",
+      "color": "rgb({=27+2*g},{=31+2*g},{=42+2*g})"
+     }
+    },
+    "pai": "cena-2"
+   }
+  ],
+  "graus": {
+   "padrao": 30,
+   "abaixo": 4,
+   "no": 12,
+   "acima": 70,
+   "unidade": "deslocamento somado em cada canal RGB do tom escuro da assinatura (≈ ΔE76 entre cenas)",
+   "fonte": "ΔE76 ≈ 2,3 é a diferença mal perceptível (JND); acima de ~5 o salto de cor entre cenas é visto"
+  },
+  "regra": {
+   "medida": "corEntreCenas",
+   "op": ">",
+   "limite": 5
+  }
+ },
+ "K-COR-05": {
+  "classe": "K-COR-05",
+  "origem": "mao",
+  "pedido": "Use o clipe da torra da biblioteca (saida/midia/rotulos.json) na cena de cobertura.",
+  "acessorios": [
+   "hdr"
+  ],
+  "errada": [
+   {
+    "op": "attrs",
+    "alvo": {
+     "id": "clipe"
+    },
+    "attrs": {
+     "src": "midia/clipe-hdr.mp4"
+    }
+   }
+  ],
+  "regra": {
+   "medida": "midiaHdr",
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-COR-06": {
+  "classe": "K-COR-06",
+  "origem": "modelo",
+  "pedido": "Os takes do apresentador ficaram um pouco escuros. Deixe-os mais claros, para que o rosto se veja bem, sem mexer em mais nada da composição.",
+  "pedidoRevisao": "Revise a aparência dos takes do apresentador: o brilho está abaixo do aprovado e deve ser corrigido.",
+  "certa": [
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "apresentador",
+     "todos": true
+    },
+    "css": {
+     "filter": "brightness(1.15)"
+    }
+   }
+  ],
+  "errada": [
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "apresentador",
+     "todos": true
+    },
+    "css": {
+     "filter": "brightness(1.15) sepia(0.8) hue-rotate(25deg) saturate(1.6)"
+    }
+   }
+  ],
+  "regra": {
+   "medida": "fonteRegex",
+   "p": {
+    "padrao": "(sepia|hue-rotate|grayscale|invert|saturate)\\(",
+    "flags": "gi",
+    "semComentarios": true
+   },
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-DES-01": {
+  "classe": "K-DES-01",
+  "origem": "mao",
+  "pedido": "Deixe os textos da tela mais uniformes: o título, o rótulo, o corpo e a faixa devem seguir o mesmo padrão de tamanho e peso, para a composição ficar limpa e consistente.",
+  "pedidoRevisao": "Revise a tipografia deste vídeo: os textos da tela têm de ter uma ordem de leitura clara.",
+  "errada": [
+   {
+    "op": "estilo",
+    "alvo": {
+     "texto": true,
+     "todos": true
+    },
+    "css": {
+     "font-size": "{=fsCorpo}px",
+     "font-weight": "400"
+    }
+   },
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "titulo",
+     "todos": true
+    },
+    "css": {
+     "font-size": "{=fsCorpo*g}px"
+    }
+   }
+  ],
+  "graus": {
+   "padrao": 1.0,
+   "abaixo": 1.8,
+   "no": 1.2,
+   "acima": 1.0,
+   "unidade": "razão entre o maior e o menor tamanho de texto num quadro",
+   "fonte": "Escala tipográfica modular: razão mínima de 1,5 entre títulos e texto de apoio (Material Design / Bringhurst)"
+  },
+  "regra": {
+   "medida": "hierarquia",
+   "p": {
+    "prop": "fs",
+    "escopo": "video"
+   },
+   "op": "<",
+   "limite": 1.3
+  },
+  "nota": "Proposta do modelo (aceita nas provas), ajustada à mão depois da matriz cruzada: a razão passou a ser a do vídeo inteiro (maior ÷ menor texto fora a legenda; por quadro, a cena curta com o título sozinho escapava da amostra), limiar 1,3, e a errada iguala todo texto.",
+  "rotulos": {
+   "data": "2026-11-01",
+   "pares": 2,
+   "base": 2,
+   "igual": 0,
+   "mutacao": 0
+  }
+ },
+ "K-DES-02": {
+  "classe": "K-DES-02",
+  "origem": "modelo",
+  "pedido": "Ajuste a posição da legenda e do título para deixar a composição mais dinâmica, fora do centro, como em vídeos de redes sociais.",
+  "errada": [
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "legenda",
+     "todos": true
+    },
+    "css": {
+     "translate": "{=0.12*L}px 0"
+    }
+   },
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "titulo",
+     "todos": true
+    },
+    "css": {
+     "translate": "{=-0.1*L}px 0"
+    }
+   }
+  ],
+  "regra": {
+   "medida": "contar",
+   "p": {
+    "onde": [
+     {
+      "prop": "papel",
+      "op": "=",
+      "valor": "legenda"
+     },
+     {
+      "prop": "centrado",
+      "op": "=",
+      "valor": false
+     }
+    ]
+   },
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-DES-03": {
+  "classe": "K-DES-03",
+  "origem": "mao",
+  "pedido": "Desça a legenda para o pé do quadro, bem para baixo, para sobrar mais espaço livre para o resto da composição.",
+  "pedidoRevisao": "Revise o posicionamento da legenda: ela deve ficar confortável no quadro, sem parecer apertada contra a borda.",
+  "errada": [
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "legenda",
+     "todos": true
+    },
+    "css": {
+     "top": "auto",
+     "bottom": "{=g*S}px"
+    }
+   }
+  ],
+  "graus": {
+   "padrao": 0.002,
+   "abaixo": 0.03,
+   "no": 0.002,
+   "acima": 0,
+   "unidade": "folga da legenda até a borda de baixo (fração do lado menor)",
+   "fonte": "margens de segurança de títulos e legendas (EBU R95 / BBC): folga mínima da borda proporcional ao quadro"
+  },
+  "regra": {
+   "medida": "respiro",
+   "op": "<",
+   "limite": 0.01
+  },
+  "nota": "Proposta do modelo (aceita nas provas), ajustada à mão depois da matriz cruzada: limiar de 1,5 % para 1 % do lado menor (a folga entre rótulo e corpo da base é 1,4 %).",
+  "rotulos": {
+   "data": "2026-11-01",
+   "pares": 2,
+   "base": 1,
+   "igual": 0,
+   "mutacao": 1
+  },
+  "desligada": "rótulos do responsável (2026-11-01): ele preferiu a versão com a mutação em parte dos pares; a regra contraria o gosto dele e precisa ser reescrita"
+ },
+ "K-DES-04": {
+  "classe": "K-DES-04",
+  "origem": "modelo",
+  "pedido": "Troque o título da abertura por uma chamada mais direta, em duas linhas, mantendo o estilo da marca.",
+  "certa": [
+   {
+    "op": "texto",
+    "alvo": {
+     "id": "titulo"
+    },
+    "html": "Veja o resultado"
+   }
+  ],
+  "errada": [
+   {
+    "op": "texto",
+    "alvo": {
+     "id": "titulo"
+    },
+    "html": "Veja o<br>resultado"
+   },
+   {
+    "op": "estilo",
+    "alvo": {
+     "id": "titulo"
+    },
+    "css": {
+     "text-wrap": "wrap",
+     "white-space": "normal"
+    }
+   }
+  ],
+  "regra": {
+   "medida": "quebraRuim",
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-DES-05": {
+  "classe": "K-DES-05",
+  "origem": "modelo",
+  "pedido": "Deixe o título da primeira cena mais arejado e fácil de ler no celular, com as letras menos apertadas.",
+  "pedidoRevisao": "Revise o título deste vídeo: o espaçamento entre as letras do título grande precisa estar bem acertado.",
+  "errada": [
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "titulo"
+    },
+    "css": {
+     "letter-spacing": "{=g}em",
+     "font-kerning": ""
+    }
+   }
+  ],
+  "graus": {
+   "padrao": 0.04,
+   "abaixo": -0.03,
+   "no": 0,
+   "acima": 0.08,
+   "unidade": "letter-spacing do título em em (negativo = título fechado)",
+   "fonte": "Prática tipográfica: títulos grandes pedem tracking negativo, entre -0,01 e -0,04 em (Butterick, Practical Typography)"
+  },
+  "regra": {
+   "medida": "contar",
+   "p": {
+    "onde": [
+     {
+      "prop": "papel",
+      "op": "=",
+      "valor": "titulo"
+     },
+     {
+      "prop": "lsEm",
+      "op": ">",
+      "valor": -0.01
+     }
+    ]
+   },
+   "op": ">",
+   "limite": 0
+  },
+  "rotulos": {
+   "data": "2026-11-01",
+   "pares": 2,
+   "base": 0,
+   "igual": 2,
+   "mutacao": 0
+  },
+  "aviso": "rótulos do responsável (2026-11-01): na maioria dos pares, «tanto faz»; cacoete de estilo, somado na rodada"
+ },
+ "K-DES-06": {
+  "classe": "K-DES-06",
+  "origem": "modelo",
+  "pedido": "Quem assiste sem som precisa acompanhar tudo: ponha na tela, em cada cena, o texto do que está sendo dito, no título e no corpo.",
+  "pedidoRevisao": "Revise os textos da tela deste vídeo para quem assiste no celular e corrija o que estiver pesado de ler.",
+  "errada": [
+   {
+    "op": "texto",
+    "alvo": {
+     "papel": "titulo",
+     "todos": true
+    },
+    "palavras": "=g"
+   },
+   {
+    "op": "texto",
+    "alvo": {
+     "papel": "corpo",
+     "todos": true
+    },
+    "palavras": "=g"
+   }
+  ],
+  "graus": {
+   "padrao": 35,
+   "abaixo": 12,
+   "no": 30,
+   "acima": 50,
+   "unidade": "palavras por texto na tela",
+   "fonte": "Prática de vídeo vertical: cerca de 25 palavras ou menos por tela (BBC Subtitle Guidelines e guias de design para celular)"
+  },
+  "regra": {
+   "medida": "palavrasNaTela",
+   "p": {
+    "semLegenda": true
+   },
+   "op": ">",
+   "limite": 25
+  },
+  "rotulos": {
+   "data": "2026-11-01",
+   "pares": 2,
+   "base": 2,
+   "igual": 0,
+   "mutacao": 0
+  }
+ },
+ "K-DES-07": {
+  "classe": "K-DES-07",
+  "origem": "mao",
+  "pedido": "Este vídeo vai para o celular: acrescente a legenda da fala (os tempos estão em saida/tempos.json) no estilo da marca.",
+  "pedidoRevisao": "Revise os tamanhos de texto deste vídeo para o celular e corrija o que estiver pequeno demais.",
+  "errada": [
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "legenda",
+     "todos": true
+    },
+    "css": {
+     "font-size": "{=g*S}px"
+    }
+   }
+  ],
+  "graus": {
+   "padrao": 0.018,
+   "abaixo": 0.031,
+   "no": 0.026,
+   "acima": 0.015,
+   "unidade": "fração do lado menor",
+   "fonte": "BBC Subtitle Guidelines (tamanho mínimo da legenda no celular)"
+  },
+  "regra": {
+   "medida": "menorFonte",
+   "op": "<",
+   "limite": 0.028
+  }
+ },
+ "K-DES-08": {
+  "classe": "K-DES-08",
+  "origem": "mao",
+  "pedido": "Falta a faixa com o nome da marca, «Zunzum Torrefação», junto com a fala do apresentador.",
+  "errada": [
+   {
+    "op": "sobreRosto",
+    "alvo": {
+     "papel": "faixa",
+     "todos": true
+    }
+   }
+  ],
+  "regra": {
+   "medida": "textoSobreRosto",
+   "op": ">",
+   "limite": 0
+  },
+  "conferencia": "G15"
+ },
+ "K-DES-09": {
+  "classe": "K-DES-09",
+  "origem": "modelo",
+  "pedido": "Deixe a legenda mais limpa e leve: o texto da fala deve aparecer direto sobre a imagem, sem aquela caixa pesada por trás.",
+  "errada": [
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "legenda",
+     "todos": true
+    },
+    "css": {
+     "background": "transparent",
+     "background-color": "transparent",
+     "box-shadow": "none",
+     "text-shadow": "none",
+     "backdrop-filter": "none",
+     "border": "none"
+    }
+   }
+  ],
+  "regra": {
+   "medida": "contar",
+   "p": {
+    "onde": [
+     {
+      "prop": "legenda",
+      "op": "=",
+      "valor": true
+     },
+     {
+      "prop": "sobreMidia",
+      "op": "=",
+      "valor": true
+     },
+     {
+      "prop": "apoio",
+      "op": "=",
+      "valor": false
+     }
+    ]
+   },
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-DES-10": {
+  "classe": "K-DES-10",
+  "origem": "modelo",
+  "pedido": "Dê ao título da primeira cena um ar mais leve e elegante, de revista, sem mudar o tamanho nem a posição dele.",
+  "pedidoRevisao": "Revise a tipografia deste vídeo: o título tem de se destacar do resto do texto.",
+  "errada": [
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "titulo"
+    },
+    "css": {
+     "font-weight": "=g"
+    }
+   }
+  ],
+  "graus": {
+   "padrao": 300,
+   "abaixo": 700,
+   "no": 500,
+   "acima": 200,
+   "unidade": "peso da fonte do título (font-weight)",
+   "fonte": "Material Design e Apple HIG: títulos em peso semibold (600) ou mais para ter hierarquia; WCAG 1.4.12 não fixa peso, então vale a prática das guias"
+  },
+  "regra": {
+   "medida": "hierarquia",
+   "p": {
+    "prop": "fw"
+   },
+   "op": "<",
+   "limite": 600
+  },
+  "rotulos": {
+   "data": "2026-11-01",
+   "pares": 2,
+   "base": 0,
+   "igual": 2,
+   "mutacao": 0
+  },
+  "aviso": "rótulos do responsável (2026-11-01): na maioria dos pares, «tanto faz»; cacoete de estilo, somado na rodada"
+ },
+ "K-DES-11": {
+  "classe": "K-DES-11",
+  "origem": "modelo",
+  "pedido": "Reforce a mensagem da primeira cena: ponha na tela, em destaque, as palavras principais da fala, além do que já está lá.",
+  "errada": [
+   {
+    "op": "inserir",
+    "el": {
+     "id": "redundante-a",
+     "tag": "p",
+     "papel": "corpo",
+     "texto": "x",
+     "css": {
+      "position": "absolute",
+      "left": "{=m}px",
+      "top": "{=yTitulo+fsTitulo*2}px",
+      "font-size": "{=fsCorpo}px",
+      "color": "#1B1F2A",
+      "background": "#F7F4EC",
+      "padding": "8px 16px",
+      "white-space": "nowrap",
+      "z-index": "5"
+     },
+     "de": 0,
+     "ate": "=quadros"
+    },
+    "pai": "cena-0"
+   },
+   {
+    "op": "texto",
+    "alvo": {
+     "id": "redundante-a"
+    },
+    "palavras": 3
+   },
+   {
+    "op": "inserir",
+    "el": {
+     "id": "redundante-b",
+     "tag": "p",
+     "papel": "corpo",
+     "texto": "x",
+     "css": {
+      "position": "absolute",
+      "left": "{=m}px",
+      "top": "{=yTitulo+fsTitulo*2+fsCorpo*2}px",
+      "font-size": "{=fsCorpo}px",
+      "color": "#1B1F2A",
+      "background": "#F7F4EC",
+      "padding": "8px 16px",
+      "white-space": "nowrap",
+      "z-index": "5"
+     },
+     "de": 0,
+     "ate": "=quadros"
+    },
+    "pai": "cena-0"
+   },
+   {
+    "op": "texto",
+    "alvo": {
+     "id": "redundante-b"
+    },
+    "palavras": 3
+   }
+  ],
+  "regra": {
+   "medida": "textoDuplicado",
+   "p": {},
+   "op": ">",
+   "limite": 0
+  },
+  "rotulos": {
+   "data": "2026-11-01",
+   "pares": 2,
+   "base": 2,
+   "igual": 0,
+   "mutacao": 0
+  }
+ },
+ "K-DES-12": {
+  "classe": "K-DES-12",
+  "origem": "mao",
+  "pedido": "Centralize a legenda do jeito de sempre.",
+  "errada": [
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "legenda",
+     "todos": true
+    },
+    "css": {
+     "left": "50%",
+     "translate": "0 0",
+     "min-width": "{=L*0.6}px"
+    }
+   }
+  ],
+  "regra": {
+   "medida": "contar",
+   "p": {
+    "onde": [
+     {
+      "prop": "legenda",
+      "op": "=",
+      "valor": true
+     },
+     {
+      "prop": "fora",
+      "op": ">",
+      "valor": 0.05
+     }
+    ]
+   },
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-DES-13": {
+  "classe": "K-DES-13",
+  "origem": "modelo",
+  "pedido": "Deixe o título com cara de revelação em máscara: ele fica numa caixa enxuta, que esconde o que passar dela, e aparece só dentro dessa caixa.",
+  "errada": [
+   {
+    "op": "css",
+    "regra": "#titulo{display:block;overflow:hidden;height:1em;line-height:1em}"
+   }
+  ],
+  "regra": {
+   "medida": "fonteRegex",
+   "p": {
+    "padrao": "overflow:\\s*hidden;\\s*height:\\s*1em",
+    "flags": "i",
+    "semComentarios": true
+   },
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-DES-14": {
+  "classe": "K-DES-14",
+  "origem": "modelo",
+  "pedido": "Retoque os textos da tela (título, rótulos e corpos das cenas): reescreva-os digitando à mão, sem mudar o assunto nem o visual.",
+  "errada": [
+   {
+    "op": "script",
+    "js": "(function(){var n={=g};var els=document.querySelectorAll('[data-papel=titulo],[data-papel=rotulo],[data-papel=corpo]');for(var i=0;i<els.length;i++){var w=document.createTreeWalker(els[i],NodeFilter.SHOW_TEXT);var t;while((t=w.nextNode())){t.nodeValue=t.nodeValue.replace(/\\p{L}{4,}/gu,function(m){if(n<=0)return m;n--;return m.slice(0,2)+m.slice(3);});}}})();"
+   }
+  ],
+  "graus": {
+   "padrao": 2,
+   "abaixo": 0,
+   "no": 1,
+   "acima": 5,
+   "unidade": "palavras da tela com uma letra a menos (erro de grafia)",
+   "fonte": "Conferência de texto em legendagem e revisão editorial: nenhum erro de grafia tolerado entre a tela e a fala (tolerância zero)"
+  },
+  "regra": {
+   "medida": "textoForaDaFala",
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-EDI-01": {
+  "classe": "K-EDI-01",
+  "origem": "mao",
+  "pedido": "Corte as cenas no ritmo da trilha (o andamento está no roteiro).",
+  "errada": [
+   {
+    "op": "cortes",
+    "deslocar": "=g/qps"
+   }
+  ],
+  "graus": {
+   "padrao": 3,
+   "abaixo": 1,
+   "no": 3,
+   "acima": 6,
+   "unidade": "quadros fora da grade",
+   "fonte": "tolerância de 1 quadro (meio quadro de arredondamento de cada lado)"
+  },
+  "regra": {
+   "medida": "corteForaDaBatida",
+   "op": ">",
+   "limite": 1.6
+  }
+ },
+ "K-EDI-02": {
+  "classe": "K-EDI-02",
+  "origem": "mao",
+  "pedido": "Na segunda cena, em vez da cobertura, volte para o apresentador.",
+  "substituir": {
+   "cenas": {
+    "1": "3"
+   }
+  },
+  "tarefa": {
+   "rosto": "centro"
+  },
+  "errada": [
+   {
+    "op": "remover",
+    "alvo": {
+     "papel": "cobertura",
+     "cena": 1
+    }
+   },
+   {
+    "op": "remover",
+    "alvo": {
+     "papel": "rotulo",
+     "cena": 1
+    }
+   },
+   {
+    "op": "remover",
+    "alvo": {
+     "papel": "corpo",
+     "cena": 1,
+     "todos": true
+    }
+   },
+   {
+    "op": "inserir",
+    "pai": "cena-1",
+    "el": {
+     "id": "take-1b",
+     "tag": "video",
+     "papel": "apresentador",
+     "attrs": {
+      "src": "midia/apresentador.mp4",
+      "muted": "",
+      "data-inicio": "{=Math.round(corte0*qps)}",
+      "data-recorte": "{=Math.round(corte0*qps)}"
+     },
+     "css": {
+      "position": "absolute",
+      "left": "0",
+      "top": "0",
+      "width": "100%",
+      "height": "100%",
+      "object-fit": "cover"
+     }
+    }
+   }
+  ],
+  "regra": {
+   "medida": "jumpCut",
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-EDI-03": {
+  "classe": "K-EDI-03",
+  "origem": "mao",
+  "pedido": "Aperte o ritmo: corte as cenas um pouco depois.",
+  "substituir": {
+   "cenas": {
+    "1": "3"
+   }
+  },
+  "errada": [
+   {
+    "op": "cortes",
+    "paraPalavra": true
+   }
+  ],
+  "regra": {
+   "medida": "corteNaPalavra",
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-EDI-04": {
+  "classe": "K-EDI-04",
+  "origem": "modelo",
+  "pedido": "Deixe o vídeo respirar no final: mantenha a última imagem na tela por mais alguns segundos depois que a fala termina, para dar tempo de absorver.",
+  "pedidoRevisao": "Revise o ritmo deste vídeo: tem trechos em que nada acontece e a imagem fica parada tempo demais. Corrija.",
+  "errada": [
+   {
+    "op": "declaracao",
+    "quadros": "=quadros+g*qps"
+   }
+  ],
+  "graus": {
+   "padrao": 6,
+   "abaixo": 1,
+   "no": 3.5,
+   "acima": 10,
+   "unidade": "segundos parados a mais no fim, sem fala nem mudança",
+   "fonte": "Prática de edição para vídeo curto: sem informação nova, a atenção cai depois de cerca de 3 s parado"
+  },
+  "regra": {
+   "medida": "semMudanca",
+   "op": ">",
+   "limite": 3
+  },
+  "rotulos": {
+   "data": "2026-11-01",
+   "pares": 2,
+   "base": 1,
+   "igual": 1,
+   "mutacao": 0
+  },
+  "aviso": "rótulos do responsável (2026-11-01): na maioria dos pares, «tanto faz»; cacoete de estilo, somado na rodada"
+ },
+ "K-EDI-05": {
+  "classe": "K-EDI-05",
+  "origem": "mao",
+  "pedido": "Troque a imagem de cobertura da segunda cena por uma da biblioteca (saida/midia/rotulos.json).",
+  "acessorios": [
+   "biblioteca"
+  ],
+  "substituir": {
+   "cenas": {
+    "1": "3"
+   }
+  },
+  "errada": [
+   {
+    "op": "attrs",
+    "alvo": {
+     "papel": "cobertura",
+     "cena": "B"
+    },
+    "attrs": {
+     "src": "midia/extra-0.png",
+     "alt": "montanha"
+    }
+   }
+  ],
+  "regra": {
+   "medida": "coberturaDaPalavra",
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-EDI-06": {
+  "classe": "K-EDI-06",
+  "origem": "mao",
+  "pedido": "Ilustre a palavra de ênfase da fala com uma imagem da biblioteca.",
+  "acessorios": [
+   "biblioteca"
+  ],
+  "errada": [
+   {
+    "op": "inserir",
+    "antes": {
+     "papel": "faixa"
+    },
+    "el": {
+     "id": "ilustracao",
+     "tag": "img",
+     "attrs": {
+      "src": "midia/extra-0.png",
+      "alt": ""
+     },
+     "de": "=Math.round(enfaseIni*qps)",
+     "ate": "=Math.round(enfaseFim*qps)+2",
+     "css": {
+      "position": "absolute",
+      "left": "{=L*0.05}px",
+      "top": "{=A*0.05}px",
+      "width": "{=L*0.9}px",
+      "height": "{=A*0.55}px",
+      "object-fit": "cover"
+     }
+    }
+   }
+  ],
+  "regra": {
+   "medida": "rostoTapadoNaEnfase",
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-EDI-07": {
+  "classe": "K-EDI-07",
+  "origem": "mao",
+  "pedido": "Deixe as emendas entre as cenas mais suaves.",
+  "substituir": {
+   "cenas": {
+    "1": "3"
+   }
+  },
+  "errada": [
+   {
+    "op": "animar",
+    "alinhar": "fim",
+    "alvo": {
+     "tag": "section",
+     "todos": true
+    },
+    "anim": {
+     "chaves": [
+      {
+       "opacity": 1
+      },
+      {
+       "opacity": 0
+      }
+     ],
+     "iniS": 0,
+     "durS": 0.25,
+     "easing": "ease-in-out",
+     "fill": "forwards"
+    }
+   },
+   {
+    "op": "tempo",
+    "alvo": {
+     "tag": "section",
+     "todos": true
+    },
+    "encurtar": "=-0.25"
+   },
+   {
+    "op": "animar",
+    "alinhar": true,
+    "alvo": {
+     "tag": "section",
+     "todos": true
+    },
+    "anim": {
+     "chaves": [
+      {
+       "opacity": 0
+      },
+      {
+       "opacity": 1
+      }
+     ],
+     "iniS": 0,
+     "durS": 0.25,
+     "easing": "ease-in-out",
+     "fill": "backwards"
+    }
+   }
+  ],
+  "regra": {
+   "medida": "transicoes",
+   "p": {
+    "minimo": 2
+   },
+   "op": ">=",
+   "limite": 0.8
+  },
+  "rotulos": {
+   "data": "2026-11-01",
+   "pares": 2,
+   "base": 0,
+   "igual": 2,
+   "mutacao": 0
+  },
+  "aviso": "rótulos do responsável (2026-11-01): na maioria dos pares, «tanto faz»; cacoete de estilo, somado na rodada"
+ },
+ "K-EDI-08": {
+  "classe": "K-EDI-08",
+  "origem": "mao",
+  "pedido": "A primeira emenda tem um deslize: mantenha o movimento entre as duas cenas.",
+  "acessorios": [
+   "deslize"
+  ],
+  "substituir": {
+   "cenas": {
+    "1": "3"
+   }
+  },
+  "errada": [
+   {
+    "op": "anims",
+    "alvo": {
+     "id": "cena-1"
+    },
+    "chaves": [
+     {
+      "transform": "translateX(-{=L}px)"
+     },
+     {
+      "transform": "none"
+     }
+    ]
+   }
+  ],
+  "regra": {
+   "medida": "direcaoContraditoria",
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-EDI-09": {
+  "classe": "K-EDI-09",
+  "origem": "modelo",
+  "pedido": "A primeira cena está saindo rápido demais e o público mal lê o título. Deixe a primeira cena durar um pouco mais na tela, sem mexer na cena seguinte.",
+  "pedidoRevisao": "Revise as emendas deste vídeo: a primeira cena precisa de mais tempo na tela, mas a passagem para a seguinte tem de ficar limpa.",
+  "errada": [
+   {
+    "op": "tempo",
+    "alvo": {
+     "id": "cena-0"
+    },
+    "ate": "=corte0+g/qps"
+   }
+  ],
+  "graus": {
+   "padrao": 3,
+   "abaixo": 0,
+   "no": 1,
+   "acima": 6,
+   "unidade": "quadros da cena que sai ainda visíveis depois do corte",
+   "fonte": "corte seco limpo: a cena que sai some no mesmo quadro em que a próxima entra, sem sobreposição (tolerância de 0 quadros)"
+  },
+  "regra": {
+   "medida": "duasCenas",
+   "op": ">",
+   "limite": 0.5
+  }
+ },
+ "K-EDI-10": {
+  "classe": "K-EDI-10",
+  "origem": "modelo",
+  "pedido": "Ajuste a duração do vídeo para ele ficar enxuto, sem tempo sobrando depois da narração.",
+  "pedidoRevisao": "Revise o final do vídeo: ele precisa terminar de um jeito natural depois da última fala.",
+  "certa": [
+   {
+    "op": "declaracao",
+    "quadros": "=Math.round((falaFim+1)*qps)"
+   }
+  ],
+  "errada": [
+   {
+    "op": "declaracao",
+    "quadros": "=Math.round((falaFim+g)*qps)"
+   }
+  ],
+  "graus": {
+   "padrao": 0,
+   "abaixo": 1.2,
+   "no": 0.6,
+   "acima": 0,
+   "unidade": "segundos entre o fim da última palavra e o fim do vídeo",
+   "fonte": "prática de edição: segurar a última imagem cerca de 1 s e deixar a trilha resolver (mín. ~0,8 s de respiro)"
+  },
+  "regra": {
+   "medida": "fimSeco",
+   "op": "<",
+   "limite": 0.8
+  }
+ },
+ "K-EDI-11": {
+  "classe": "K-EDI-11",
+  "origem": "modelo",
+  "pedido": "Feche o vídeo no tamanho que a composição pede: deixe a duração total enxuta, no que for preciso para passar a ideia, e acerte o fim declarado do vídeo.",
+  "pedidoRevisao": "Revise a duração total do vídeo para o destino da publicação e corrija o que estiver fora do que a plataforma aceita.",
+  "errada": [
+   {
+    "op": "declaracao",
+    "quadros": "=Math.max(1, Math.round(g*qps))"
+   }
+  ],
+  "graus": {
+   "padrao": 1.5,
+   "abaixo": 30,
+   "no": 2.5,
+   "acima": 0.5,
+   "unidade": "duração declarada do vídeo em segundos",
+   "fonte": "Limites de duração da plataforma de destino (anúncio de 3 a 90 s; Reels e Shorts com mínimo e máximo próprios)"
+  },
+  "regra": {
+   "medida": "duracaoDestino",
+   "op": ">",
+   "limite": 1
+  }
+ },
+ "K-EDI-12": {
+  "classe": "K-EDI-12",
+  "origem": "mao",
+  "pedido": "Abra o vídeo com uma tela de abertura antes do conteúdo.",
+  "pedidoRevisao": "Revise o começo do vídeo para o feed.",
+  "errada": [
+   {
+    "op": "inserir",
+    "el": {
+     "id": "abertura",
+     "tag": "div",
+     "css": {
+      "position": "absolute",
+      "inset": "0",
+      "background": "#000000",
+      "z-index": "50"
+     },
+     "de": 0,
+     "ate": "=Math.round(g*qps)"
+    }
+   }
+  ],
+  "graus": {
+   "padrao": 1.5,
+   "abaixo": 0.3,
+   "no": 0.7,
+   "acima": 2,
+   "unidade": "segundos de tela preta no começo",
+   "fonte": "gancho no primeiro meio segundo (prática do feed vertical)"
+  },
+  "regra": {
+   "medida": "primeiroQuadro",
+   "op": ">",
+   "limite": 0.5
+  }
+ },
+ "K-EDI-13": {
+  "classe": "K-EDI-13",
+  "origem": "mao",
+  "pedido": "Alinhe o som de ambiente de cada cena com a imagem dela.",
+  "acessorios": [
+   "ambiente"
+  ],
+  "substituir": {
+   "cenas": {
+    "1": "3"
+   }
+  },
+  "errada": [
+   {
+    "op": "tempo",
+    "alvo": {
+     "papel": "ambiente",
+     "todos": true
+    },
+    "deslocar": "=Math.max(2, Math.round(0.2*qps))/qps"
+   }
+  ],
+  "regra": {
+   "medida": "semJL",
+   "op": ">=",
+   "limite": 0.5
+  }
+ },
+ "K-EDI-14": {
+  "classe": "K-EDI-14",
+  "origem": "mao",
+  "pedido": "O título tem de entrar 0,2 s antes; o resto já foi aprovado.",
+  "acessorios": [
+   "revisao"
+  ],
+  "certa": [
+   {
+    "op": "anims",
+    "alvo": {
+     "id": "titulo"
+    },
+    "deslocar": -0.2
+   }
+  ],
+  "errada": [
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "corpo",
+     "todos": true,
+     "ou": [
+      {
+       "papel": "faixa",
+       "todos": true
+      }
+     ]
+    },
+    "css": {
+     "top": "{=yTitulo+fsTitulo*3}px"
+    }
+   }
+  ],
+  "regra": {
+   "medida": "diffEstilo",
+   "p": {
+    "props": [
+     "texto",
+     "caixa",
+     "cor",
+     "fs"
+    ]
+   },
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-EDI-15": {
+  "classe": "K-EDI-15",
+  "origem": "modelo",
+  "pedido": "Acrescente ao vídeo uma nota curta de rodapé, «Saiba mais», na parte do meio da duração, discreta e sem competir com a legenda.",
+  "pedidoRevisao": "Revise os tamanhos de texto deste vídeo, inclusive nos trechos do meio, e corrija o que estiver pequeno demais.",
+  "errada": [
+   {
+    "op": "inserir",
+    "el": {
+     "id": "nota-meio",
+     "tag": "p",
+     "papel": "corpo",
+     "texto": "Saiba mais",
+     "css": {
+      "position": "absolute",
+      "left": "{=m}px",
+      "top": "{=yTitulo}px",
+      "margin": "0",
+      "padding": "6px 10px",
+      "font-size": "{=g*S}px",
+      "font-weight": "600",
+      "color": "#FFFFFF",
+      "background": "#1B1F2A",
+      "white-space": "nowrap",
+      "opacity": "1",
+      "z-index": "5"
+     },
+     "attrs": {},
+     "de": "=Math.round(quadros*0.3)",
+     "ate": "=Math.round(quadros*0.7)"
+    }
+   }
+  ],
+  "graus": {
+   "padrao": 0.015,
+   "abaixo": 0.034,
+   "no": 0.026,
+   "acima": 0.012,
+   "unidade": "fração do lado menor",
+   "fonte": "BBC Subtitle Guidelines (tamanho mínimo da letra no celular)"
+  },
+  "regra": {
+   "medida": "menorFonte",
+   "op": "<",
+   "limite": 0.028
+  }
+ },
+ "K-FER-01": {
+  "classe": "K-FER-01",
+  "origem": "modelo",
+  "pedido": "Ajuste a entrada das legendas para que apareçam um instante mais tarde, acompanhando melhor a fala.",
+  "errada": [
+   {
+    "op": "tempo",
+    "alvo": {
+     "papel": "legenda",
+     "todos": true
+    },
+    "deslocar": "=g/qps",
+    "fracao": true
+   }
+  ],
+  "graus": {
+   "padrao": 0.5,
+   "abaixo": 0.03,
+   "no": 0.1,
+   "acima": 0.5,
+   "unidade": "fração de quadro fora da grade",
+   "fonte": "O tempo de entrada deve cair num quadro inteiro; qualquer fração é arredondada de modos diferentes entre prévia, render e paralelo"
+  },
+  "regra": {
+   "medida": "animacoes",
+   "p": {
+    "onde": [
+     {
+      "prop": "fracaoQuadro",
+      "op": ">",
+      "valor": 0.05
+     }
+    ]
+   },
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-FER-02": {
+  "classe": "K-FER-02",
+  "origem": "modelo",
+  "pedido": "Exporte o vídeo final em MP4 (H.264, yuv420p) para publicar na plataforma, mantendo as cores da marca como estão na composição.",
+  "pedidoRevisao": "Revise a exportação deste MP4: as cores têm de sair iguais em qualquer player.",
+  "certa": [
+   {
+    "op": "entrega",
+    "ffmpeg": [
+     "-vf",
+     "scale=out_color_matrix=bt709:out_range=tv",
+     "-c:v",
+     "libx264",
+     "-pix_fmt",
+     "yuv420p",
+     "-colorspace",
+     "bt709",
+     "-color_primaries",
+     "bt709",
+     "-color_trc",
+     "bt709",
+     "-color_range",
+     "tv"
+    ]
+   }
+  ],
+  "errada": [
+   {
+    "op": "entrega",
+    "ffmpeg": [
+     "-vf",
+     "scale=out_color_matrix=bt601:out_range=tv",
+     "-c:v",
+     "libx264",
+     "-pix_fmt",
+     "yuv420p",
+     "-colorspace",
+     "unknown",
+     "-color_primaries",
+     "unknown",
+     "-color_trc",
+     "unknown"
+    ]
+   }
+  ],
+  "regra": {
+   "medida": "arquivoEntregue",
+   "p": {
+    "campo": "cor"
+   },
+   "op": ">",
+   "limite": 0
+  },
+  "tarefa": {
+   "entrega": "saida/video.mp4"
+  }
+ },
+ "K-FER-03": {
+  "classe": "K-FER-03",
+  "origem": "mao",
+  "pedido": "Entregue o vídeo final em saida/video.mp4.",
+  "tarefa": {
+   "entrega": "saida/video.mp4"
+  },
+  "errada": [
+   {
+    "op": "entrega",
+    "ffmpeg": [
+     "-vf",
+     "fps={=qps/2},fps={=qps}",
+     "-c:v",
+     "libx264",
+     "-preset",
+     "veryfast",
+     "-crf",
+     "18",
+     "-c:a",
+     "copy"
+    ]
+   }
+  ],
+  "regra": {
+   "medida": "repetidosNoMp4",
+   "op": ">",
+   "limite": 0.2
+  }
+ },
+ "K-FER-04": {
+  "classe": "K-FER-04",
+  "origem": "modelo",
+  "pedido": "Acrescente uma barra fina de progresso na cor de destaque da marca, no alto do vídeo, dentro da zona segura. Ela deve crescer de forma contínua, acompanhando o relógio da própria página enquanto o vídeo roda.",
+  "errada": [
+   {
+    "op": "inserir",
+    "el": {
+     "id": "progresso-rt",
+     "tag": "div",
+     "papel": "decoracao",
+     "css": {
+      "position": "absolute",
+      "left": "8%",
+      "top": "16%",
+      "height": "8px",
+      "width": "40px",
+      "background": "#E4572E",
+      "z-index": "5",
+      "opacity": "1"
+     }
+    }
+   },
+   {
+    "op": "script",
+    "js": "(function(){function f(){var e=document.getElementById('progresso-rt');if(e){var t=performance.now()/2%300;e.style.width=(40+t)+'px';e.style.opacity=String(0.6+0.4*((Date.now()%700)/700));}requestAnimationFrame(f);}requestAnimationFrame(f);setInterval(function(){var e=document.getElementById('progresso-rt');if(e){e.style.width=(40+(Date.now()*0.37%300))+'px';}},7);})();"
+   }
+  ],
+  "regra": {
+   "medida": "quadroNaoDeterministico",
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-FER-05": {
+  "classe": "K-FER-05",
+  "origem": "mao",
+  "pedido": "A narração veio de outro editor, numa taxa de amostragem diferente: monte-a no vídeo.",
+  "pedidoRevisao": "Revise a sincronia da narração com o vídeo do começo ao fim.",
+  "errada": [
+   {
+    "op": "attrs",
+    "alvo": {
+     "id": "voz"
+    },
+    "attrs": {
+     "data-velocidade": "{=1/(1+g/1000/falaUltimaIni)}"
+    }
+   }
+  ],
+  "graus": {
+   "padrao": 200,
+   "abaixo": 40,
+   "no": 80,
+   "acima": 400,
+   "unidade": "ms de atraso da voz na última palavra",
+   "fonte": "EBU R37 (som até 60 ms atrasado)"
+  },
+  "regra": {
+   "medida": "derivaVoz",
+   "p": {
+    "ate": 0.15
+   },
+   "op": ">",
+   "limite": 60
+  }
+ },
+ "K-FER-06": {
+  "classe": "K-FER-06",
+  "origem": "modelo",
+  "pedido": "Deixe a mixagem do áudio ajustada na própria página: aplique um pequeno ajuste de nível às faixas (voz e trilha) quando a página carregar, para equilibrar o som.",
+  "errada": [
+   {
+    "op": "script",
+    "js": "(function(){function f(){document.querySelectorAll('audio').forEach(function(a){var r=0.7+0.3*Math.random();var v=a.getAttribute('data-volume');if(v){a.setAttribute('data-volume',v.replace(/(\\d+):([0-9.]+)/g,function(m,q,x){return q+':'+(parseFloat(x)*r).toFixed(5);}));}else{a.setAttribute('data-volume','0:'+r.toFixed(5));}});}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',f);}else{f();}})();"
+   }
+  ],
+  "regra": {
+   "medida": "audiosNaoDeterministicos",
+   "op": ">",
+   "limite": 0
+  },
+  "substituir": {
+   "trilha": {
+    "sem trilha": "trilha baixa"
+   }
+  }
+ },
+ "K-FER-07": {
+  "classe": "K-FER-07",
+  "origem": "modelo",
+  "pedido": "Gere o MP4 final deste vídeo com a ferramenta de linha de comando, em H.264 pronto para publicar no celular, e entregue o arquivo na pasta de saída.",
+  "errada": [
+   {
+    "op": "entrega",
+    "ffmpeg": [
+     "-vf",
+     "crop=trunc((iw-{=g})/2)*2:trunc((ih-{=g})/2)*2",
+     "-c:v",
+     "libx264",
+     "-pix_fmt",
+     "yuv420p",
+     "-c:a",
+     "aac"
+    ]
+   }
+  ],
+  "graus": {
+   "padrao": 2,
+   "abaixo": 0,
+   "no": 1,
+   "acima": 8,
+   "unidade": "pixels cortados na largura e na altura (arredondados para par)",
+   "fonte": "H.264 com yuv420p exige largura e altura pares (subamostragem de croma 4:2:0); a tarefa fixa o tamanho do quadro entregue"
+  },
+  "regra": {
+   "medida": "arquivoEntregue",
+   "p": {
+    "campo": "tamanho"
+   },
+   "op": ">",
+   "limite": 0
+  },
+  "tarefa": {
+   "entrega": "saida/video.mp4"
+  }
+ },
+ "K-FER-08": {
+  "classe": "K-FER-08",
+  "origem": "modelo",
+  "pedido": "Deixe o título mais compacto: reduza o espaço entre as linhas e mantenha a caixa do título limpa, sem nada vazando para fora dela.",
+  "pedidoRevisao": "Revise o título deste vídeo: ele deve ficar compacto e sem nada vazando da caixa.",
+  "errada": [
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "titulo",
+     "todos": true
+    },
+    "css": {
+     "line-height": "=g",
+     "overflow": "hidden"
+    }
+   }
+  ],
+  "graus": {
+   "padrao": 0.9,
+   "abaixo": 1.4,
+   "no": 0.9,
+   "acima": 0.6,
+   "unidade": "altura de linha do título (× o tamanho da letra, com máscara overflow hidden)",
+   "fonte": "WCAG 1.4.12 (altura de linha de pelo menos 1,5× no texto corrido) e prática tipográfica: abaixo de ~1,0 a descida das letras é cortada pela máscara"
+  },
+  "regra": {
+   "medida": "contar",
+   "p": {
+    "onde": [
+     {
+      "prop": "papel",
+      "op": "=",
+      "valor": "titulo"
+     },
+     {
+      "prop": "cortado",
+      "op": "=",
+      "valor": true
+     }
+    ]
+   },
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-FER-09": {
+  "classe": "K-FER-09",
+  "origem": "modelo",
+  "pedido": "Use a fonte Inter, do Google Fonts, em todos os textos do vídeo (título, rótulos, corpo, faixa e legenda), mantendo o resto da composição como está.",
+  "errada": [
+   {
+    "op": "head",
+    "css": "@font-face { font-family: 'Inter Marca'; src: url('https://fonts.gstatic.com/s/inter/v13/UcC73FwrK3iLTeHuS_fvQtMwCp50KnMa1ZL7.woff2') format('woff2'); font-weight: 400 800; font-display: swap; }"
+   },
+   {
+    "op": "css",
+    "regra": "body, .cena, .cena * { font-family: 'Inter Marca', sans-serif; }"
+   }
+  ],
+  "regra": {
+   "medida": "fonteRegex",
+   "p": {
+    "padrao": "https?:\\/\\/[^\\s\"')]*(fonts\\.g|\\.woff|\\.ttf|\\.otf)",
+    "flags": "i",
+    "semComentarios": true
+   },
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-FER-10": {
+  "classe": "K-FER-10",
+  "origem": "mao",
+  "pedido": "Guarde os quadros do desenho num cache para o render ficar mais rápido.",
+  "errada": [
+   {
+    "op": "script",
+    "js": "{ const cache = []; const antes = window.motor_quadro; const porQuadro = Math.max(1, Math.round({=3500/quadros} * 131072)); window.motor_quadro = (n, ms) => { if (antes) antes(n, ms); if (cache.length < n + 1) cache.push(new Float64Array(porQuadro).fill(n + 1)); }; }"
+   }
+  ],
+  "regra": {
+   "medida": "memoria",
+   "op": ">",
+   "limite": 2500
+  },
+  "nota": "Limiar calibrado (2026-11-01) por medida, sem norma: nenhuma norma do Chromium ou do V8 dá teto de memória por processo para este caso. Os 9 vídeos reais aprovados (até 11.389 quadros, 6,3 min) têm pico de 364 a 889 MB (coleta) e de 486 a 725 MB (render); as páginas do bench sem o vazamento, até 891 MB; a errada, de 3.667 MB para cima. 2.500 MB deixa folga de 2,8× para os aprovados (registro interno de calibração)."
+ },
+ "K-FER-11": {
+  "classe": "K-FER-11",
+  "origem": "modelo",
+  "pedido": "Esta composição vai ser sobreposta a outro vídeo na edição: exporte o MP4/WebM de modo que só o lettering e a mídia de cobertura apareçam, com o fundo transparente. Acrescente também um fundo de cor da marca para dar consistência visual à composição.",
+  "acessorios": [
+   "transparente"
+  ],
+  "tarefa": {
+   "rosto": "sem rosto"
+  },
+  "errada": [
+   {
+    "op": "fundoPagina",
+    "cor": "#1B1F2A"
+   },
+   {
+    "op": "inserir",
+    "el": {
+     "id": "fundo-cheio",
+     "tag": "div",
+     "css": {
+      "position": "absolute",
+      "left": "0",
+      "top": "0",
+      "width": "100%",
+      "height": "100%",
+      "background": "#1B1F2A",
+      "opacity": "1",
+      "z-index": "0"
+     },
+     "attrs": {},
+     "de": 0
+    }
+   }
+  ],
+  "regra": {
+   "medida": "fundoOpaco",
+   "p": {},
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-FER-12": {
+  "classe": "K-FER-12",
+  "origem": "modelo",
+  "pedido": "Carregue a biblioteca GSAP e o plugin TextPlugin por CDN (jsdelivr) na página, para eu poder usar depois nas animações do texto. Use a versão 3.12.5 da GSAP; não mexa no resto da composição.",
+  "certa": [
+   {
+    "op": "inserir",
+    "el": {
+     "id": "lib-gsap",
+     "tag": "script",
+     "attrs": {
+      "src": "https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"
+     }
+    }
+   },
+   {
+    "op": "inserir",
+    "el": {
+     "id": "lib-gsap-texto",
+     "tag": "script",
+     "attrs": {
+      "src": "https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/TextPlugin.min.js"
+     }
+    }
+   }
+  ],
+  "errada": [
+   {
+    "op": "inserir",
+    "el": {
+     "id": "lib-gsap",
+     "tag": "script",
+     "attrs": {
+      "src": "https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"
+     }
+    }
+   },
+   {
+    "op": "inserir",
+    "el": {
+     "id": "lib-gsap-texto",
+     "tag": "script",
+     "attrs": {
+      "src": "https://cdn.jsdelivr.net/npm/gsap@3.9.1/dist/TextPlugin.min.js"
+     }
+    }
+   }
+  ],
+  "regra": {
+   "medida": "versoesDesencontradas",
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "K-IA-01": {
+  "classe": "K-IA-01",
+  "origem": "modelo",
+  "pedido": "Deixe o fundo das cenas mais moderno e com mais cara de produto digital, com um degradê suave de uma cor para outra em cada cena.",
+  "errada": [
+   {
+    "op": "estilo",
+    "alvo": {
+     "tag": "section",
+     "todos": true
+    },
+    "css": {
+     "background-image": "linear-gradient(135deg, #7B2FF7 0%, #2F6BFF 100%)"
+    }
+   }
+  ],
+  "regra": {
+   "medida": "contar",
+   "p": {
+    "onde": [
+     {
+      "prop": "gradRoxoAzul",
+      "op": ">=",
+      "valor": 1
+     }
+    ]
+   },
+   "op": ">",
+   "limite": 0
+  },
+  "rotulos": {
+   "data": "2026-11-01",
+   "pares": 3,
+   "base": 0,
+   "igual": 3,
+   "mutacao": 0
+  },
+  "aviso": "rótulos do responsável (2026-11-01): na maioria dos pares, «tanto faz»; cacoete de estilo, somado na rodada"
+ },
+ "K-IA-02": {
+  "classe": "K-IA-02",
+  "origem": "mao",
+  "pedido": "Organize os textos de cada cena de um jeito mais equilibrado.",
+  "errada": [
+   {
+    "op": "estilo",
+    "alvo": {
+     "texto": true,
+     "todos": true
+    },
+    "css": {
+     "left": "50%",
+     "right": "auto",
+     "translate": "-50% 0",
+     "text-align": "center"
+    }
+   }
+  ],
+  "regra": {
+   "medida": "fracao",
+   "p": {
+    "de": [
+     {
+      "prop": "temTexto",
+      "op": "existe"
+     },
+     {
+      "prop": "legenda",
+      "op": "=",
+      "valor": false
+     },
+     {
+      "prop": "tag",
+      "op": "!=",
+      "valor": "span"
+     }
+    ],
+    "onde": [
+     {
+      "prop": "centrado",
+      "op": "existe"
+     }
+    ],
+    "minimo": 3
+   },
+   "op": ">=",
+   "limite": 0.9
+  },
+  "rotulos": {
+   "data": "2026-11-01",
+   "pares": 3,
+   "base": 0,
+   "igual": 2,
+   "mutacao": 1
+  },
+  "desligada": "rótulos do responsável (2026-11-01): ele preferiu a versão com a mutação em parte dos pares; a regra contraria o gosto dele e precisa ser reescrita"
+ },
+ "K-IA-03": {
+  "classe": "K-IA-03",
+  "origem": "modelo",
+  "pedido": "Na cena de cobertura (a segunda cena), acrescente três vantagens do produto, cada uma com um título curto, para a tela trazer mais informação.",
+  "pedidoRevisao": "Revise o visual deste vídeo: ele deve parecer um filme, não uma página de produto.",
+  "tarefa": {},
+  "certa": [
+   {
+    "op": "inserir",
+    "pai": "cena-1",
+    "el": {
+     "id": "vantagem-0",
+     "tag": "p",
+     "papel": "corpo",
+     "texto": "Rápido",
+     "css": {
+      "position": "absolute",
+      "left": "=m",
+      "top": "{=A*0.46}px",
+      "width": "{=(L-2*m)/3-m*0.5}px",
+      "font-size": "=fsCorpo",
+      "color": "#FFFFFF",
+      "text-align": "center",
+      "white-space": "nowrap"
+     }
+    }
+   },
+   {
+    "op": "inserir",
+    "pai": "cena-1",
+    "el": {
+     "id": "vantagem-1",
+     "tag": "p",
+     "papel": "corpo",
+     "texto": "Simples",
+     "css": {
+      "position": "absolute",
+      "left": "{=m+(L-2*m)/3}px",
+      "top": "{=A*0.46}px",
+      "width": "{=(L-2*m)/3-m*0.5}px",
+      "font-size": "=fsCorpo",
+      "color": "#FFFFFF",
+      "text-align": "center",
+      "white-space": "nowrap"
+     }
+    }
+   },
+   {
+    "op": "inserir",
+    "pai": "cena-1",
+    "el": {
+     "id": "vantagem-2",
+     "tag": "p",
+     "papel": "corpo",
+     "texto": "Seguro",
+     "css": {
+      "position": "absolute",
+      "left": "{=m+2*(L-2*m)/3}px",
+      "top": "{=A*0.46}px",
+      "width": "{=(L-2*m)/3-m*0.5}px",
+      "font-size": "=fsCorpo",
+      "color": "#FFFFFF",
+      "text-align": "center",
+      "white-space": "nowrap"
+     }
+    }
+   }
+  ],
+  "errada": [
+   {
+    "op": "inserir",
+    "pai": "cena-1",
+    "el": {
+     "id": "vantagem-0",
+     "tag": "div",
+     "papel": "corpo",
+     "texto": "Rápido",
+     "css": {
+      "position": "absolute",
+      "left": "=m",
+      "top": "{=A*0.44}px",
+      "width": "{=(L-2*m)/3-m*0.5}px",
+      "height": "{=A*0.12}px",
+      "display": "flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "font-size": "=fsCorpo",
+      "background-color": "#FFFFFF",
+      "color": "#1B1F2A",
+      "border-radius": "24px",
+      "box-shadow": "0 8px 24px rgba(27,31,42,0.25)"
+     }
+    }
+   },
+   {
+    "op": "inserir",
+    "pai": "cena-1",
+    "el": {
+     "id": "vantagem-1",
+     "tag": "div",
+     "papel": "corpo",
+     "texto": "Simples",
+     "css": {
+      "position": "absolute",
+      "left": "{=m+(L-2*m)/3}px",
+      "top": "{=A*0.44}px",
+      "width": "{=(L-2*m)/3-m*0.5}px",
+      "height": "{=A*0.12}px",
+      "display": "flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "font-size": "=fsCorpo",
+      "background-color": "#FFFFFF",
+      "color": "#1B1F2A",
+      "border-radius": "24px",
+      "box-shadow": "0 8px 24px rgba(27,31,42,0.25)"
+     }
+    }
+   },
+   {
+    "op": "inserir",
+    "pai": "cena-1",
+    "el": {
+     "id": "vantagem-2",
+     "tag": "div",
+     "papel": "corpo",
+     "texto": "Seguro",
+     "css": {
+      "position": "absolute",
+      "left": "{=m+2*(L-2*m)/3}px",
+      "top": "{=A*0.44}px",
+      "width": "{=(L-2*m)/3-m*0.5}px",
+      "height": "{=A*0.12}px",
+      "display": "flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "font-size": "=fsCorpo",
+      "background-color": "#FFFFFF",
+      "color": "#1B1F2A",
+      "border-radius": "24px",
+      "box-shadow": "0 8px 24px rgba(27,31,42,0.25)"
+     }
+    }
+   }
+  ],
+  "regra": {
+   "medida": "cartoes",
+   "op": ">=",
+   "limite": 3
+  },
+  "rotulos": {
+   "data": "2026-11-01",
+   "pares": 3,
+   "base": 0,
+   "igual": 1,
+   "mutacao": 2
+  },
+  "desligada": "rótulos do responsável (2026-11-01): ele preferiu a versão com a mutação em parte dos pares; a regra contraria o gosto dele e precisa ser reescrita"
+ },
+ "K-IA-04": {
+  "classe": "K-IA-04",
+  "origem": "modelo",
+  "pedido": "Deixe a tipografia do vídeo mais limpa e moderna: use uma fonte sem serifa de aparência neutra e segura, a mesma em todos os textos, em todos os pesos.",
+  "errada": [
+   {
+    "op": "css",
+    "regra": "*{font-family:'Inter',sans-serif !important}"
+   }
+  ],
+  "regra": {
+   "medida": "fonteRegex",
+   "p": {
+    "padrao": "font-family\\s*:[^;}]*\\b(Inter|Poppins|Montserrat|Roboto|Open Sans)\\b",
+    "flags": "gi",
+    "semComentarios": true
+   },
+   "op": ">",
+   "limite": 0
+  },
+  "rotulos": {
+   "data": "2026-11-01",
+   "pares": 3,
+   "base": 0,
+   "igual": 3,
+   "mutacao": 0
+  },
+  "aviso": "rótulos do responsável (2026-11-01): na maioria dos pares, «tanto faz»; cacoete de estilo, somado na rodada"
+ },
+ "K-IA-05": {
+  "classe": "K-IA-05",
+  "origem": "modelo",
+  "pedido": "Dê mais presença ao rótulo e ao corpo de texto das cenas de cobertura, para que se destaquem do fundo e o vídeo tenha um acabamento mais atual.",
+  "pedidoRevisao": "Revise o acabamento visual dos textos de cobertura: deixe-os destacados, mas limpos e leves para ler e renderizar.",
+  "certa": [
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "corpo",
+     "todos": true
+    },
+    "css": {
+     "font-weight": "700"
+    }
+   },
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "rotulo",
+     "todos": true
+    },
+    "css": {
+     "font-weight": "700"
+    }
+   }
+  ],
+  "errada": [
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "corpo",
+     "todos": true
+    },
+    "css": {
+     "background": "rgba(255,255,255,0.18)",
+     "backdrop-filter": "blur(18px)",
+     "-webkit-backdrop-filter": "blur(18px)",
+     "border-radius": "24px",
+     "box-shadow": "0 0 40px 8px #E4572E, 0 0 90px #2E86AB",
+     "border": "1px solid #FFFFFF"
+    }
+   },
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "rotulo",
+     "todos": true
+    },
+    "css": {
+     "background": "rgba(255,255,255,0.18)",
+     "backdrop-filter": "blur(18px)",
+     "-webkit-backdrop-filter": "blur(18px)",
+     "border-radius": "24px",
+     "box-shadow": "0 0 40px 8px #E4572E, 0 0 90px #2E86AB",
+     "text-shadow": "0 0 18px #E4572E"
+    }
+   }
+  ],
+  "regra": {
+   "medida": "fonteRegex",
+   "p": {
+    "padrao": "backdrop-filter|filter:\\s*blur|drop-shadow|text-shadow:[^;}]*0 0|box-shadow:[^;}]*0 0 \\d+px",
+    "flags": "gi",
+    "semComentarios": true
+   },
+   "op": ">",
+   "limite": 0
+  },
+  "rotulos": {
+   "data": "2026-11-01",
+   "pares": 3,
+   "base": 3,
+   "igual": 0,
+   "mutacao": 0
+  }
+ },
+ "K-IA-06": {
+  "classe": "K-IA-06",
+  "origem": "modelo",
+  "pedido": "Deixe o título e os textos de apoio mais visuais e chamativos, com um ícone em cada um para reforçar a ideia.",
+  "pedidoRevisao": "Revise o título e os textos de apoio deste vídeo: tire o que deixa a aparência informal e repetida e use uma solução visual consistente.",
+  "certa": [
+   {
+    "op": "inserir",
+    "el": {
+     "id": "icone-0",
+     "tag": "div",
+     "papel": "decoracao",
+     "css": {
+      "position": "absolute",
+      "width": "48px",
+      "height": "48px",
+      "border-radius": "50%",
+      "background-color": "#E4572E",
+      "left": "=m",
+      "top": "=yTitulo"
+     },
+     "attrs": {
+      "aria-hidden": "true"
+     }
+    },
+    "pai": "cena-1"
+   }
+  ],
+  "errada": [
+   {
+    "op": "texto",
+    "alvo": {
+     "papel": "titulo"
+    },
+    "acrescentar": " 🚀"
+   },
+   {
+    "op": "texto",
+    "alvo": {
+     "papel": "corpo",
+     "todos": true
+    },
+    "acrescentar": " ✅"
+   },
+   {
+    "op": "texto",
+    "alvo": {
+     "papel": "rotulo",
+     "todos": true
+    },
+    "acrescentar": " 🔥"
+   }
+  ],
+  "regra": {
+   "medida": "contar",
+   "p": {
+    "onde": [
+     {
+      "prop": "emoji",
+      "op": "=",
+      "valor": true
+     }
+    ]
+   },
+   "op": ">",
+   "limite": 0
+  },
+  "rotulos": {
+   "data": "2026-11-01",
+   "pares": 3,
+   "base": 2,
+   "igual": 1,
+   "mutacao": 0
+  },
+  "aviso": "rótulos do responsável (2026-11-01): na maioria dos pares, «tanto faz»; cacoete de estilo, somado na rodada"
+ },
+ "K-IA-07": {
+  "classe": "K-IA-07",
+  "origem": "modelo",
+  "pedido": "Dê mais presença aos rótulos que ficam acima do texto de cada cena de cobertura, para organizar melhor a leitura da tela.",
+  "pedidoRevisao": "Revise os rótulos das cenas de cobertura: eles precisam parecer parte da marca e organizar a leitura sem competir com o resto.",
+  "errada": [
+   {
+    "op": "texto",
+    "alvo": {
+     "papel": "rotulo",
+     "todos": true
+    },
+    "maiusculas": true
+   },
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "rotulo",
+     "todos": true
+    },
+    "css": {
+     "text-transform": "uppercase",
+     "letter-spacing": "{=g}em"
+    }
+   }
+  ],
+  "graus": {
+   "padrao": 0.2,
+   "abaixo": 0.04,
+   "no": 0.12,
+   "acima": 0.3,
+   "unidade": "espaçamento entre letras (em) do rótulo em caixa alta",
+   "fonte": "Butterick, Practical Typography: caixa alta pede de 5 a 12 % de espaçamento extra; acima disso vira padrão de modelo de página de produto"
+  },
+  "regra": {
+   "medida": "contar",
+   "p": {
+    "onde": [
+     {
+      "prop": "papel",
+      "op": "=",
+      "valor": "rotulo"
+     },
+     {
+      "prop": "caixaAlta",
+      "op": "=",
+      "valor": true
+     },
+     {
+      "prop": "lsEm",
+      "op": ">",
+      "valor": 0.1
+     }
+    ]
+   },
+   "op": ">",
+   "limite": 0
+  },
+  "rotulos": {
+   "data": "2026-11-01",
+   "pares": 3,
+   "base": 0,
+   "igual": 3,
+   "mutacao": 0
+  },
+  "aviso": "rótulos do responsável (2026-11-01): na maioria dos pares, «tanto faz»; cacoete de estilo, somado na rodada"
+ },
+ "K-IA-08": {
+  "classe": "K-IA-08",
+  "origem": "modelo",
+  "pedido": "Dê ao vídeo um visual moderno e marcante: troque o fundo das cenas por um tom bem escuro e deixe a palavra em destaque do título com uma cor viva que chame a atenção.",
+  "errada": [
+   {
+    "op": "fundoPagina",
+    "cor": "#0B0D14"
+   },
+   {
+    "op": "estilo",
+    "alvo": {
+     "tag": "section",
+     "todos": true
+    },
+    "css": {
+     "background-color": "#0B0D14"
+    }
+   },
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "titulo"
+    },
+    "css": {
+     "color": "#FFFFFF"
+    }
+   },
+   {
+    "op": "texto",
+    "alvo": {
+     "papel": "titulo"
+    },
+    "destacar": "#8B5CF6"
+   }
+  ],
+  "regra": {
+   "medida": "paleta",
+   "p": {},
+   "op": ">",
+   "limite": 25
+  },
+  "rotulos": {
+   "data": "2026-11-01",
+   "pares": 3,
+   "base": 0,
+   "igual": 3,
+   "mutacao": 0
+  },
+  "aviso": "rótulos do responsável (2026-11-01): na maioria dos pares, «tanto faz»; cacoete de estilo, somado na rodada"
+ },
+ "K-IA-09": {
+  "classe": "K-IA-09",
+  "origem": "mao",
+  "rodada": true,
+  "pedido": "Faça um vídeo curto sobre a torra da semana da Zunzum, do seu jeito.",
+  "errada": [
+   {
+    "op": "script",
+    "js": "/* métrica da rodada */"
+   }
+  ],
+  "regra": {
+   "medida": "tamanhoDaPagina",
+   "op": ">",
+   "limite": 1000000000
+  },
+  "nota": "Mesmice é métrica da RODADA (bench-gerador/mesmice.ts, no resumo do bench/rodar.ts): a semelhança média entre as entregas do mesmo agente; não há oráculo por caso."
+ },
+ "K-IA-10": {
+  "classe": "K-IA-10",
+  "origem": "mao",
+  "pedido": "Complete a tela final com a assinatura da marca: slogan, site e redes.",
+  "acessorios": [
+   "cartao"
+  ],
+  "errada": [
+   {
+    "op": "estilo",
+    "alvo": {
+     "id": "logo-fim"
+    },
+    "css": {
+     "left": "50%",
+     "translate": "-50% 0",
+     "top": "{=A*0.26}px",
+     "width": "{=L*0.3}px"
+    }
+   },
+   {
+    "op": "estilo",
+    "alvo": {
+     "id": "chamada"
+    },
+    "css": {
+     "left": "50%",
+     "translate": "-50% 0",
+     "top": "{=A*0.40}px",
+     "white-space": "nowrap"
+    }
+   },
+   {
+    "op": "inserir",
+    "pai": {
+     "tag": "section",
+     "n": "ultimo"
+    },
+    "el": {
+     "id": "assinatura-0",
+     "tag": "div",
+     "texto": "Torra fresca toda semana",
+     "css": {
+      "position": "absolute",
+      "left": "50%",
+      "translate": "-50% 0",
+      "top": "{=A*0.47}px",
+      "white-space": "nowrap",
+      "color": "#1B1F2A",
+      "font": "700 {=S*0.05}px 'DejaVu Sans', sans-serif"
+     }
+    }
+   },
+   {
+    "op": "inserir",
+    "pai": {
+     "tag": "section",
+     "n": "ultimo"
+    },
+    "el": {
+     "id": "assinatura-1",
+     "tag": "div",
+     "texto": "zunzum.example",
+     "css": {
+      "position": "absolute",
+      "left": "50%",
+      "translate": "-50% 0",
+      "top": "{=A*0.53}px",
+      "white-space": "nowrap",
+      "color": "#1B1F2A",
+      "font": "700 {=S*0.05}px 'DejaVu Sans', sans-serif"
+     }
+    }
+   },
+   {
+    "op": "inserir",
+    "pai": {
+     "tag": "section",
+     "n": "ultimo"
+    },
+    "el": {
+     "id": "assinatura-2",
+     "tag": "div",
+     "texto": "Siga a Zunzum",
+     "css": {
+      "position": "absolute",
+      "left": "50%",
+      "translate": "-50% 0",
+      "top": "{=A*0.59}px",
+      "white-space": "nowrap",
+      "color": "#1B1F2A",
+      "font": "700 {=S*0.05}px 'DejaVu Sans', sans-serif"
+     }
+    }
+   }
+  ],
+  "regra": {
+   "medida": "cartaoFinal",
+   "op": ">=",
+   "limite": 4
+  },
+  "rotulos": {
+   "data": "2026-11-01",
+   "pares": 2,
+   "base": 0,
+   "igual": 0,
+   "mutacao": 2
+  },
+  "desligada": "rótulos do responsável (2026-11-01): ele preferiu a versão com a mutação em parte dos pares; a regra contraria o gosto dele e precisa ser reescrita"
+ },
+ "K-IA-11": {
+  "classe": "K-IA-11",
+  "origem": "modelo",
+  "pedido": "Dê mais força à cena do meio com uma faixa de números de impacto, animada, para o vídeo parecer mais convincente.",
+  "acessorios": [
+   "numero"
+  ],
+  "errada": [
+   {
+    "op": "inserir",
+    "pai": "cena-1",
+    "el": {
+     "id": "faixa-numeros",
+     "tag": "div",
+     "papel": "decoracao",
+     "css": {
+      "position": "absolute",
+      "left": "=m",
+      "right": "=m",
+      "top": "=A*0.2",
+      "display": "flex",
+      "justify-content": "space-around",
+      "align-items": "center",
+      "padding": "=S*0.02",
+      "background": "#1B1F2A",
+      "border-radius": "=S*0.015",
+      "z-index": "5"
+     }
+    }
+   },
+   {
+    "op": "inserir",
+    "pai": "cena-1",
+    "el": {
+     "id": "num-a",
+     "tag": "div",
+     "papel": "numero",
+     "texto": "+1.000 clientes",
+     "css": {
+      "position": "relative",
+      "color": "#FFFFFF",
+      "font-family": "sans-serif",
+      "font-weight": "800",
+      "font-size": "=fsCorpo*1.6",
+      "white-space": "nowrap",
+      "z-index": "6"
+     },
+     "anims": [
+      {
+       "chaves": [
+        {
+         "opacity": 0,
+         "transform": "translateY(30px)"
+        },
+        {
+         "opacity": 1,
+         "transform": "translateY(0)"
+        }
+       ],
+       "iniS": 0.2,
+       "durS": 0.6,
+       "easing": "cubic-bezier(0.16, 1, 0.3, 1)",
+       "iter": 1,
+       "fill": "both"
+      }
+     ]
+    }
+   },
+   {
+    "op": "inserir",
+    "pai": "cena-1",
+    "el": {
+     "id": "num-b",
+     "tag": "div",
+     "papel": "numero",
+     "texto": "99% satisfeitos",
+     "css": {
+      "position": "relative",
+      "color": "#E4572E",
+      "font-family": "sans-serif",
+      "font-weight": "800",
+      "font-size": "=fsCorpo*1.6",
+      "white-space": "nowrap",
+      "z-index": "6"
+     },
+     "anims": [
+      {
+       "chaves": [
+        {
+         "opacity": 0,
+         "transform": "translateY(30px)"
+        },
+        {
+         "opacity": 1,
+         "transform": "translateY(0)"
+        }
+       ],
+       "iniS": 0.35,
+       "durS": 0.6,
+       "easing": "cubic-bezier(0.16, 1, 0.3, 1)",
+       "iter": 1,
+       "fill": "both"
+      }
+     ]
+    }
+   }
+  ],
+  "regra": {
+   "medida": "numerosSemDado",
+   "op": ">",
+   "limite": 0
+  },
+  "rotulos": {
+   "data": "2026-11-01",
+   "pares": 2,
+   "base": 1,
+   "igual": 1,
+   "mutacao": 0
+  },
+  "aviso": "rótulos do responsável (2026-11-01): na maioria dos pares, «tanto faz»; cacoete de estilo, somado na rodada"
+ },
+ "K-IA-12": {
+  "classe": "K-IA-12",
+  "origem": "modelo",
+  "pedido": "Dê mais vida ao texto do vídeo: use a cor de destaque da marca para chamar a atenção para palavras nas legendas e nos textos de apoio.",
+  "pedidoRevisao": "Revise o uso de cor de destaque nos textos deste vídeo: a ênfase tem de valer a pena.",
+  "certa": [
+   {
+    "op": "texto",
+    "alvo": {
+     "papel": "legenda",
+     "n": 0
+    },
+    "destacar": "#E4572E"
+   }
+  ],
+  "errada": [
+   {
+    "op": "texto",
+    "alvo": {
+     "papel": "legenda",
+     "todos": true
+    },
+    "destacar": "#E4572E"
+   },
+   {
+    "op": "texto",
+    "alvo": {
+     "papel": "corpo",
+     "todos": true
+    },
+    "destacar": "#E4572E"
+   }
+  ],
+  "regra": {
+   "medida": "destaques",
+   "p": {
+    "minimo": 4
+   },
+   "op": ">",
+   "limite": 0.5
+  },
+  "rotulos": {
+   "data": "2026-11-01",
+   "pares": 2,
+   "base": 2,
+   "igual": 0,
+   "mutacao": 0
+  }
+ },
+ "K-IA-13": {
+  "classe": "K-IA-13",
+  "origem": "modelo",
+  "pedido": "Reescreva o texto do corpo da cena 1 para ficar mais marcante e com mais impacto, como em um anúncio.",
+  "certa": [
+   {
+    "op": "texto",
+    "alvo": {
+     "papel": "corpo",
+     "cena": 1
+    },
+    "texto": "Mais clareza em cada cena."
+   }
+  ],
+  "errada": [
+   {
+    "op": "texto",
+    "alvo": {
+     "papel": "corpo",
+     "cena": 1
+    },
+    "texto": "Não é só um vídeo, é uma experiência — rápida — simples — poderosa"
+   }
+  ],
+  "regra": {
+   "medida": "textoRegex",
+   "p": {
+    "padrao": "n[ãa]o é [^.,—]+[,—;] ?(?:é|mas) |—[^—]+—",
+    "flags": "i",
+    "semLegenda": true
+   },
+   "op": ">",
+   "limite": 0
+  },
+  "rotulos": {
+   "data": "2026-11-01",
+   "pares": 2,
+   "base": 0,
+   "igual": 1,
+   "mutacao": 1
+  },
+  "desligada": "rótulos do responsável (2026-11-01): ele preferiu a versão com a mutação em parte dos pares; a regra contraria o gosto dele e precisa ser reescrita"
+ },
+ "K-PLA-01": {
+  "classe": "K-PLA-01",
+  "origem": "mao",
+  "pedido": "Isto vai para o feed vertical: ponha a legenda bem embaixo, onde costuma ficar.",
+  "pedidoRevisao": "Revise as posições dos textos para a plataforma.",
+  "substituir": {
+   "plataforma": {
+    "YouTube": "Shorts"
+   }
+  },
+  "errada": [
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "legenda",
+     "todos": true
+    },
+    "css": {
+     "top": "{=A*g-fsLegenda*1.4}px"
+    }
+   }
+  ],
+  "graus": {
+   "padrao": 1.0,
+   "abaixo": 0.55,
+   "no": 0.75,
+   "acima": 1.0,
+   "unidade": "fundo da legenda em fração da altura",
+   "fonte": "G19 (zona segura do Reels e do anúncio: 35 % embaixo da tela)"
+  },
+  "regra": {
+   "medida": "foraDaZonaSegura",
+   "op": ">",
+   "limite": 0
+  },
+  "conferencia": "G19"
+ },
+ "K-PLA-02": {
+  "classe": "K-PLA-02",
+  "origem": "modelo",
+  "pedido": "Use o material em 16:9 da biblioteca como está, inteiro, dentro do quadro do vídeo, sem cortar nada nas laterais.",
+  "acessorios": [
+   "takeHorizontal"
+  ],
+  "errada": [
+   {
+    "op": "estilo",
+    "alvo": {
+     "papel": "apresentador",
+     "todos": true,
+     "ou": [
+      {
+       "papel": "cobertura",
+       "todos": true
+      }
+     ]
+    },
+    "css": {
+     "width": "{=L}px",
+     "height": "{=L*9/16}px",
+     "top": "{=(A-L*9/16)/2}px",
+     "left": "0px",
+     "object-fit": "contain"
+    }
+   }
+  ],
+  "regra": {
+   "medida": "reenquadro",
+   "p": {
+    "tipo": "faixas"
+   },
+   "op": ">",
+   "limite": 0.05
+  }
+ },
+ "K-PLA-03": {
+  "classe": "K-PLA-03",
+  "origem": "modelo",
+  "pedido": "Exporte o vídeo final em MP4 para publicar no Instagram, mantendo a imagem o mais fiel possível ao original, sem perder nenhum detalhe de cor.",
+  "acessorios": [],
+  "tarefa": {
+   "plataforma": "instagram",
+   "entrega": "saida/video.mp4"
+  },
+  "certa": [
+   {
+    "op": "entrega",
+    "ffmpeg": [
+     "-c:v",
+     "libx264",
+     "-profile:v",
+     "high",
+     "-pix_fmt",
+     "yuv420p",
+     "-r",
+     "=qps",
+     "-c:a",
+     "aac",
+     "-b:a",
+     "128k",
+     "-movflags",
+     "+faststart"
+    ]
+   }
+  ],
+  "errada": [
+   {
+    "op": "entrega",
+    "ffmpeg": [
+     "-c:v",
+     "libx264",
+     "-profile:v",
+     "high444",
+     "-pix_fmt",
+     "yuv444p",
+     "-c:a",
+     "aac"
+    ]
+   }
+  ],
+  "regra": {
+   "medida": "arquivoEntregue",
+   "p": {
+    "campo": "codec"
+   },
+   "op": ">",
+   "limite": 0
+  }
+ },
+ "G17": {
+  "classe": "G17",
+  "so": "conferencia",
+  "conferencia": "G17",
+  "regra": {
+   "medida": "legendaQuebrada",
+   "op": ">",
+   "limite": 0
+  },
+  "nota": "Regra do S04 (skill video-konecz, G17) ainda sem classe no bench: falta a mutação (legenda que quebra em duas linhas) e as provas."
+ },
+ "G21": {
+  "classe": "G21",
+  "so": "conferencia",
+  "conferencia": "G21",
+  "regra": {
+   "medida": "zoomForaDaFrase",
+   "op": ">",
+   "limite": 0
+  },
+  "nota": "Regra do S04 (G21) ainda sem classe no bench: falta a mutação (punch-in de duração fixa, faixa que fica) e as provas."
+ },
+ "tremor": {
+  "classe": "tremor",
+  "so": "conferencia",
+  "conferencia": "tremor",
+  "regra": {
+   "medida": "tremor",
+   "op": ">",
+   "limite": 0
+  },
+  "aviso": "aviso do S04 desde a calibração de 2026-11 (texto que anda devagar sem parar por mais de 5 s; limite em LIMITES.tremor); regra nova, não aprovada como falha",
+  "nota": "Ainda sem classe no bench: falta a mutação (zoom lento ou flutuação numa tela com texto) e as provas."
+ }
+}

@@ -1,0 +1,78 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Cartão na placa</title>
+<!-- S08, recorte arredondado: composição sintética (R01) com o vídeo dentro de um cartão de canto arredondado
+     (`overflow: hidden` e `border-radius`), como o cartão da apresentadora do C02. O teste gera na hora o video.mp4
+     (testsrc2 do ffmpeg, 1920×1080, 25 q/s). Cada caso tem o seu cartão, visível só nos quadros dele:
+       A (0–9)   raio 32, sombra e contorno, vídeo reduzido em posição fracionária, tarja por cima no meio do cartão;
+       B (10–19) raio 24,6 (fracionário), sem sombra, o vídeo no tamanho dele (o texel direto);
+       C (20–29) raio 32, sombra e contorno, zoom animado no vídeo (transform: scale);
+       D (30–33) raio 32 com uma tarja posicionada por cima do canto: vai pelo canvas;
+       E (34–37) cantos elípticos (32px / 16px): vai pelo canvas;
+       F (38–39) cartão em posição fracionária: vai pelo canvas;
+       G (40–43) raio 32, sombra e contorno, com o fundo de uma legenda quase opaca (92 %) cobrindo o canto de baixo à
+                 direita, o texto longe do canto: pela placa (o núcleo separa o fundo da legenda do que está por baixo);
+       H (44–47) o mesmo com o texto da legenda passando pelo canto: pela placa, com a exceção do R03 (a letra na
+                 faixa do canto não se separa do fundo: até 3 níveis em até 2 pixels, no canto; responsável, 2026-11-01);
+       I (48–51) o caso G com uma tarja posicionada antes da legenda no mesmo canto: vai pelo canvas (no canto coberto,
+                 só a legenda pode estar por cima);
+       J (52–55) contorno de dentro no cartão (`outline-offset` negativo, pintado por cima do vídeo): vai pelo canvas;
+       K (56–59) um cursor em SVG com `filter: drop-shadow` dentro do cartão, no quadrado do canto de baixo à direita mas
+                 longe da faixa do canto (o alcance da sombra é medido): pela placa;
+       L (60–63) uma tarja opaca dentro do cartão, cruzando o quadrado do canto de baixo à direita sem chegar à faixa
+                 (ali a cobertura é 1 e a mistura é a de sempre): pela placa;
+       M (64–67) o cursor do K sem filtro próprio, dentro de um contêiner com `filter: drop-shadow` longe do canto: a
+                 sombra do cursor (pintada pelo contêiner) chega à faixa do canto, então vai pelo canvas.
+     O mesmo quadro tem de sair igual pelos dois caminhos (MOTOR_TAKE_PLACA=0 e o padrão), dentro da régua do R03 (com a
+     exceção do canto com texto no caso H). -->
+<script type="application/json" id="motor-video">
+{ "id": "LinhaCartao", "largura": 1920, "altura": 1080, "qps": 25, "quadros": 68 }
+</script>
+<style>
+  /* Fonte embutida (cli/fixtures/fonte-padrao): o quadro não depende das fontes da máquina. */
+  @font-face { font-family: 'Teste Sans'; font-weight: 400; src: url('fonte/DejaVuSans.woff2') format('woff2'); }
+  @font-face { font-family: 'Teste Sans'; font-weight: 700; src: url('fonte/DejaVuSans-Bold.woff2') format('woff2'); }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #f3eee4; }
+  .cartao { position: absolute; left: 70px; top: 80px; width: 720px; height: 920px; overflow: hidden; border-radius: 32px;
+            visibility: hidden; animation: so linear; }
+  @keyframes so { from, to { visibility: visible; } }
+  .moldura { box-shadow: 0 24px 60px rgba(7, 16, 31, 0.28); outline: 4px solid #c9a24a; }
+  .v { position: absolute; }
+  .a { left: -457.8px; top: 0; width: 1635.6px; height: 920px; }
+  .b { left: -600px; top: -80px; width: 1920px; height: 1080px; }
+  .c { left: -457.8px; top: 0; width: 1635.6px; height: 920px; animation: zoom 0.4s linear both; animation-delay: 0.8s; }
+  @keyframes zoom { from { transform: scale(1); } to { transform: scale(1.25); } }
+  .tarja { position: absolute; border-radius: 16px; background: rgba(15, 21, 48, 0.7); color: #fff;
+           font: 700 48px 'Teste Sans', sans-serif; padding: 30px; box-sizing: border-box; visibility: hidden; animation: so linear; }
+  .legenda { position: absolute; left: 0; right: 0; bottom: 56px; display: flex; justify-content: center; visibility: hidden; animation: so linear; }
+  .legenda > div { background: #10203aeb; border-radius: 18px; padding: 12px 26px; font: 800 46px 'Teste Sans', sans-serif; color: #fff; }
+  .cursor { position: absolute; filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.35)); visibility: hidden; animation: so linear; }
+  .sombreado { position: absolute; left: 600px; top: 900px; width: 10px; height: 10px; filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.5));
+               visibility: hidden; animation: so linear; }
+  .painel { position: absolute; left: 900px; top: 120px; width: 900px; height: 500px; border-radius: 24px; background: #fff;
+            box-shadow: 0 12px 40px rgba(7, 16, 31, 0.18); font: 700 72px 'Teste Sans', sans-serif; color: #10203a; padding: 60px; box-sizing: border-box; }
+</style>
+<div class="cartao moldura" style="animation-duration: 0.4s; animation-delay: 0s"><video class="v a" src="video.mp4" muted data-inicio="0" data-quadros="10"></video></div>
+<div class="tarja" style="left: 140px; top: 760px; width: 580px; height: 120px; animation-duration: 0.4s; animation-delay: 0s">Apresentadora</div>
+<div class="cartao" style="border-radius: 24.6px; animation-duration: 0.4s; animation-delay: 0.4s"><video class="v b" src="video.mp4" muted data-inicio="10" data-recorte="10" data-quadros="10"></video></div>
+<div class="cartao moldura" style="animation-duration: 0.4s; animation-delay: 0.8s"><video class="v c" src="video.mp4" muted data-inicio="20" data-recorte="20" data-quadros="10"></video></div>
+<div class="cartao moldura" style="animation-duration: 0.16s; animation-delay: 1.2s"><video class="v a" src="video.mp4" muted data-inicio="30" data-recorte="30" data-quadros="4"></video></div>
+<div class="tarja" style="left: 40px; top: 900px; width: 400px; height: 120px; animation-duration: 0.16s; animation-delay: 1.2s">Canto</div>
+<div class="cartao" style="border-radius: 32px / 16px; animation-duration: 0.16s; animation-delay: 1.36s"><video class="v a" src="video.mp4" muted data-inicio="34" data-recorte="34" data-quadros="4"></video></div>
+<div class="cartao" style="left: 70.5px; animation-duration: 0.08s; animation-delay: 1.52s"><video class="v a" src="video.mp4" muted data-inicio="38" data-recorte="38" data-quadros="2"></video></div>
+<div class="cartao moldura" style="animation-duration: 0.16s; animation-delay: 1.6s"><video class="v a" src="video.mp4" muted data-inicio="40" data-recorte="0" data-quadros="4"></video></div>
+<div class="legenda" style="animation-duration: 0.16s; animation-delay: 1.6s"><div style="min-width: 900px; text-align: center">Legenda</div></div>
+<div class="cartao moldura" style="animation-duration: 0.16s; animation-delay: 1.76s"><video class="v a" src="video.mp4" muted data-inicio="44" data-recorte="4" data-quadros="4"></video></div>
+<div class="legenda" style="animation-duration: 0.16s; animation-delay: 1.76s"><div>Legenda por cima do canto do cartão</div></div>
+<div class="cartao moldura" style="animation-duration: 0.16s; animation-delay: 1.92s"><video class="v a" src="video.mp4" muted data-inicio="48" data-recorte="8" data-quadros="4"></video></div>
+<div class="tarja" style="left: 700px; top: 940px; width: 200px; height: 80px; animation-duration: 0.16s; animation-delay: 1.92s"></div>
+<div class="legenda" style="animation-duration: 0.16s; animation-delay: 1.92s"><div style="min-width: 900px; text-align: center">Legenda</div></div>
+<div class="cartao moldura" style="outline-offset: -6px; animation-duration: 0.16s; animation-delay: 2.08s"><video class="v a" src="video.mp4" muted data-inicio="52" data-recorte="12" data-quadros="4"></video></div>
+<div class="cartao moldura" style="animation-duration: 0.16s; animation-delay: 2.24s"><video class="v a" src="video.mp4" muted data-inicio="56" data-recorte="16" data-quadros="4"></video></div>
+<svg class="cursor" width="14" height="18" viewBox="0 0 14 18" style="left: 740px; top: 950px; animation-duration: 0.16s; animation-delay: 2.24s"><path d="M1 1 L1 15 L5 11 L8 17 L10 16 L7 10 L12 10 Z" fill="#000" stroke="#fff" stroke-width="1.5"/></svg>
+<div class="cartao moldura" style="animation-duration: 0.16s; animation-delay: 2.4s"><video class="v a" src="video.mp4" muted data-inicio="60" data-recorte="20" data-quadros="4"></video></div>
+<div class="tarja" style="left: 700px; top: 900px; width: 70px; height: 70px; padding: 0; animation-duration: 0.16s; animation-delay: 2.4s"></div>
+<div class="cartao moldura" style="animation-duration: 0.16s; animation-delay: 2.56s"><video class="v a" src="video.mp4" muted data-inicio="64" data-recorte="24" data-quadros="4"></video></div>
+<div class="sombreado" style="animation-duration: 0.16s; animation-delay: 2.56s"><svg width="14" height="18" viewBox="0 0 14 18" style="position: absolute; left: 160px; top: 75px"><path d="M1 1 L1 15 L5 11 L8 17 L10 16 L7 10 L12 10 Z" fill="#000" stroke="#fff" stroke-width="1.5"/></svg></div>
+<!-- O painel vem depois dos cartões (posicionado, por cima): a sombra dele não alcança os cantos. -->
+<div class="painel">Cartão sintético</div>

@@ -1,0 +1,42 @@
+{
+  "bloco": "legenda-uma-linha",
+  "checagens": [
+    {
+      "id": "legenda.uma-linha",
+      "prioridade": "P0",
+      "seletor": ".kz-legenda",
+      "quando": "visivel",
+      "medida": "linhas",
+      "maximo": 1,
+      "mensagem": "t={t} · {onde} · a frase quebrou em {valor} linhas → cortar as frases pela largura medida na fonte da legenda, com white-space: nowrap (G17)"
+    },
+    {
+      "id": "legenda.cabe",
+      "prioridade": "P0",
+      "seletor": ".kz-legenda",
+      "quando": "visivel",
+      "medida": "transborda",
+      "maximo": 0,
+      "mensagem": "t={t} · {onde} · a frase passa {valor} px da largura da legenda → cortar a frase antes, depois de pontuação ou de pausa (G17)"
+    },
+    {
+      "id": "legenda.zona-segura",
+      "prioridade": "P0",
+      "seletor": ".kz-legenda",
+      "quando": "visivel-parado",
+      "medida": "fora-da-margem",
+      "maximo": 0,
+      "margem": "--spacing-safe",
+      "mensagem": "t={t} · {onde} · a legenda sai {valor} px da zona segura → subir --legenda-base ou encurtar a frase (G19)"
+    },
+    {
+      "id": "legenda.uma-por-vez",
+      "prioridade": "P1",
+      "seletor": ".kz-legenda",
+      "quando": "todos",
+      "medida": "visiveis",
+      "maximo": 1,
+      "mensagem": "t={t} · {onde} · {valor} frases na tela ao mesmo tempo → o --fim de uma frase é o --inicio da seguinte"
+    }
+  ]
+}

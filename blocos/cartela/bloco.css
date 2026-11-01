@@ -1,0 +1,31 @@
+/* cartela (H09): quadro cheio de cor com uma chamada curta no meio (abertura, capítulo, fim). Abre do meio para as
+   bordas no --inicio, o texto sobe logo depois e tudo fecha acabando no --fim. Fundo --cartela-fundo (padrão
+   --color-accent) e texto --cartela-tinta (padrão --color-ground): contraste do DESIGN.md, nada de hex solto. */
+.kz-cartela {
+  --atraso: initial; /* cada filho põe o seu; nada herdado de fora */
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--spacing-gap, 24px);
+  background: var(--cartela-fundo, var(--color-accent)); color: var(--cartela-tinta, var(--color-ground));
+  text-align: center;
+  animation: kz-cartela-abre var(--motion-duration-enter, 500ms) var(--motion-easing-move, cubic-bezier(0.65, 0, 0.35, 1))
+               calc(var(--inicio) * 1s / var(--qps)) both,
+             kz-cartela-fecha var(--motion-duration-exit, 300ms) var(--motion-easing-exit, ease-in)
+               calc(var(--fim) * 1s / var(--qps) - var(--motion-duration-exit, 300ms)) forwards;
+}
+.kz-cartela > * {
+  margin: 0; max-width: calc(100% - 2 * var(--spacing-margin, 96px));
+  animation: kz-cartela-texto var(--motion-duration-enter, 500ms) var(--motion-easing-enter, cubic-bezier(0.16, 1, 0.3, 1))
+             calc((var(--inicio) + var(--atraso, 6)) * 1s / var(--qps)) both;
+}
+.kz-cartela-rotulo {
+  font-family: var(--font-label, var(--font-body)); font-weight: var(--font-label-weight, 700);
+  font-size: var(--font-label-size, 28px); letter-spacing: 0.12em; text-transform: uppercase;
+}
+.kz-cartela-texto {
+  font-family: var(--font-display); font-weight: var(--font-display-weight, 800); font-size: var(--font-display-size, 112px);
+  line-height: var(--font-display-line-height, 1); letter-spacing: var(--font-display-letter-spacing, normal);
+  white-space: nowrap;
+}
+@keyframes kz-cartela-abre { from { clip-path: inset(50% 0 50% 0); } to { clip-path: inset(0); } }
+@keyframes kz-cartela-fecha { from { clip-path: inset(0); } to { clip-path: inset(50% 0 50% 0); } }
+@keyframes kz-cartela-texto { from { opacity: 0; transform: translateY(0.3em); } to { opacity: 1; transform: none; } }

@@ -1,0 +1,20 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>legenda-uma-linha · exemplo errado</title>
+<!-- H01, errado de propósito: a frase cortada por número de palavras, sem medir, com o nowrap tirado (quebra em duas
+     linhas), e a segunda frase entrando antes de a primeira sair. A conferência tem de acusar legenda.uma-linha e
+     legenda.uma-por-vez. -->
+<script type="application/json" id="motor-video">
+{ "id": "ExemploLegendaErrado", "largura": 1920, "altura": 1080, "qps": 30, "quadros": 90 }
+</script>
+<link rel="stylesheet" href="../marca/marca.css">
+<link rel="stylesheet" href="bloco.css">
+<style>
+  :root { --qps: 30; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--color-surface); }
+  .kz-legenda.solta { white-space: normal; }
+</style>
+<div class="kz-legendas" data-bloco="legenda-uma-linha">
+  <p class="kz-legenda solta" data-papel="legenda" style="--inicio: 10; --fim: 60">Esta frase foi cortada em doze palavras fixas sem medir a largura de nada</p>
+  <p class="kz-legenda" data-papel="legenda" style="--inicio: 50; --fim: 80">e esta entrou cedo.</p>
+</div>

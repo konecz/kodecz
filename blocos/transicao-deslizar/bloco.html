@@ -1,0 +1,13 @@
+<!-- transicao-deslizar (H07). <link rel="stylesheet" href="⟨blocos⟩/transicao-deslizar/bloco.css"> no <head> (e o da
+     cena). As duas cenas levam uma camada e a mesma ⟨duracao⟩: a que sai acaba em ⟨troca⟩ + ⟨duracao⟩, a que entra
+     começa em ⟨troca⟩. -->
+<section class="kz-cena" data-bloco="cena" style="--inicio: ⟨inicio-a⟩; --fim: ⟨troca + duracao⟩">
+  <div class="kz-desliza-sai" data-bloco="transicao-deslizar" style="--duracao: ⟨duracao⟩">
+    <!-- conteúdo da cena que sai -->
+  </div>
+</section>
+<section class="kz-cena" data-bloco="cena" style="--inicio: ⟨troca⟩; --fim: ⟨fim-b⟩">
+  <div class="kz-desliza-entra" data-bloco="transicao-deslizar" style="--duracao: ⟨duracao⟩">
+    <!-- conteúdo da cena que entra -->
+  </div>
+</section>

@@ -1,0 +1,19 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>grafico-barras · exemplo</title>
+<!-- H11: quatro barras (dados inventados), a última em destaque, a partir do quadro 10. Servir a pasta blocos/. -->
+<script type="application/json" id="motor-video">
+{ "id": "ExemploBarras", "largura": 1920, "altura": 1080, "qps": 30, "quadros": 60 }
+</script>
+<link rel="stylesheet" href="../marca/marca.css">
+<link rel="stylesheet" href="bloco.css">
+<style>
+  :root { --qps: 30; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--color-ground); }
+</style>
+<div class="kz-barras" data-bloco="grafico-barras" style="--inicio: 10; --maximo: 100; --sufixo: '%'">
+  <div class="kz-barra" style="--valor: 25; --ordem: 0"><i class="kz-barra-coluna"></i><b class="kz-barra-num" data-valor="25"></b><i class="kz-barra-rotulo">2023</i></div>
+  <div class="kz-barra" style="--valor: 47; --ordem: 1"><i class="kz-barra-coluna"></i><b class="kz-barra-num" data-valor="47"></b><i class="kz-barra-rotulo">2024</i></div>
+  <div class="kz-barra" style="--valor: 64; --ordem: 2"><i class="kz-barra-coluna"></i><b class="kz-barra-num" data-valor="64"></b><i class="kz-barra-rotulo">2025</i></div>
+  <div class="kz-barra kz-destaque" style="--valor: 81; --ordem: 3"><i class="kz-barra-coluna"></i><b class="kz-barra-num" data-valor="81"></b><i class="kz-barra-rotulo">2026</i></div>
+</div>

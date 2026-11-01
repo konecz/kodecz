@@ -1,0 +1,25 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>legenda-uma-linha · exemplo</title>
+<!-- H01: duas frases, cada uma numa linha, palavra a palavra. Servir a pasta blocos/ (o marca.css fica em ../marca). -->
+<script type="application/json" id="motor-video">
+{ "id": "ExemploLegenda", "largura": 1920, "altura": 1080, "qps": 30, "quadros": 120 }
+</script>
+<link rel="stylesheet" href="../marca/marca.css">
+<link rel="stylesheet" href="bloco.css">
+<style>
+  :root { --qps: 30; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--color-surface); }
+</style>
+<div class="kz-legendas" data-bloco="legenda-uma-linha">
+  <p class="kz-legenda" data-papel="legenda" style="--inicio: 10; --fim: 60"><span class="kz-palavra" style="--inicio: 10; --fim: 18">Cada</span>
+    <span class="kz-palavra" style="--inicio: 18; --fim: 30">frase</span>
+    <span class="kz-palavra" style="--inicio: 30; --fim: 40">cabe</span>
+    <span class="kz-palavra" style="--inicio: 40; --fim: 46">numa</span>
+    <span class="kz-palavra" style="--inicio: 46; --fim: 60">linha,</span></p>
+  <p class="kz-legenda" data-papel="legenda" style="--inicio: 60; --fim: 110"><span class="kz-palavra" style="--inicio: 60; --fim: 66">e</span>
+    <span class="kz-palavra" style="--inicio: 66; --fim: 72">a</span>
+    <span class="kz-palavra" style="--inicio: 72; --fim: 84">palavra</span>
+    <span class="kz-palavra" style="--inicio: 84; --fim: 96">dita</span>
+    <span class="kz-palavra" style="--inicio: 96; --fim: 110">acende.</span></p>
+</div>

@@ -1,0 +1,14 @@
+{
+  "bloco": "transicao-fade",
+  "checagens": [
+    {
+      "id": "fade.inteira",
+      "prioridade": "P0",
+      "seletor": ".kz-fade",
+      "quando": "fim-da-transicao",
+      "medida": "inteira",
+      "maximo": 0,
+      "mensagem": "t={t} · {onde} · no fim do fade a cena que entra não cobre o quadro → a camada .kz-fade ocupa o quadro (inset: 0) e não leva transform nem opacidade própria"
+    }
+  ]
+}

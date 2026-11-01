@@ -1,0 +1,26 @@
+<!doctype html>
+<html data-destino="reels">
+<meta charset="utf-8">
+<title>Conferência: legenda em duas linhas</title>
+<!-- S04: composição sintética em linha do tempo, 9:16, que quebra só a G17 (R01: nada de cliente).
+     Apresentador: rosto.jpg (retrato de domínio público, node conferencia/preparar.ts), parado. A legenda, sem
+     nowrap e numa caixa de 700 px, quebra em duas linhas do quadro 20 ao 69. Sem zoom e sem fala. -->
+<script type="application/json" id="motor-video">
+{ "id": "ConfDuasLinhas", "largura": 810, "altura": 1440, "qps": 30, "quadros": 90 }
+</script>
+<style>
+  html, body { margin: 0; width: 810px; height: 1440px; overflow: hidden; background: #0d1020; font-family: sans-serif; }
+  .take { position: absolute; left: 0; top: 120px; width: 810px; height: 1012px; }
+  .take img { width: 810px; height: 1012px; display: block; }
+  .legenda { position: absolute; left: 55px; width: 700px; top: 790px; text-align: center; color: #fff; font: 700 44px sans-serif;
+             text-shadow: 0 2px 6px #000; opacity: 0; }
+</style>
+<div class="take"><img data-papel="apresentador" src="rosto.jpg" alt=""></div>
+<div class="legenda" id="legenda" data-papel="legenda">Esta legenda é comprida demais para uma linha só</div>
+<script>
+  const QPS = 30, QUADROS = 90, DUR = (QUADROS * 1000) / QPS;
+  document.getElementById('legenda').animate([
+    { opacity: 0, offset: 0 }, { opacity: 0, offset: 20 / QUADROS }, { opacity: 1, offset: 20 / QUADROS },
+    { opacity: 1, offset: 70 / QUADROS }, { opacity: 0, offset: 70 / QUADROS }, { opacity: 0, offset: 1 },
+  ], { duration: DUR, fill: 'both' });
+</script>

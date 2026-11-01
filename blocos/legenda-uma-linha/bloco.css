@@ -1,0 +1,31 @@
+/* legenda-uma-linha (H01, G17): a fala em frases curtas, uma de cada vez, sempre numa linha. A frase inteira aparece
+   no --inicio dela (a largura não muda enquanto se fala); cada palavra fica em --color-accent do --inicio ao --fim
+   dela (a palavra dita agora) e em --color-ink depois; antes, em --color-muted.
+   Tudo liga e desliga com animações de duração zero (forwards; a de depois vence): o motor só desenha de novo os
+   quadros em que algo muda, e repete os outros (P10.3). */
+.kz-legendas {
+  position: absolute; left: 0; right: 0; bottom: var(--legenda-base, 12%);
+  height: 0;
+}
+.kz-legenda {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  width: fit-content; max-width: var(--legenda-largura, 84%); margin: 0 auto; box-sizing: border-box;
+  padding: 0.25em 0.6em; border-radius: var(--rounded-card, 20px);
+  background: var(--legenda-fundo, color-mix(in srgb, var(--color-ground) 78%, transparent));
+  white-space: nowrap; overflow: hidden;
+  font-family: var(--font-caption, var(--font-body)); font-weight: var(--font-caption-weight, 700);
+  font-size: var(--font-caption-size, 52px); line-height: var(--font-caption-line-height, 1.2);
+  letter-spacing: var(--font-caption-letter-spacing, normal);
+  color: var(--color-muted, var(--color-ink));
+  opacity: 0;
+  animation: kz-legenda-entra 0s linear calc(var(--inicio) * 1s / var(--qps)) forwards,
+             kz-legenda-sai 0s linear calc(var(--fim) * 1s / var(--qps)) forwards;
+}
+.kz-palavra {
+  animation: kz-palavra-agora 0s linear calc(var(--inicio) * 1s / var(--qps)) forwards,
+             kz-palavra-dita 0s linear calc(var(--fim) * 1s / var(--qps)) forwards;
+}
+@keyframes kz-legenda-entra { from, to { opacity: 1; } }
+@keyframes kz-legenda-sai { from, to { opacity: 0; } }
+@keyframes kz-palavra-agora { from, to { color: var(--color-accent); } }
+@keyframes kz-palavra-dita { from, to { color: var(--color-ink); } }

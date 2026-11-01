@@ -1,0 +1,33 @@
+{
+  "bloco": "terco-inferior",
+  "checagens": [
+    {
+      "id": "terco.cabe",
+      "prioridade": "P1",
+      "seletor": ".kz-terco > *",
+      "quando": "visivel",
+      "medida": "transborda",
+      "maximo": 0,
+      "mensagem": "t={t} · {onde} · nome ou cargo passa {valor} px do cartão e é cortado → encurtar o cargo (G18)"
+    },
+    {
+      "id": "terco.zona-segura",
+      "prioridade": "P0",
+      "seletor": ".kz-terco",
+      "quando": "visivel-parado",
+      "medida": "fora-da-margem",
+      "maximo": 0,
+      "margem": "--spacing-safe",
+      "mensagem": "t={t} · {onde} · o cartão sai {valor} px da zona segura → encurtar ou mudar --terco-base (G19)"
+    },
+    {
+      "id": "terco.sem-legenda",
+      "prioridade": "P1",
+      "seletor": ".kz-terco, .kz-legenda",
+      "quando": "todos",
+      "medida": "visiveis",
+      "maximo": 1,
+      "mensagem": "t={t} · {onde} · terço inferior e legenda juntos ({valor}) → o terço sai antes da primeira frase (G16)"
+    }
+  ]
+}

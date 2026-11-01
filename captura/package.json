@@ -1,0 +1,9 @@
+{
+  "name": "motor-video-captura",
+  "private": true,
+  "type": "module",
+  "main": "main.ts",
+  "devDependencies": {
+    "electron": "45.1.0"
+  }
+}

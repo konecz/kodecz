@@ -1,0 +1,10 @@
+<!-- grafico-linha (H12). <link rel="stylesheet" href="⟨blocos⟩/grafico-linha/bloco.css"> no <head>.
+     ⟨valores⟩: números separados por espaço, na ordem do eixo x; ⟨maximo⟩: o topo do eixo y (≥ o maior valor).
+     ⟨inicio⟩ e ⟨duracao⟩ em quadros (padrão 45). O número no canto conta do primeiro ao último valor. -->
+<figure class="kz-linha" data-bloco="grafico-linha" data-valores="⟨valores⟩" data-maximo="⟨maximo⟩"
+        style="--inicio: ⟨inicio⟩; --duracao: ⟨duracao⟩; --sufixo: '⟨sufixo⟩'">
+  <svg aria-hidden="true"><polyline class="kz-linha-traco" pathLength="1"></polyline></svg>
+  <b class="kz-linha-num"></b>
+</figure>
+<!-- Uma vez por página, depois das figuras: monta o SVG na carga (só geometria; nada de relógio, R03). -->
+<script src="⟨blocos⟩/grafico-linha/bloco.js"></script>

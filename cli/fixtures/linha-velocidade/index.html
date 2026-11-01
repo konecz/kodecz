@@ -1,0 +1,23 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Linha com velocidade</title>
+<!-- C02: velocidade de mídia (data-velocidade) numa composição sintética (R01: nada de cliente). O teste gera na hora,
+     numa cópia desta pasta, o vídeo do M09 (gerar-midia.sh: o número do quadro do vídeo na faixa de baixo, 2 s a
+     25 q/s) como video.mp4 e dois tons puros de 440 Hz (tom1.wav, 1 s; tom2.wav, 1,2 s).
+       - vídeo a 2 do quadro 0, sem data-quadros: ocupa a duração / 2 (25 quadros); o quadro N traz o 2N do vídeo;
+       - vídeo a 1,1 do quadro 30, recorte 3, 20 quadros: o quadro N traz o piso(1,1 × (N − 30)) + 3;
+       - vídeo a 1 do quadro 50 ao fim: o quadro N − 50;
+       - tom1 a 2 do quadro 0 (0 a 0,5 s) e tom2 a 3 (o atempo encadeado) do quadro 35 (1,4 a 1,8 s): ainda 440 Hz.
+     Os vídeos vão sem som. -->
+<script type="application/json" id="motor-video">
+{ "id": "LinhaVelocidade", "largura": 1920, "altura": 1080, "qps": 25, "quadros": 60 }
+</script>
+<style>
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #10163a; }
+  .tela { position: absolute; inset: 0; width: 1920px; height: 1080px; }
+</style>
+<video class="tela" src="video.mp4" muted data-inicio="0" data-velocidade="2"></video>
+<video class="tela" src="video.mp4" muted data-inicio="30" data-recorte="3" data-quadros="20" data-velocidade="1.1"></video>
+<video class="tela" src="video.mp4" muted data-inicio="50" data-velocidade="1"></video>
+<audio src="tom1.wav" data-inicio="0" data-velocidade="2"></audio>
+<audio src="tom2.wav" data-inicio="35" data-velocidade="3"></audio>

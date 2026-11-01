@@ -1,0 +1,18 @@
+/* transicao-deslizar (H07): a cena que entra empurra a anterior para fora do quadro, as duas juntas, em --duracao
+   quadros. Duas camadas: .kz-desliza-entra na cena que entra (começa no --inicio dela) e .kz-desliza-sai na cena que
+   sai (acaba no --fim dela). O --fim da que sai = --inicio + --duracao da que entra. --desliza-x é de onde a nova vem:
+   100% (da direita, padrão) ou -100% (da esquerda); a que sai vai para o lado oposto. */
+.kz-desliza-entra, .kz-desliza-sai {
+  position: absolute; inset: 0;
+  background: var(--color-ground);
+}
+.kz-desliza-entra {
+  animation: kz-desliza-entra calc(var(--duracao, 15) * 1s / var(--qps)) var(--motion-easing-move, cubic-bezier(0.65, 0, 0.35, 1))
+             calc(var(--inicio) * 1s / var(--qps)) both;
+}
+.kz-desliza-sai {
+  animation: kz-desliza-sai calc(var(--duracao, 15) * 1s / var(--qps)) var(--motion-easing-move, cubic-bezier(0.65, 0, 0.35, 1))
+             calc((var(--fim) - var(--duracao, 15)) * 1s / var(--qps)) forwards;
+}
+@keyframes kz-desliza-entra { from { transform: translateX(var(--desliza-x, 100%)); } to { transform: none; } }
+@keyframes kz-desliza-sai { from { transform: none; } to { transform: translateX(calc(-1 * var(--desliza-x, 100%))); } }

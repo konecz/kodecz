@@ -1,0 +1,26 @@
+/* titulo-entrada (H08): título e subtítulo que sobem aparecendo no --inicio (cada filho com o seu --atraso, em
+   quadros) e saem juntos acabando no --fim. Entrada e saída com os tempos e curvas do DESIGN.md. */
+.kz-titulo {
+  --atraso: initial; /* cada filho põe o seu; nada herdado de fora */
+  position: absolute; left: var(--spacing-margin, 96px); right: var(--spacing-margin, 96px); top: var(--titulo-topo, 36%);
+  display: flex; flex-direction: column; align-items: var(--titulo-alinhar, center); gap: var(--spacing-gap, 24px);
+  text-align: var(--titulo-texto, center);
+}
+.kz-titulo > * {
+  margin: 0;
+  animation: kz-titulo-entra var(--motion-duration-enter, 500ms) var(--motion-easing-enter, cubic-bezier(0.16, 1, 0.3, 1))
+               calc((var(--inicio) + var(--atraso, 0)) * 1s / var(--qps)) both,
+             kz-titulo-sai var(--motion-duration-exit, 300ms) var(--motion-easing-exit, ease-in)
+               calc(var(--fim) * 1s / var(--qps) - var(--motion-duration-exit, 300ms)) forwards;
+}
+.kz-titulo-principal {
+  font-family: var(--font-display); font-weight: var(--font-display-weight, 800); font-size: var(--font-display-size, 112px);
+  line-height: var(--font-display-line-height, 1); letter-spacing: var(--font-display-letter-spacing, normal);
+  color: var(--color-ink); text-wrap: balance;
+}
+.kz-titulo-sub {
+  font-family: var(--font-body); font-weight: var(--font-body-weight, 400); font-size: var(--font-body-size, 36px);
+  line-height: var(--font-body-line-height, 1.4); color: var(--color-muted, var(--color-ink)); text-wrap: balance;
+}
+@keyframes kz-titulo-entra { from { opacity: 0; transform: translateY(0.4em); } to { opacity: 1; transform: none; } }
+@keyframes kz-titulo-sai { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-0.2em); } }

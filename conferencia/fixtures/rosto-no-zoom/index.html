@@ -1,0 +1,36 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Conferência: rosto no zoom</title>
+<!-- S04: composição sintética em linha do tempo, 16:9, que quebra só a G15 (R01: nada de cliente).
+     Apresentador: rosto.jpg (retrato de domínio público, node conferencia/preparar.ts). Um chip com fundo fica ao lado
+     do rosto em repouso; o punch-in de 1,5 (quadros 30 a 36, saída na pausa, 60 a 66) leva o rosto para baixo do chip:
+     G15 só nos quadros do zoom. Legenda numa linha embaixo; o zoom sai na pausa (G21 passa). -->
+<script type="application/json" id="motor-video">
+{ "id": "ConfRostoNoZoom", "largura": 960, "altura": 540, "qps": 30, "quadros": 90 }
+</script>
+<style>
+  html, body { margin: 0; width: 960px; height: 540px; overflow: hidden; background: #0d1020; font-family: sans-serif; }
+  .palco { position: absolute; inset: 0; overflow: hidden; }
+  .take { position: absolute; left: 264px; top: 0; width: 432px; height: 540px; transform-origin: 216px 270px; }
+  .take img { width: 432px; height: 540px; display: block; }
+  .chip { position: absolute; left: 590px; top: 120px; background: #ff3c78; color: #fff; font: 700 22px sans-serif;
+          padding: 6px 12px; border-radius: 6px; }
+  .legenda { position: absolute; left: 0; right: 0; top: 470px; text-align: center; color: #fff; font: 700 32px sans-serif;
+             white-space: nowrap; text-shadow: 0 2px 6px #000; }
+</style>
+<div class="palco">
+  <div class="take" id="take"><img data-papel="apresentador" src="rosto.jpg" alt=""></div>
+</div>
+<div class="chip">Novo</div>
+<div class="legenda" data-papel="legenda">Olha só isto.</div>
+<script>
+  const QPS = 30, QUADROS = 90, DUR = (QUADROS * 1000) / QPS;
+  document.getElementById('take').animate([
+    { transform: 'scale(1)', offset: 0 }, { transform: 'scale(1)', offset: 30 / QUADROS }, { transform: 'scale(1.5)', offset: 36 / QUADROS },
+    { transform: 'scale(1.5)', offset: 60 / QUADROS }, { transform: 'scale(1)', offset: 66 / QUADROS }, { transform: 'scale(1)', offset: 1 },
+  ], { duration: DUR, fill: 'both' });
+  window.motor_falas = [
+    { t: 'Olha', ini: 0.3, fim: 0.6, bloco: 1 }, { t: 'só', ini: 0.6, fim: 0.9, bloco: 1 }, { t: 'isto.', ini: 0.9, fim: 2.0, bloco: 1 },
+    { t: 'Fim.', ini: 2.6, fim: 2.9, bloco: 2 },
+  ];
+</script>

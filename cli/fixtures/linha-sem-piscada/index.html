@@ -1,0 +1,20 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Sem piscada</title>
+<!-- Brilho por quadro (cli/brilho.ts, docs/formatos/brilho.md): a irmã da linha-piscada, com o que não é piscada e não
+     pode acusar: um clarão de dois quadros (12 e 13) e um corte seco para uma cena clara no quadro 20 (fica até o fim). -->
+<script type="application/json" id="motor-video">
+{ "id": "LinhaSemPiscada", "largura": 960, "altura": 540, "qps": 30, "quadros": 30 }
+</script>
+<style>
+  html, body { margin: 0; width: 960px; height: 540px; overflow: hidden; background: #1a1d2e; }
+  .caixa { position: absolute; left: 80px; top: 100px; width: 160px; height: 160px; border-radius: 24px; background: #3b4a7a;
+           animation: anda 1s linear both; }
+  @keyframes anda { from { transform: none; } to { transform: translateX(320px); } }
+  .clarao { position: absolute; inset: 0; background: #fff; visibility: hidden; animation: aparece 66ms linear 400ms; }
+  .corte { position: absolute; inset: 0; background: #e8e4da; visibility: hidden; animation: aparece 1s linear 660ms forwards; }
+  @keyframes aparece { from, to { visibility: visible; } }
+</style>
+<div class="caixa"></div>
+<div class="clarao"></div>
+<div class="corte"></div>

@@ -1,0 +1,122 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Demonstração dos blocos (S02)</title>
+<!-- S02: composição em linha do tempo declarada que usa todos os blocos desta pasta (R01: nada de cliente; marca
+     fictícia em marca/DESIGN.md; apresentador sintético de gerar-midia.sh, sem pessoa). Render:
+       blocos/gerar-midia.sh && node cli/render.ts blocos Demonstracao saida.mp4
+     Roteiro em quadros (30 qps, 720 quadros = 24 s):
+       0–105    cartela de abertura                          (cena, cartela)
+       90–285   apresentador: fade, terço inferior, legenda   (transicao-fade, terco-inferior, legenda-uma-linha,
+                palavra a palavra e zoom até o fim da frase    zoom-ate-o-fim-da-frase)
+       270–435  título e barras, entrando por wipe            (transicao-wipe, titulo-entrada, grafico-barras)
+       420–585  linha e número contando, deslizando           (transicao-deslizar, grafico-linha, contagem)
+       585–675  contagem regressiva, em corte seco             (cena, contagem)
+       675–720  título de fim, em corte seco                   (titulo-entrada)
+     Sem motor_quadro, SVG SMIL nem imagem animada: o motor repete os quadros parados (P10.3). -->
+<script type="application/json" id="motor-video">
+{ "id": "Demonstracao", "largura": 1920, "altura": 1080, "qps": 30, "quadros": 720 }
+</script>
+<link rel="stylesheet" href="marca/marca.css">
+<link rel="stylesheet" href="cena/bloco.css">
+<link rel="stylesheet" href="transicao-fade/bloco.css">
+<link rel="stylesheet" href="transicao-wipe/bloco.css">
+<link rel="stylesheet" href="transicao-deslizar/bloco.css">
+<link rel="stylesheet" href="cartela/bloco.css">
+<link rel="stylesheet" href="titulo-entrada/bloco.css">
+<link rel="stylesheet" href="terco-inferior/bloco.css">
+<link rel="stylesheet" href="legenda-uma-linha/bloco.css">
+<link rel="stylesheet" href="zoom-ate-o-fim-da-frase/bloco.css">
+<link rel="stylesheet" href="grafico-barras/bloco.css">
+<link rel="stylesheet" href="grafico-linha/bloco.css">
+<link rel="stylesheet" href="contagem/bloco.css">
+<style>
+  :root { --qps: 30; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--color-ground); }
+  .tela { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+</style>
+
+<section class="kz-cena" data-bloco="cena" style="--inicio: 0; --fim: 105">
+  <div class="kz-cartela" data-bloco="cartela" style="--inicio: 3; --fim: 92">
+    <p class="kz-cartela-rotulo">Demonstração · S02</p>
+    <p class="kz-cartela-texto">Blocos do motor</p>
+  </div>
+</section>
+
+<section class="kz-cena" data-bloco="cena" style="--inicio: 90; --fim: 285">
+  <div class="kz-fade" data-bloco="transicao-fade" style="--duracao: 15">
+    <div class="kz-zoom" data-bloco="zoom-ate-o-fim-da-frase" style="--inicio: 199; --fim: 222; --zoom-origem: 50% 34%">
+      <video class="tela" data-papel="apresentador" src="midia/apresentador.mp4" data-inicio="90" data-quadros="195"></video>
+    </div>
+    <div class="kz-terco" data-bloco="terco-inferior" style="--inicio: 105; --fim: 168">
+      <p class="kz-terco-nome">Apresentador sintético</p>
+      <p class="kz-terco-cargo">Gerado pelo ffmpeg, sem pessoa</p>
+    </div>
+    <div class="kz-legendas" data-bloco="legenda-uma-linha">
+      <p class="kz-legenda" data-papel="legenda" style="--inicio: 175; --fim: 222"><span class="kz-palavra" style="--inicio: 175; --fim: 180">O</span>
+        <span class="kz-palavra" style="--inicio: 180; --fim: 188">zoom</span>
+        <span class="kz-palavra" style="--inicio: 188; --fim: 195">entra</span>
+        <span class="kz-palavra" style="--inicio: 195; --fim: 199">na</span>
+        <span class="kz-palavra" style="--inicio: 199; --fim: 208">ênfase</span>
+        <span class="kz-palavra" style="--inicio: 208; --fim: 211">e</span>
+        <span class="kz-palavra" style="--inicio: 211; --fim: 217">espera</span>
+        <span class="kz-palavra" style="--inicio: 217; --fim: 219">a</span>
+        <span class="kz-palavra" style="--inicio: 219; --fim: 222">frase.</span></p>
+      <p class="kz-legenda" data-papel="legenda" style="--inicio: 225; --fim: 280"><span class="kz-palavra" style="--inicio: 225; --fim: 229">A</span>
+        <span class="kz-palavra" style="--inicio: 229; --fim: 238">legenda</span>
+        <span class="kz-palavra" style="--inicio: 238; --fim: 245">fica</span>
+        <span class="kz-palavra" style="--inicio: 245; --fim: 254">sempre</span>
+        <span class="kz-palavra" style="--inicio: 254; --fim: 261">numa</span>
+        <span class="kz-palavra" style="--inicio: 261; --fim: 269">linha</span>
+        <span class="kz-palavra" style="--inicio: 269; --fim: 280">só.</span></p>
+    </div>
+  </div>
+</section>
+
+<section class="kz-cena" data-bloco="cena" style="--inicio: 270; --fim: 435">
+  <div class="kz-wipe" data-bloco="transicao-wipe" style="--duracao: 15">
+    <div class="kz-desliza-sai" data-bloco="transicao-deslizar" style="--duracao: 15">
+      <div class="kz-titulo" data-bloco="titulo-entrada" style="--inicio: 285; --fim: 420; --titulo-topo: 7%">
+        <h1 class="kz-titulo-principal">Números que contam</h1>
+        <p class="kz-titulo-sub" style="--atraso: 6">Cada barra cresce e o número acompanha</p>
+      </div>
+      <div class="kz-barras" data-bloco="grafico-barras" style="--inicio: 300; --maximo: 100; --barras-topo: 36%; --barras-altura: 42%">
+        <div class="kz-barra" style="--valor: 42; --ordem: 0"><i class="kz-barra-coluna"></i><b class="kz-barra-num" data-valor="42"></b><i class="kz-barra-rotulo">jan</i></div>
+        <div class="kz-barra" style="--valor: 58; --ordem: 1"><i class="kz-barra-coluna"></i><b class="kz-barra-num" data-valor="58"></b><i class="kz-barra-rotulo">fev</i></div>
+        <div class="kz-barra" style="--valor: 51; --ordem: 2"><i class="kz-barra-coluna"></i><b class="kz-barra-num" data-valor="51"></b><i class="kz-barra-rotulo">mar</i></div>
+        <div class="kz-barra" style="--valor: 73; --ordem: 3"><i class="kz-barra-coluna"></i><b class="kz-barra-num" data-valor="73"></b><i class="kz-barra-rotulo">abr</i></div>
+        <div class="kz-barra" style="--valor: 88; --ordem: 4"><i class="kz-barra-coluna"></i><b class="kz-barra-num" data-valor="88"></b><i class="kz-barra-rotulo">mai</i></div>
+        <div class="kz-barra kz-destaque" style="--valor: 96; --ordem: 5"><i class="kz-barra-coluna"></i><b class="kz-barra-num" data-valor="96"></b><i class="kz-barra-rotulo">jun</i></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="kz-cena" data-bloco="cena" style="--inicio: 420; --fim: 585">
+  <div class="kz-desliza-entra" data-bloco="transicao-deslizar" style="--duracao: 15">
+    <figure class="kz-linha" data-bloco="grafico-linha" data-valores="30 45 40 62 58 80 92" data-maximo="100"
+            style="--inicio: 440; --duracao: 45; --linha-topo: 26%; --linha-altura: 52%">
+      <svg aria-hidden="true"><polyline class="kz-linha-traco" pathLength="1"></polyline></svg>
+      <b class="kz-linha-num"></b>
+    </figure>
+    <div class="kz-contagem" data-bloco="contagem" style="--inicio: 470; --fim: 530; --valor: 312; --contagem-x: 80%; --contagem-tamanho: 1.2">
+      <b class="kz-contagem-num" data-valor="312"></b>
+      <span class="kz-contagem-rotulo">vídeos no semestre</span>
+    </div>
+  </div>
+</section>
+
+<section class="kz-cena" data-bloco="cena" style="--inicio: 585; --fim: 675">
+  <div class="kz-contagem kz-regressiva" data-bloco="contagem" style="--inicio: 585; --de: 3; --fim: 675">
+    <b class="kz-contagem-num" data-valor="1"></b>
+  </div>
+</section>
+
+<section class="kz-cena" data-bloco="cena" style="--inicio: 675; --fim: 720">
+  <div class="kz-titulo" data-bloco="titulo-entrada" style="--inicio: 678">
+    <h1 class="kz-titulo-principal">Feito pelo motor</h1>
+    <p class="kz-titulo-sub" style="--atraso: 6">Linha do tempo declarada, sem relógio</p>
+  </div>
+</section>
+
+<script src="grafico-linha/bloco.js"></script>
+<script src="legenda-uma-linha/bloco.js"></script>

@@ -1,0 +1,35 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Take na placa</title>
+<!-- S08: composição sintética (R01) para a montagem do take na placa. O vídeo é o do M09 (o teste gera na hora o
+     video.mp4, como na linha-video), num palco de fundo opaco que cobre o quadro, recortado numa coluna (overflow) com
+     fundo preto que o vídeo cobre inteira, deslocado para a esquerda (left −300). Por cima: uma tarja semitransparente,
+     texto e uma borda dentro da coluna. A coluna entra com opacidade e deslocamento nos quadros 0 a 5 (esses vão pelo
+     canvas, P10.5); do 6 ao 24, pela placa. Fora do trecho do vídeo (25 a 29), só o palco.
+     O mesmo quadro tem de sair igual pelos dois caminhos (MOTOR_TAKE_PLACA=0 e o padrão). -->
+<script type="application/json" id="motor-video">
+{ "id": "LinhaTake", "largura": 1920, "altura": 1080, "qps": 25, "quadros": 30 }
+</script>
+<style>
+  /* Fonte embutida (cli/fixtures/fonte-padrao): o quadro não depende das fontes da máquina. */
+  @font-face { font-family: 'Teste Sans'; font-weight: 400; src: url('fonte/DejaVuSans.woff2') format('woff2'); }
+  @font-face { font-family: 'Teste Sans'; font-weight: 700; src: url('fonte/DejaVuSans-Bold.woff2') format('woff2'); }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; }
+  .palco { position: absolute; inset: 0; background: #0b1220; overflow: hidden; }
+  .coluna { position: absolute; left: 1000px; top: 0; width: 920px; height: 1080px; overflow: hidden; background: #000;
+            animation: entra 0.24s ease-out both; }
+  @keyframes entra { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: none; } }
+  .tela { position: absolute; left: -300px; top: 0; width: 1920px; height: 1080px; }
+  .borda { position: absolute; left: 0; top: 0; width: 8px; height: 1080px; background: #4fd1a5; }
+  .tarja { position: absolute; left: 700px; top: 700px; width: 900px; height: 160px; border-radius: 16px;
+           background: rgba(15, 21, 48, 0.7); color: #fff; font: 700 64px 'Teste Sans', sans-serif; padding: 40px; box-sizing: border-box; }
+  .titulo { position: absolute; left: 80px; top: 120px; color: #e8eefc; font: 700 72px 'Teste Sans', sans-serif; }
+</style>
+<div class="palco">
+  <div class="titulo">Take na placa</div>
+  <div class="coluna">
+    <video class="tela" src="video.mp4" data-inicio="0" data-recorte="3" data-quadros="25"></video>
+    <div class="borda"></div>
+  </div>
+  <div class="tarja">Apresentador sintético</div>
+</div>

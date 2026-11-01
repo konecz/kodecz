@@ -1,0 +1,32 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Linha com escala 0</title>
+<!-- R03 depois de escala 0 (achado na correção do will-change, P10.5 embaralhado): composição sintética (R01: nada de
+     cliente) com barras de canto arredondado que crescem de scaleX(0) a scaleX(1), como as do P10.5. A primeira fica
+     em escala 0 até o quadro 10 e cresce do 10 ao 30; a segunda, do 14 ao 34, com will-change: opacity (o código antigo
+     do P10.5); a terceira, do 18 ao 38, sem dica nenhuma. Fora de ordem, o quadro N depois de escala 0 (11, 15, 19)
+     tem de sair igual ao do render em ordem, mesmo que um quadro posterior (barra maior) tenha sido desenhado antes. -->
+<script type="application/json" id="motor-video">
+{ "id": "LinhaEscalaZero", "largura": 960, "altura": 540, "qps": 30, "quadros": 48 }
+</script>
+<style>
+  html, body { margin: 0; width: 960px; height: 540px; overflow: hidden; background: #0d1230; }
+  .trilho { position: absolute; left: 60px; width: 620px; height: 28px; border-radius: 14px; background: #1c2940; }
+  .cheia { position: absolute; left: 0; top: 0; height: 28px; border-radius: 14px; transform-origin: 0 50%; }
+  .dica { will-change: opacity; }
+</style>
+<body>
+<script>
+  const ms = (q) => (q * 1000) / 30, curva = 'cubic-bezier(0.33, 1, 0.68, 1)';
+  [[10, 600, '#ff7a59', ''], [14, 41, '#4fd1a5', 'dica'], [18, 433, '#7a8cff', '']].forEach(([de, largura, cor, classe], i) => {
+    const trilho = document.createElement('div');
+    trilho.className = 'trilho';
+    trilho.style.top = `${120 + i * 120}px`;
+    const cheia = document.createElement('div');
+    cheia.className = `cheia ${classe}`;
+    Object.assign(cheia.style, { width: `${largura}px`, background: cor });
+    trilho.append(cheia);
+    document.body.append(trilho);
+    cheia.animate([{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], { delay: ms(de), duration: ms(20), easing: curva, fill: 'both' });
+  });
+</script>

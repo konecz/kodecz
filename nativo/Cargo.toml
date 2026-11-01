@@ -1,0 +1,17 @@
+[package]
+name = "nativo"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+ash = "0.38"
+cudarc = { version = "0.16", default-features = false, features = ["std", "driver", "cuda-12080", "dynamic-loading"] }
+napi = { version = "3", features = ["napi8"] }
+napi-derive = "3"
+nvidia-video-codec-sdk = "0.4.0"
+
+[build-dependencies]
+napi-build = "2"
+
+[lib]
+crate-type = ["cdylib"]

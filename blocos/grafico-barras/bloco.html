@@ -1,0 +1,8 @@
+<!-- grafico-barras (H11). <link rel="stylesheet" href="⟨blocos⟩/grafico-barras/bloco.css"> no <head>.
+     ⟨maximo⟩: o topo da escala (≥ o maior valor). Cada barra com o --valor e a --ordem (0, 1, 2…); o número repete o
+     valor em data-valor (para a conferência). A primeira cresce no ⟨inicio⟩, as outras --passo quadros depois da
+     anterior (padrão 4), cada uma em --duracao quadros (padrão 27). kz-destaque pinta uma barra com --color-accent. -->
+<div class="kz-barras" data-bloco="grafico-barras" style="--inicio: ⟨inicio⟩; --maximo: ⟨maximo⟩; --sufixo: ''">
+  <div class="kz-barra" style="--valor: 42; --ordem: 0"><i class="kz-barra-coluna"></i><b class="kz-barra-num" data-valor="42"></b><i class="kz-barra-rotulo">jan</i></div>
+  <div class="kz-barra kz-destaque" style="--valor: 58; --ordem: 1"><i class="kz-barra-coluna"></i><b class="kz-barra-num" data-valor="58"></b><i class="kz-barra-rotulo">fev</i></div>
+</div>

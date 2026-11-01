@@ -1,0 +1,30 @@
+/* terco-inferior (H10): nome e cargo de quem fala, num cartão no terço de baixo, à esquerda. O cartão se revela da
+   esquerda para a direita no --inicio, o texto vem logo atrás, e tudo recolhe acabando no --fim. */
+.kz-terco {
+  --atraso: initial; /* cada filho põe o seu; nada herdado de fora */
+  position: absolute; left: var(--spacing-margin, 96px); bottom: var(--terco-base, 24%);
+  display: flex; flex-direction: column; gap: 6px; box-sizing: border-box; max-width: 60%;
+  padding: 20px 36px 22px 32px;
+  background: var(--color-surface, var(--color-ground)); border-left: 10px solid var(--color-accent);
+  border-radius: var(--rounded-card, 20px);
+  animation: kz-terco-abre var(--motion-duration-enter, 500ms) var(--motion-easing-enter, cubic-bezier(0.16, 1, 0.3, 1))
+               calc(var(--inicio) * 1s / var(--qps)) both,
+             kz-terco-recolhe var(--motion-duration-exit, 300ms) var(--motion-easing-exit, ease-in)
+               calc(var(--fim) * 1s / var(--qps) - var(--motion-duration-exit, 300ms)) forwards;
+}
+.kz-terco > * {
+  margin: 0; white-space: nowrap; overflow: hidden;
+  animation: kz-terco-texto var(--motion-duration-enter, 500ms) var(--motion-easing-enter, cubic-bezier(0.16, 1, 0.3, 1))
+             calc((var(--inicio) + var(--atraso, 4)) * 1s / var(--qps)) both;
+}
+.kz-terco-nome {
+  font-family: var(--font-title, var(--font-display)); font-weight: var(--font-title-weight, 700);
+  font-size: calc(var(--font-title-size, 64px) * 0.75); line-height: 1.15; color: var(--color-ink);
+}
+.kz-terco-cargo {
+  font-family: var(--font-label, var(--font-body)); font-weight: var(--font-label-weight, 700);
+  font-size: var(--font-label-size, 28px); line-height: 1.2; color: var(--color-muted, var(--color-ink));
+}
+@keyframes kz-terco-abre { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0); } }
+@keyframes kz-terco-recolhe { from { clip-path: inset(0); } to { clip-path: inset(0 100% 0 0); } }
+@keyframes kz-terco-texto { from { opacity: 0; transform: translateX(-24px); } to { opacity: 1; transform: none; } }

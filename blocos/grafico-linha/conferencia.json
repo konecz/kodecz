@@ -1,0 +1,25 @@
+{
+  "bloco": "grafico-linha",
+  "checagens": [
+    {
+      "id": "linha.chega-no-alvo",
+      "prioridade": "P0",
+      "seletor": ".kz-linha-num",
+      "quando": "fim-do-bloco",
+      "medida": "distancia-do-alvo",
+      "maximo": 0,
+      "propriedade": "--kz-valor",
+      "mensagem": "t={t} · {onde} · o número para {valor} longe do último valor → incluir grafico-linha/bloco.js depois das figuras, e a cena só corta depois de o traço chegar ao fim"
+    },
+    {
+      "id": "linha.zona-segura",
+      "prioridade": "P0",
+      "seletor": ".kz-linha",
+      "quando": "visivel-parado",
+      "medida": "fora-da-margem",
+      "maximo": 0,
+      "margem": "--spacing-safe",
+      "mensagem": "t={t} · {onde} · o gráfico sai {valor} px da zona segura → mudar --linha-topo, --linha-largura ou --linha-altura (G19)"
+    }
+  ]
+}

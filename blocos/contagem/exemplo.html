@@ -1,0 +1,20 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>contagem · exemplo</title>
+<!-- H13: contagem até 312 (quadros 5 a 45) à esquerda e regressiva de 3 (quadros 10 a 100) à direita. Servir blocos/. -->
+<script type="application/json" id="motor-video">
+{ "id": "ExemploContagem", "largura": 1920, "altura": 1080, "qps": 30, "quadros": 105 }
+</script>
+<link rel="stylesheet" href="../marca/marca.css">
+<link rel="stylesheet" href="bloco.css">
+<style>
+  :root { --qps: 30; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--color-ground); }
+</style>
+<div class="kz-contagem" data-bloco="contagem" style="--inicio: 5; --fim: 45; --valor: 312; --contagem-x: 30%">
+  <b class="kz-contagem-num" data-valor="312"></b>
+  <span class="kz-contagem-rotulo">vídeos no semestre</span>
+</div>
+<div class="kz-contagem kz-regressiva" data-bloco="contagem" style="--inicio: 10; --de: 3; --fim: 100; --contagem-x: 72%">
+  <b class="kz-contagem-num" data-valor="1"></b>
+</div>

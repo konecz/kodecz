@@ -24,6 +24,11 @@ A mesma pasta renderiza nos dois.
   um bloco Kodecz em Markdown, documentado e testável, e a conferência automática olha os quadros e devolve em JSON
   onde está o erro.
 
+A interface ainda usa os nomes em português: `./instalar.sh`, `node cli/render.ts <pasta> <id> saida.mp4` (com
+`--cpu`, `--placa`, `--hevc`, `--alfa`, `--de` e `--quadros`), `node cli/previa.ts`, `node cli/conferir.ts` e o bloco
+`<script type="application/json" id="motor-video">` com `largura`, `altura`, `qps` e `quadros`. Os nomes em inglês
+vêm depois.
+
 O README completo, com o passo a passo, está em inglês: [`README.md`](README.md).
 
 Criado por **Pedro Henrique Lahr** e **Vanessa Cristine**, pela [Konecz](https://konecz.com), AI Factory. Licença [Apache-2.0](LICENSE).
