@@ -37,6 +37,9 @@ export const REGRAS: Regra[] = [
  * As classes de verificador «sim» que ficam com um grau só, com o motivo: o erro é binário (acontece ou não) ou o
  * limiar ainda não tem fonte firme. Os três graus (#79, seção 5) só fazem sentido onde há uma medida contínua com limiar.
  */
+const SEM_GRAUS_PROVADOS =
+  "a especificação não tem os três graus provados: erro binário (acontece ou não) ou sem limiar contínuo com fonte";
+
 export const SEM_GRAU: Record<string, string> = {
   "K-COD-14": "binário: a espera termina ou não",
   "K-COD-09": "binário: a faixa entra na mistura ou não",
@@ -58,6 +61,36 @@ export const SEM_GRAU: Record<string, string> = {
   "K-ACE-02": "binário: há legenda ou não",
   "K-COD-12": "binário: o texto sai na direção certa e com as letras ligadas ou não",
   "K-COR-05": "binário: o HDR é convertido para SDR ou não",
+  // P15 (2026-11-01): graduadas pelo catálogo no #96 sem os três graus na especificação; o caso de grau não montava.
+  "K-COD-05": SEM_GRAUS_PROVADOS,
+  "K-COD-06": SEM_GRAUS_PROVADOS,
+  "K-COD-10": SEM_GRAUS_PROVADOS,
+  "K-COD-19": SEM_GRAUS_PROVADOS,
+  "K-FER-03": SEM_GRAUS_PROVADOS,
+  "K-FER-04": SEM_GRAUS_PROVADOS,
+  "K-FER-06": SEM_GRAUS_PROVADOS,
+  "K-EDI-02": SEM_GRAUS_PROVADOS,
+  "K-EDI-03": SEM_GRAUS_PROVADOS,
+  "K-EDI-06": SEM_GRAUS_PROVADOS,
+  "K-EDI-08": SEM_GRAUS_PROVADOS,
+  "K-ANI-01": SEM_GRAUS_PROVADOS,
+  "K-ANI-02": SEM_GRAUS_PROVADOS,
+  "K-ANI-04": SEM_GRAUS_PROVADOS,
+  "K-ANI-05": SEM_GRAUS_PROVADOS,
+  "K-ANI-08": SEM_GRAUS_PROVADOS,
+  "K-ANI-09": SEM_GRAUS_PROVADOS,
+  "K-ANI-11": SEM_GRAUS_PROVADOS,
+  "K-DES-02": SEM_GRAUS_PROVADOS,
+  "K-DES-04": SEM_GRAUS_PROVADOS,
+  "K-DES-08": SEM_GRAUS_PROVADOS,
+  "K-DES-09": SEM_GRAUS_PROVADOS,
+  "K-DES-12": SEM_GRAUS_PROVADOS,
+  "K-DES-13": SEM_GRAUS_PROVADOS,
+  "K-COR-02": SEM_GRAUS_PROVADOS,
+  "K-AUD-06": SEM_GRAUS_PROVADOS,
+  "K-AUD-07": SEM_GRAUS_PROVADOS,
+  "K-ACE-05": SEM_GRAUS_PROVADOS,
+  "K-PLA-02": SEM_GRAUS_PROVADOS,
 };
 
 export type Efetivo = { valor: string; equivale: string[] };

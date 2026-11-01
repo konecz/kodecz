@@ -90,6 +90,10 @@ export function paraItem(caso: Caso, es: Record<string, Especificacao> = lerEspe
   if (!e) return sem(`${caso.classe} sem especificação`);
   if (e.rodada) return sem(`${caso.classe}: métrica da rodada (semelhança entre as saídas do agente), não oráculo por caso`);
   if (e.desligada) return sem(`${caso.classe}: desligada da nota (${e.desligada})`);
+  // O manifesto gradua a classe pelo catálogo; se a especificação ainda não tem o grau, o caso não monta: fica pulado
+  // com o motivo, sem derrubar a rodada.
+  if (caso.grau !== "unico" && e.graus?.[caso.grau as "abaixo" | "no" | "acima"] === undefined)
+    return sem(`${caso.classe}: a especificação não tem o grau ${caso.grau}`);
   const { v, pedido } = partida(caso, e);
   const base = cenaDe(caso, e, "base");
   const p = precisaDe(e.regra);

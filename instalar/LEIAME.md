@@ -15,7 +15,7 @@ nativo e o `nativo.node`) e confere antes. Os logs longos (npm, cargo) ficam em 
 
 ## O que pede sudo (só com `--sistema`, ou à mão)
 
-- Pacotes do apt: ffmpeg (o do sistema; o LGPL nosso é do P11), weston, bubblewrap, binutils (o `strip` do CEF), fontconfig e uma
+- Pacotes do apt: ffmpeg (o do sistema), weston, bubblewrap, binutils (o `strip` do CEF), fontconfig e uma
   fonte, as bibliotecas que o Electron carrega, `build-essential`, `cmake` e `ninja-build` (o host do CEF é compilado
   aqui, com ou sem placa) e `libvulkan1` (só com placa). O instalador imprime a
   linha `sudo apt-get install -y …` com o que falta; como root (contêiner), sem o `sudo`.
@@ -79,6 +79,6 @@ sozinho (precisa de rede só nessa vez).
   (`instalar/instalar.test.ts`).
 - **O nativo é compilado na máquina, não baixado:** enquanto o produto é o serviço no nosso servidor, um binário
   pré-compilado pediria um lugar privado para publicá-lo e a mesma versão de driver e glibc; o Rust instala sem sudo.
-  A distribuição de binários é decisão do programa fechado (P11).
+  A distribuição de binários ainda não está decidida.
 - **Caminhos num lugar só:** `instalar/caminhos.ts`, derivado do `CAMINHOS` do `cli/regras.ts`. Quando o P04 levar o
   código para `captura/`, `composicao/` e `nativo/`, o ajuste é ali.

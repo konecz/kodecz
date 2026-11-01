@@ -1,4 +1,4 @@
-// M09: a marca do vídeo sintético (gerar-midia.sh do experimento do vídeo embutido): o número do quadro do vídeo em
+// M09: a marca do vídeo sintético (cli/fixtures/video-marcado.sh): o número do quadro do vídeo em
 // 12 blocos de 120 px na faixa y 1040–1079 (bit 0 à esquerda). Com o vídeo em tela cheia na composição 1920×1080,
 // o quadro capturado N tem de trazer o quadro N (+ o corte do início) do vídeo (R03).
 

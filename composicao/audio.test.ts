@@ -105,7 +105,7 @@ test('origem do asset: arquivo do pacote, data: e recusa de rede e de fuga da pa
   const dados = origemDoAsset(`data:audio/wav;base64,${Buffer.from('RIFF1234').toString('base64')}`, { base, pacote: '/p', pasta });
   assert.equal(readFileSync(dados, 'utf8'), 'RIFF1234');
   assert.equal(origemDoAsset(`data:audio/wav;base64,${Buffer.from('RIFF1234').toString('base64')}`, { base, pacote: '/p', pasta }), dados);
-  assert.throws(() => origemDoAsset('https://exemplo.com/a.mp3', { base, pacote: '/p', pasta }), /fora do pacote/);
+  assert.throws(() => origemDoAsset('https://example.com/a.mp3', { base, pacote: '/p', pasta }), /fora do pacote/);
   // O parser de URL já resolve o «..» literal: fica dentro do pacote, como no servidor do motor.
   assert.equal(origemDoAsset('http://127.0.0.1:4321/../../etc/passwd', { base, pacote: '/p', pasta }), '/p/etc/passwd');
   assert.throws(() => origemDoAsset('http://127.0.0.1:4321/a%2F..%2F..%2F..%2Fetc%2Fpasswd', { base, pacote: '/p', pasta }), /fora do pacote/);
@@ -186,7 +186,7 @@ test('entrada do grafo: a faixa só entra no rótulo quando não é a 0 (como o 
 test('falha cedo: fonte de rede recusada já no primeiro quadro em que aparece', () => {
   const c = new ColetorDeAudio({ pasta: mkdtempSync(join(tmpdir(), 'm07-cedo-')), fps: 30, primeiro: 0, base: 'http://127.0.0.1:9/', pacote: '/p' });
   c.quadro(0, [], 10);
-  assert.throws(() => c.quadro(1, [asset('a', 1, { src: 'https://exemplo.com/a.mp3' })], 10), /fora do pacote/);
+  assert.throws(() => c.quadro(1, [asset('a', 1, { src: 'https://example.com/a.mp3' })], 10), /fora do pacote/);
   c.limpar();
 });
 

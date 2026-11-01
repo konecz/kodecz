@@ -4,7 +4,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { lerCatalogo, peso, porPeso, valoresNominais, type Catalogo } from "./catalogo.ts";
-import { conferirRegras, efetivo, REGRAS, SEM_GRAU } from "./efetivo.ts";
+import { conferirRegras, efetivo, REGRAS } from "./efetivo.ts";
+import { lerEspecificacoes } from "./provas.ts";
 import { canonico, expandir, graduavel, idDe, MANIFESTO, META, serializar, type Caso } from "./expandir.ts";
 
 const cat = lerCatalogo();
@@ -94,13 +95,19 @@ test("contas: o produto nominal é o do #79 (3.727); o total passa da meta por m
   assert.ok(e.casos.length - META < 2 * unicos(e.comGrau.at(-1)!), `${e.casos.length} passa demais de ${META}`);
 });
 
-test("graus: só em classes graduáveis, em ordem de peso; as de peso maior sem grau estão no SEM_GRAU", () => {
+test("graus: toda classe graduada tem os três graus na especificação (senão o caso não monta)", () => {
+  const es = lerEspecificacoes();
+  const falta = expandir(cat).comGrau.filter((id) => !(["abaixo", "no", "acima"] as const).every((g) => es[id]?.graus?.[g] !== undefined));
+  assert.deepEqual(falta, []);
+});
+
+test("graus: só em classes graduáveis, em ordem de peso; as de peso maior sem grau não são graduáveis (SEM_GRAU ou desligada)", () => {
   const e = expandir(cat);
   const ordem = porPeso(cat.classes);
   const ultima = ordem.findIndex((c) => c.id === e.comGrau.at(-1));
   for (const c of ordem.slice(0, ultima + 1)) {
     if (e.comGrau.includes(c.id)) assert.ok(graduavel(c), c.id);
-    else assert.ok(c.verificador !== "sim" || c.id in SEM_GRAU, `${c.id} devia ter grau`);
+    else assert.ok(!graduavel(c), `${c.id} devia ter grau`);
   }
   for (const c of e.casos) {
     assert.equal(c.esperado, c.grau === "unico" ? null : c.grau === "abaixo" ? "certo" : "erro");

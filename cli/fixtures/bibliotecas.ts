@@ -1,9 +1,11 @@
 // S01: GSAP e lottie-web só para os testes, fora do repositório. O serviço é «compatível com GSAP»: o cliente traz a
-// biblioteca na pasta dele; nós não a distribuímos nem a pomos no git (parecer jurídico, J5; docs/pesquisa/
+// biblioteca na pasta dele; nós não a distribuímos nem a pomos no git (docs/pesquisa/
 // parecer-juridico.md). O lottie-web é MIT, mas segue a mesma regra: quem traz é o cliente.
 //
-// O teste lê a biblioteca do cache local (~/.cache/motor-video/bibliotecas, ou $MOTOR_CACHE/bibliotecas) e a copia
-// para uma cópia temporária da fixture; sem ela, o teste é pulado com o motivo e o comando para baixar:
+// Nenhum arquivo do GSAP vai no repositório: a licença dele não é compatível com a Apache-2.0 do Kodecz (L01 da
+// auditoria de abertura). O teste baixa a biblioteca na hora para o cache local (~/.cache/motor-video/bibliotecas, ou
+// $MOTOR_CACHE/bibliotecas, fora do repositório) e a copia para uma cópia temporária da fixture; sem rede, o teste é
+// pulado com o motivo. Para baixar antes, à mão:
 //   node cli/fixtures/bibliotecas.ts            baixa as que faltam (pacote do npm, versão fixa)
 // O pacote do npm é conferido pelo sha512 publicado (dist.integrity) e o arquivo extraído, pelo sha256 daqui; na
 // leitura, o sha256 é conferido de novo.
@@ -60,10 +62,11 @@ export function fixtureComBiblioteca(fixture: string, pasta: string, nome: Bibli
   return pasta;
 }
 
-async function baixar(nome: Biblioteca) {
+/** Baixa a biblioteca para o cache, se ainda não estiver lá, conferindo o sha512 do pacote e o sha256 do arquivo. */
+export async function baixar(nome: Biblioteca, log: (m: string) => void = console.log) {
   const b = BIBLIOTECAS[nome];
-  if (!("falta" in bibliotecaDeTeste(nome))) { console.log(`${nome} ${b.versao}: já no cache (${destino(nome)})`); return; }
-  const r = await fetch(b.pacote);
+  if (!("falta" in bibliotecaDeTeste(nome))) { log(`${nome} ${b.versao}: já no cache (${destino(nome)})`); return; }
+  const r = await fetch(b.pacote, { signal: AbortSignal.timeout(60_000) });
   if (!r.ok) throw new Error(`${b.pacote}: HTTP ${r.status}`);
   const tgz = Buffer.from(await r.arrayBuffer());
   const [algoritmo, esperado] = b.integridade.split(/-(.*)/s);
@@ -78,7 +81,7 @@ async function baixar(nome: Biblioteca) {
     if (sha256(arquivo) !== b.sha256) throw new Error(`${nome}: ${b.dentro} não confere com o sha256 esperado`);
     mkdirSync(join(PASTA, `${nome}-${b.versao}`), { recursive: true });
     writeFileSync(destino(nome), arquivo);
-    console.log(`${nome} ${b.versao}: ${destino(nome)}`);
+    log(`${nome} ${b.versao}: ${destino(nome)}`);
   } finally {
     rmSync(tmp, { recursive: true, force: true });
   }

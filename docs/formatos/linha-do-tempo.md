@@ -61,7 +61,7 @@ O formato do motor sem o Remotion: uma página HTML comum, com as animações de
 
 O formato é **compatível** com páginas que usam GSAP ou Lottie (lottie-web): **o cliente traz a biblioteca** na pasta
 dele, como qualquer outro arquivo. O motor não distribui nenhuma das duas, não as põe no repositório nem no serviço, e
-o editor e os blocos da Konecz não geram código GSAP (parecer jurídico, J5: `docs/pesquisa/parecer-juridico.md`). Fora
+o editor e os blocos da Konecz não geram código GSAP (a licença do GSAP não é compatível com a Apache-2.0). Fora
 o bloco de declaração, a página fica como o cliente escreveu. Exemplos: `cli/fixtures/linha-gsap/index.html` e
 `cli/fixtures/linha-lottie/index.html` (sem a biblioteca; os testes a copiam do cache local, `cli/fixtures/bibliotecas.ts`).
 

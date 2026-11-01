@@ -47,7 +47,7 @@ Demonstração com todos os blocos: `index.html` desta pasta (marca fictícia em
 ## Regras de todos os blocos
 
 - Só animação declarada: CSS `@keyframes` ou `element.animate()`. Nada de `requestAnimationFrame`, `setTimeout`,
-  `setInterval`, `Date.now()`, `performance.now()`, sorteio, GSAP (parecer jurídico, J5), SVG SMIL, GIF, APNG nem WebP.
+  `setInterval`, `Date.now()`, `performance.now()`, sorteio, GSAP (licença incompatível com a Apache-2.0), SVG SMIL, GIF, APNG nem WebP.
   Script só para ler o DOM na carga: `grafico-linha/bloco.js` (geometria e a contagem por `element.animate()`) e
   `legenda-uma-linha/bloco.js` (publica `window.motor_falas` para o S04).
 - Sem `motor_quadro`: com ele o motor desenha todos os quadros. Ligar e desligar (cena, frase, palavra) é um par de

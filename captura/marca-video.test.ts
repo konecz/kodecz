@@ -8,7 +8,7 @@ import { join } from 'node:path';
 import { conferirVideo, lerMarcaVideo } from './marca-video.ts';
 
 const L = 1920, A = 1080;
-// Quadro BGRA com a marca de gerar-midia.sh: 12 blocos de 120 px em y 1040–1079, bit 0 à esquerda.
+// Quadro BGRA com a marca de cli/fixtures/video-marcado.sh: 12 blocos de 120 px em y 1040–1079, bit 0 à esquerda.
 const quadro = (v, { nivel = 235 } = {}) => {
   const px = Buffer.alloc(L * A * 4);
   for (let y = 1040; y < 1080; y++) for (let b = 0; b < 12; b++) {
@@ -45,7 +45,7 @@ test('quadro sem marca lida ou faltando conta como faltando', () => {
   assert.equal(conferirVideo([q(0, 0)], { total: 2 }).faltando, 1);
 });
 
-const CLI = new URL('../docs/experimentos/2026-10-m04-composicoes-remotion/conferir-video.mjs', import.meta.url).pathname;
+const CLI = new URL('./conferir-video.mjs', import.meta.url).pathname;
 const base = mkdtempSync(join(tmpdir(), 'm09-marca-'));
 after(() => rmSync(base, { recursive: true, force: true }));
 const cli = (nome, resumo, quadros, ...args) => {

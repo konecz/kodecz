@@ -69,7 +69,7 @@ export function hashFontes(fonte: string) {
 
 /**
  * O módulo nativo é compilado aqui (decisão do P03: sem binário pré-compilado enquanto o produto é o serviço no nosso
- * servidor; o programa fechado do P11 decide a distribuição). Recompila se as fontes ou o nativo.node mudaram.
+ * servidor; a distribuição de binários ainda não está decidida). Recompila se as fontes ou o nativo.node mudaram.
  */
 export function etapaNativo(c: { fonte: string; biblioteca: string; modulo: string },
   { cargo, placa, nvenc }: { cargo: string | null; placa: boolean; nvenc: string[] }, x: Executar): Etapa {

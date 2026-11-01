@@ -1,7 +1,8 @@
 // S01: composições com GSAP e com Lottie na linha do tempo declarada (cli/fixtures/linha-gsap e linha-lottie). O
-// cliente traz a biblioteca; nós não a versionamos (parecer jurídico, J5): o teste copia a fixture para uma pasta
-// temporária junto com a biblioteca do cache local (cli/fixtures/bibliotecas.ts) e é pulado, com o comando para
-// baixar, se ela não estiver lá. Cada quadro gravado tem de trazer N (ou o valor esperado) nas tarjas, e o quadro N
+// cliente traz a biblioteca; nós não a versionamos (L01: a licença do GSAP não é compatível com
+// a Apache-2.0): o teste baixa a versão fixa para o cache local, fora do repositório, conferida pelo sha256
+// (cli/fixtures/bibliotecas.ts), copia a fixture para uma pasta temporária junto com ela e é pulado, com o motivo, se
+// não conseguir baixar (sem rede). Cada quadro gravado tem de trazer N (ou o valor esperado) nas tarjas, e o quadro N
 // tem de sair igual em ordem, começando no meio, embaralhado e depois de saltos (R03, P10.4).
 // Rodar: node --test "cli/*.test.ts"
 import { after, test } from "node:test";
@@ -14,7 +15,7 @@ import { join } from "node:path";
 import { CAMINHOS, sondarPlaca } from "./regras.ts";
 import { ambienteReal } from "./render.ts";
 import { lerMarcaEm } from "../captura/faixa.ts";
-import { bibliotecaDeTeste, fixtureComBiblioteca, type Biblioteca } from "./fixtures/bibliotecas.ts";
+import { baixar, bibliotecaDeTeste, fixtureComBiblioteca, type Biblioteca } from "./fixtures/bibliotecas.ts";
 
 const CLI = new URL("./render.ts", import.meta.url).pathname;
 const FIXTURES = new URL("./fixtures", import.meta.url).pathname;
@@ -24,7 +25,16 @@ const falta = [CAMINHOS.hostCef].filter((p) => !existsSync(p));
 const semRender = falta.length ? `falta ${falta.join(", ")} (captura/cef/montar.sh)` : false;
 const placa = semRender ? null : sondarPlaca(ambienteReal());
 const semPlaca = semRender || (placa && !placa.ok ? `sem placa: ${placa.motivo}` : false);
-const semBiblioteca = (nome: Biblioteca) => { const b = bibliotecaDeTeste(nome); return "falta" in b ? b.falta : false; };
+// Baixa na hora só se o teste vai renderizar; sem rede, o motivo vira o skip.
+const naoBaixou = new Map<Biblioteca, string>();
+if (!semRender) for (const nome of ["gsap", "lottie"] as const) {
+  try { await baixar(nome, () => {}); } catch (e) { naoBaixou.set(nome, `${nome} não baixou (${(e as Error).message}); sem rede?`); }
+}
+const semBiblioteca = (nome: Biblioteca) => {
+  if (naoBaixou.has(nome)) return naoBaixou.get(nome)!;
+  const b = bibliotecaDeTeste(nome);
+  return "falta" in b ? b.falta : false;
+};
 
 function rodar(args: string[], env: Record<string, string> = {}): Promise<{ codigo: number | null; erro: string; json: any }> {
   return new Promise((ok) => {

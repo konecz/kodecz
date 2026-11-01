@@ -192,7 +192,7 @@ test("--observar: refaz na mudança (quente depois do primeiro), página no loop
     const pagina = await pedir(url);
     assert.equal(pagina.status, 200);
     assert.match(pagina.corpo.toString(), /EventSource\('\/eventos'\)/);
-    assert.equal((await pedir(url, "exemplo.com")).status, 403, "Host de fora");
+    assert.equal((await pedir(url, "example.com")).status, 403, "Host de fora");
     assert.equal((await pedir(`${url}quadro/5.png`, undefined, { "sec-fetch-site": "cross-site" })).status, 403, "pedido de outra página");
     const q = await pedir(`${url}quadro/30.png`);
     assert.equal(q.status, 200);

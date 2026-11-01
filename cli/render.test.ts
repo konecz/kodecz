@@ -551,7 +551,7 @@ function prepararLinhaVideo() {
   mkdirSync(pasta);
   copyFileSync(new URL("./fixtures/linha-video/index.html", import.meta.url).pathname, join(pasta, "index.html"));
   const midia = join(saidas, "midia-video");
-  const g = spawnSync(join(CAMINHOS.raiz, "docs", "experimentos", "2026-10-m04-video-embutido", "gerar-midia.sh"), [],
+  const g = spawnSync(new URL("./fixtures/video-marcado.sh", import.meta.url).pathname, [],
     { encoding: "utf8", env: { ...process.env, VE_MIDIA: midia, VE_DURACAO: "2" } });
   assert.equal(g.status, 0, g.stderr);
   renameSync(join(midia, "sintetico.mp4"), join(pasta, "video.mp4"));
@@ -1022,7 +1022,7 @@ async function renderParada(nome: string, env: Record<string, string>, quadros =
 // muda um pouco (e, com ela, as referências dos quadros seguintes). O que vale agora: até o primeiro repetido, o mesmo
 // vídeo; cada pulado igual ao anterior; sem os pulados, os quadros do NVENC decodificam iguais (as referências batem,
 // conferir-pulado.sh); NVDEC igual ao software; e o vídeo perto do desenhado (PSNR Y ≥ 45 dB em todo quadro).
-const CONFERIR_PULADO = join(CAMINHOS.raiz, "docs", "experimentos", "2026-10-c01-quadro-repetido-sem-nvenc", "conferir-pulado.sh");
+const CONFERIR_PULADO = join(CAMINHOS.raiz, "nativo", "conferir-pulado.sh");
 function conferirPulado(arquivo: string, pulados: number) {
   const r = spawnSync("bash", [CONFERIR_PULADO, arquivo], { encoding: "utf8" });
   assert.equal(r.status, 0, r.stderr);
@@ -1044,7 +1044,7 @@ function menorPsnr(a: string, b: string) {
 /** Toca o MP4 até o fim num <video> do Electron (headless) e devolve erro, quadros decodificados e corrompidos. */
 function tocarAteOFim(arquivo: string) {
   const r = spawnSync(CAMINHOS.electronCpu, ["--no-sandbox", "--ozone-platform=headless", "--disable-gpu",
-    join(CAMINHOS.raiz, "docs", "experimentos", "2026-10-c01-quadro-repetido-sem-nvenc", "tocar"), arquivo], { encoding: "utf8", timeout: 60000 });
+    new URL("./fixtures/tocar-ate-o-fim", import.meta.url).pathname, arquivo], { encoding: "utf8", timeout: 60000 });
   const linha = r.stdout.split("\n").filter((l) => l.startsWith("{")).pop();
   assert.ok(linha, `o Electron não respondeu (saiu com ${r.status}):\n${r.stderr.slice(-800)}`);
   return JSON.parse(linha);

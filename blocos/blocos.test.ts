@@ -84,7 +84,7 @@ test("conferencia.json: prioridade, momento e medida conhecidos, mensagem no jei
 test("blocos só com animação declarada e tokens: sem relógio, GSAP, SMIL, motor_quadro, imagem animada nem hex solto", () => {
   const proibidos: [RegExp, string][] = [
     [/requestAnimationFrame|setTimeout|setInterval|Date\.now|performance\.now|Math\.random/, "relógio ou sorteio (R03)"],
-    [/gsap|TweenMax|ScrollTrigger/i, "GSAP (parecer jurídico, J5)"],
+    [/gsap|TweenMax|ScrollTrigger/i, "GSAP (licença incompatível com a Apache-2.0)"],
     [/<animate|<set\b|animateTransform|animateMotion/, "SVG SMIL (desliga o quadro repetido)"],
     [/motor_quadro/, "motor_quadro (desliga o quadro repetido)"],
     [/\.(gif|png|webp|apng)\b/i, "imagem que pode ser animada"],

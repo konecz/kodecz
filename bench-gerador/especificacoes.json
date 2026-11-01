@@ -4460,7 +4460,7 @@
     "el": {
      "id": "assinatura-1",
      "tag": "div",
-     "texto": "zunzum.com.br",
+     "texto": "zunzum.example",
      "css": {
       "position": "absolute",
       "left": "50%",

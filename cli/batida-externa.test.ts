@@ -43,7 +43,7 @@ function linhaVideo() {
   mkdirSync(pasta);
   copyFileSync(new URL("./fixtures/linha-video/index.html", import.meta.url).pathname, join(pasta, "index.html"));
   const midia = join(saidas, "midia-video");
-  const g = spawnSync(join(CAMINHOS.raiz, "docs", "experimentos", "2026-10-m04-video-embutido", "gerar-midia.sh"), [],
+  const g = spawnSync(new URL("./fixtures/video-marcado.sh", import.meta.url).pathname, [],
     { encoding: "utf8", env: { ...process.env, VE_MIDIA: midia, VE_DURACAO: "2" } });
   assert.equal(g.status, 0, g.stderr);
   renameSync(join(midia, "sintetico.mp4"), join(pasta, "video.mp4"));

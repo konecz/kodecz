@@ -194,7 +194,7 @@ async function servirVideo(caminho, busca, res) {
 // no quadro N e é contada em motor_soltas. As duas contagens são de animações distintas, não de quadros. A linha do
 // tempo do documento fica parada desde antes de a página rodar (Animation.setPlaybackRate 0, ver abaixo): sem isso, a
 // animação curta sem fill acabava no relógio real enquanto a página carregava e sumia do getAnimations (R03).
-// S01, compatível com GSAP: o cliente traz o GSAP na pasta dele (nós não o distribuímos; parecer jurídico, J5). Este
+// S01, compatível com GSAP: o cliente traz o GSAP na pasta dele (nós não o distribuímos; licença incompatível com a Apache-2.0). Este
 // gancho roda antes dos scripts da página e vigia a window.gsap: quando o GSAP chega (o arquivo UMD faz
 // window.gsap = ...), a linha do tempo raiz dele é pausada no tempo 0 e deixa de remover as animações que acabam. Assim,
 // o ticker do GSAP (requestAnimationFrame e Date.now) não anda nada, toda animação criada na carga começa em t = 0 do

@@ -1273,15 +1273,12 @@ mod testes {
     }
 
     /// C01: o repetido sai como P pulado escrito por nós (HEVC e H.264), menos no começo do GOP (IDR, pelo NVENC). O
-    /// fluxo decodifica sem erro no ffmpeg, cada pulado é igual ao anterior e, tirados os
-    /// pulados, os quadros do NVENC decodificam iguais (conferir-pulado.sh). 816 × 96 não é múltiplo da CTU de 32:
-    /// passa pela divisão inferida na borda.
+    /// fluxo decodifica sem erro no ffmpeg, cada pulado é igual ao anterior e, tirados os pulados, os quadros do NVENC
+    /// decodificam iguais (nativo/conferir-pulado.sh). 816 × 96 não é múltiplo da CTU de 32: passa pela divisão
+    /// inferida na borda.
     #[test]
     fn repetido_sai_pulado_e_o_fluxo_decodifica() {
-        let script = concat!(
-            env!("CARGO_MANIFEST_DIR"),
-            "/../docs/experimentos/2026-10-c01-quadro-repetido-sem-nvenc/conferir-pulado.sh"
-        );
+        let script = concat!(env!("CARGO_MANIFEST_DIR"), "/conferir-pulado.sh");
         let fonte = Vulkan::new(L, A + M).expect("vulkan da fonte");
         for codec in ["hevc", "h264"] {
             let (mut motor, saida) = motor_em(&format!("pulado-{codec}"), 2, codec, None, Some(8));

@@ -83,8 +83,9 @@ export function verificadorDe(c: Classe): Caso["verificador"] {
     ...(ORACULOS_DEGRAU1[c.id] ? { degrau1: ORACULOS_DEGRAU1[c.id] } : {}) };
 }
 
-/** As classes que podem ter os três graus: verificador «sim» e fora do SEM_GRAU. */
-export const graduavel = (c: Classe) => c.verificador === "sim" && !(c.id in SEM_GRAU);
+/** As classes que podem ter os três graus: verificador «sim», fora do SEM_GRAU e não desligada da nota (grau de classe
+ * desligada gastaria casos que o rodador pula). */
+export const graduavel = (c: Classe) => c.verificador === "sim" && !(c.id in SEM_GRAU) && !ESPECIFICACOES_JSON[c.id]?.desligada;
 
 export type Expansao = { casos: Caso[]; compostas: Composta[]; base: number; comGrau: string[] };
 
