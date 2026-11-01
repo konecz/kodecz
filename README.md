@@ -1,9 +1,14 @@
 <a href="https://konecz.com">
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="marca/cabecalho-escuro.svg">
-  <img alt="Kodecz: video as a web page. The Kodecz ribbon, a twisted play triangle drawn in fine blue lines, turns in 3D." src="marca/cabecalho-claro.svg" width="100%">
+  <img alt="Kodecz, the open-source engine that renders a web page into an MP4 video on an NVIDIA GPU or on any CPU. The Kodecz ribbon, a twisted play triangle drawn in fine blue lines, turns in 3D." src="marca/cabecalho-claro.svg" width="100%">
 </picture>
 </a>
+
+**Kodecz is an open-source video rendering engine that turns a web page into an MP4.** You write the video in HTML,
+CSS and JavaScript (React, WebGL, GSAP, Lottie or nothing at all), and Kodecz renders it frame by frame on an NVIDIA
+GPU with NVENC or on any CPU with x264, without taking a screenshot of every frame. It is an alternative to Remotion
+and HyperFrames, made to be driven by AI agents.
 
 <p align="center">
   <a href="#quick-start">Quick start</a> ·
@@ -11,11 +16,11 @@
   <a href="#how-it-works">How it works</a> ·
   <a href="#numbers">Numbers</a> ·
   <a href="#for-ai-agents">For AI agents</a> ·
+  <a href="#faq">FAQ</a> ·
   <a href="LEIAME.md">Português</a>
 </p>
 
-Write the video as a web page and render it to MP4, on an NVIDIA GPU or on any CPU, from the same folder. If
-Chromium can draw it, Kodecz can render it:
+If Chromium can draw it, Kodecz can render it:
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="marca/tecnologias-escuro.svg">
@@ -52,6 +57,19 @@ Each square is one second. Rendering the same video, Kodecz keeps the processor 
 (43.7 s → 4.4 s of CPU) and hands you the MP4 **3× sooner** (13.6 s → 4.6 s on the clock).
 
 <sub>1080p · 150 frames · H.264 · RTX 5090 · <a href="docs/medidas.md">how we measured</a></sub>
+
+## Kodecz, Remotion and HyperFrames
+
+| | Kodecz | Remotion | HyperFrames |
+|---|---|---|---|
+| You write the video in | any web page: HTML, CSS, JS, React, WebGL | React components | HTML |
+| How each frame leaves the browser | GPU texture or the raw painted frame, no screenshot | screenshot (`Page.captureScreenshot`) | screenshot (`HeadlessExperimental.beginFrame`) |
+| Encoding | NVENC on the GPU, or x264 on the CPU | ffmpeg, x264 on the CPU by default | ffmpeg |
+| CPU time for the same 1080p video | **4.4 s** | 43.7 s | not measured yet |
+| License | Apache-2.0 | Remotion License (paid for companies above 3 people) | Apache-2.0 |
+
+<sub>Remotion and HyperFrames are good tools, and Kodecz learned from both. The capture methods come from their source
+code; the CPU numbers are ours, in <a href="docs/medidas.md">docs/medidas.md</a>.</sub>
 
 ## Quick start
 
@@ -129,6 +147,35 @@ shell commands, HTML and CSS, and JSON.
   contrast, captions too long) and answers with one JSON line plus a picture of each problem, so the agent can fix
   it before a human looks.
 - **Previews in about a second**, so the agent sees what it wrote instead of guessing.
+
+<a id="faq"></a>
+
+## FAQ
+
+### Does Kodecz work without a GPU?
+
+Yes. Without an NVIDIA GPU, Kodecz renders on the CPU: Chromium paints in software and the raw frame goes straight to
+x264. The same folder renders on both, frame for frame.
+
+### Is Kodecz an alternative to Remotion?
+
+Yes. Both turn code into video. Remotion asks you to write React components; Kodecz takes any web page. On the same
+1080p video with a presenter, Kodecz used 10 times less CPU and finished 3 times sooner on the GPU path.
+
+### Which AI agents can use Kodecz?
+
+Any agent that can write files and run commands: Claude Code, Codex, Cursor, Gemini CLI or your own. The format is
+plain HTML, the editing blocks are Markdown and the checks answer in JSON. See [`AGENTS.md`](AGENTS.md).
+
+### Is the output deterministic?
+
+Yes. Frame *N* depends only on the page and on *N*: rendering in order, out of order or from the middle gives the same
+pixels. Timers and the wall clock are not allowed in a composition, and Kodecz tells you if it finds one.
+
+### Which formats does it export?
+
+MP4 with H.264 (default) or HEVC, transparent video (HEVC with alpha), and AAC audio mixed from every `<audio>` and
+`<video>` on the page.
 
 ## Patents
 

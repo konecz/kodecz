@@ -1,0 +1,23 @@
+# Kodecz
+
+> Kodecz is an open-source (Apache-2.0) video rendering engine that turns a web page into an MP4. The video is written in HTML, CSS and JavaScript; Kodecz renders it frame by frame on an NVIDIA GPU (NVENC) or on any CPU (x264), without taking a screenshot of every frame. It is an alternative to Remotion and HyperFrames, made to be driven by AI agents. Created by Pedro Henrique Lahr and Vanessa Cristine at Konecz.
+
+Key facts:
+
+- A video is a folder with an `index.html` and a JSON block that declares width, height, fps and frame count.
+- Animation comes from CSS `@keyframes`, the Web Animations API, GSAP or Lottie; Kodecz puts every animation at frame N before drawing it. Timers, `requestAnimationFrame` and the wall clock are not allowed.
+- Frame N is deterministic: the same pixels in order, out of order or starting from the middle.
+- On the same 1080p, 150-frame video, Kodecz used 4.4 s of CPU against 43.7 s for Remotion, and finished in 4.6 s against 13.6 s (RTX 5090).
+- Output: MP4 with H.264 or HEVC, transparent video (HEVC with alpha), AAC audio mixed from the page.
+
+## Docs
+
+- [README](README.md): what Kodecz is, quick start, writing a video, how it works, numbers and FAQ
+- [AGENTS.md](AGENTS.md): how an AI agent writes, previews, checks and renders a Kodecz video
+- [Measurements](docs/medidas.md): method and raw numbers behind every published figure
+- [Patents](docs/patentes.md): H.264 and HEVC, and why Kodecz ships no codec
+
+## Optional
+
+- [Brand](docs/marca.md): logo, colors and type (Portuguese)
+- [LEIAME](LEIAME.md): summary in Portuguese

@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use Kodecz in your work, please cite it as below."
+title: "Kodecz: video as a web page, rendered on an NVIDIA GPU or any CPU"
+abstract: "Open-source video rendering engine that turns a web page into an MP4, frame by frame, on an NVIDIA GPU (NVENC) or on any CPU (x264), without a screenshot of every frame. Made to be driven by AI agents."
+type: software
+license: Apache-2.0
+repository-code: "https://github.com/konecz/kodecz"
+url: "https://konecz.com"
+authors:
+  - given-names: Pedro Henrique
+    family-names: Lahr
+    affiliation: Konecz
+  - given-names: Vanessa
+    family-names: Cristine
+    affiliation: Konecz
+keywords:
+  - video rendering
+  - html to video
+  - gpu
+  - nvenc
+  - chromium
+  - ai agents

@@ -27,6 +27,7 @@ a torção corre pela fita, como a da Konecz no site.
 | `marca/logo-animada.svg` | símbolo girando (SMIL, anda dentro de `<img>`) |
 | `marca/logo-nome-{claro,escuro}.svg` | símbolo e nome lado a lado |
 | `marca/logo-nome-animada-{claro,escuro}.svg` | o mesmo, girando |
+| `marca/previa-social.png` | prévia social do repositório, 1280×640 (feita no Chrome a partir da logo e das fontes) |
 | `marca/cabecalho-*.svg`, `tecnologias-*.svg`, `caminho-*.svg`, `numeros-*.svg`, `agentes-*.svg` | cartões do README, um por tema |
 
 Não pode: esticar, girar, contornar, pôr sombra ou gradiente, trocar a cor por outra que não as de baixo, nem pôr

@@ -13,6 +13,10 @@ codec foram pesquisadas e a posição está em `docs/patentes.md`. O Remotion sa
 - Marca: a logo (fita de Möbius em triângulo de play), os cartões do README e `docs/marca.md`.
 - `README.md` (inglês), `LEIAME.md`, `LICENSE`, `NOTICE`, `docs/patentes.md`, `docs/medidas.md`.
 
+## Busca e IA (2026-10-31)
+
+Topics no repositório; parágrafo de abertura em texto puro; comparação com Remotion e HyperFrames; FAQ; `llms.txt`, `AGENTS.md` e `CITATION.cff` na raiz; prévia social. O texto dos SVGs não conta para busca: o que importa tem que estar em texto puro no README.
+
 ## Falta para abrir (em ordem)
 
 1. No motor-video: terminar o C02 e tirar o Remotion (`refactor/remover-remotion`).
@@ -36,5 +40,5 @@ codec foram pesquisadas e a posição está em `docs/patentes.md`. O Remotion sa
    página que a do Remotion e não serve de comparação. Escolher o modo sozinho (placa quando houver, CPU quando não)
    também falta: hoje é o `--placa` que liga a placa.
 5. Busca de marca «Kodecz» no INPI.
-6. Abrir: repositório público, prévia social (`marca/logo-azul.svg` em PNG 1280×640) e a janela no konecz.com
+6. Abrir: repositório público, prévia social (`marca/previa-social.png`, 1280×640: o responsável sobe em Settings → Social preview, que não tem API) e a janela no konecz.com
    (capítulo Pesquisa, como a do remotion-gpu).
