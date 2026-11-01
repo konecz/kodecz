@@ -26,12 +26,18 @@ Chromium can draw it, Kodecz can render it:
 
 ## How it works
 
-No screenshot of every frame, on either path. Frame *N* is always the same pixels.
+Two paths, one folder. Other tools take a screenshot of every frame and turn it into a PNG before encoding it;
+Kodecz never does, with or without a GPU.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="marca/caminho-escuro.svg">
   <img alt="With an NVIDIA GPU: page, Chromium, shared texture, NVENC, MP4. On the CPU: page, Chromium, raw frame, x264, MP4. Frames move along both lines without becoming PNGs." src="marca/caminho-claro.svg" width="100%">
 </picture>
+
+**Page** is your `index.html`. **Chromium** draws frame *N*. On a GPU, that frame stays on the card as a
+**texture**; on the CPU, it is the **raw frame** Chromium just painted. Either way it goes straight to the encoder,
+**NVENC** on the card or **x264** on the processor, and comes out as an **MP4** with the audio mixed in. Frame *N* is
+always the same pixels, in order, out of order or starting from the middle.
 
 <a id="numbers"></a>
 
