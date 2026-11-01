@@ -6,3 +6,7 @@ target/
 *.webm
 *.wav
 .env*
+*.node
+*.hevc
+saida/
+.cache/
