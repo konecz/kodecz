@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "ask": [
+      "Bash(gh pr merge *)"
+    ],
+    "allow": [
+      "Bash(node .claude/scripts/resumo.mjs *)",
+      "Bash(gh pr checks *)",
+      "Bash(gh pr view *)"
+    ]
+  },
+  "bashOutputMaxChars": 12000,
+  "hooks": {
+    "SessionStart": [
+      { "hooks": [{ "type": "command", "command": "node .claude/hooks/estado-sessao.mjs", "timeout": 15 }] }
+    ],
+    "PreToolUse": [
+      { "matcher": "Bash|PowerShell", "hooks": [{ "type": "command", "command": "node .claude/hooks/bloquear-comandos.mjs", "timeout": 10 }] },
+      { "matcher": "Bash|Read", "hooks": [{ "type": "command", "command": "node .claude/hooks/leitura-dirigida.mjs", "timeout": 10 }] }
+    ]
+  }
+}
