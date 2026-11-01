@@ -39,8 +39,7 @@ Topics no repositório; parágrafo de abertura em texto puro; comparação com R
    só publica número do caminho da placa. A medida do M06 (13,4 a 15,5 s de CPU em 450 quadros) foi feita com outra
    página que a do Remotion e não serve de comparação. Escolher o modo sozinho (placa quando houver, CPU quando não)
    também falta: hoje é o `--placa` que liga a placa.
-5. Busca de marca «Kodecz» no INPI.
-   **Reservar o nome `kodecz` no npm e no crates.io** (hoje livres) antes de abrir o repositório: publicar um pacote
-   vazio, o que já é público. Aguarda o OK do responsável.
+5. **Reservar o nome `kodecz` no npm e no crates.io** (hoje livres) antes de abrir o repositório: publicar um pacote
+   vazio, o que já é público. Aguarda o OK do responsável. Os domínios `kodecz.com`, `.dev`, `.io` e `.com.br` estavam livres em 2026-11-01.
 6. Abrir: repositório público, prévia social (`marca/previa-social.png`, 1280×640: o responsável sobe em Settings → Social preview, que não tem API) e a janela no konecz.com
    (capítulo Pesquisa, como a do remotion-gpu).
