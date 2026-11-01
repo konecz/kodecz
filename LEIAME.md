@@ -18,7 +18,8 @@ A mesma pasta renderiza nos dois.
 
 - **10× menos CPU e 3× mais rápido** que o Remotion no mesmo vídeo (1080p, 150 quadros, RTX 5090;
   [`docs/medidas.md`](docs/medidas.md)).
-- **Determinístico:** o quadro *N* sai sempre igual, em ordem, fora de ordem ou começando do meio.
+- **Determinístico:** o quadro *N* sai com o mesmo conteúdo e no mesmo tempo, em ordem, fora de ordem ou começando do
+  meio. O texto animado pode variar até 2 níveis de cor de um render para outro, pela rasterização do Chromium.
 - **Feito para qualquer agente de IA**, sem amarra a um fornecedor: o formato é web comum, cada técnica de edição é
   um bloco Kodecz em Markdown, documentado e testável, e a conferência automática olha os quadros e devolve em JSON
   onde está o erro.

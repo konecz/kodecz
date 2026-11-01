@@ -42,7 +42,7 @@ Kodecz never does, with or without a GPU.
 **Page** is your `index.html`. **Chromium** draws frame *N*. On a GPU, that frame stays on the card as a
 **texture**; on the CPU, it is the **raw frame** Chromium just painted. Either way it goes straight to the encoder,
 **NVENC** on the card or **x264** on the processor, and comes out as an **MP4** with the audio mixed in. Frame *N* is
-always the same pixels, in order, out of order or starting from the middle.
+always the same frame, in order, out of order or starting from the middle: same content, same timing.
 
 <a id="numbers"></a>
 
@@ -89,7 +89,7 @@ kodecz render my-video/ MyVideo out.mp4    # GPU when there is one, CPU when not
 |---|---|
 | `--hevc` | HEVC instead of H.264 |
 | `--alpha` | transparent video (HEVC with alpha) |
-| `--from N` | start at frame *N* (same pixels as a full render) |
+| `--from N` | start at frame *N* (the same frame as a full render) |
 | `--cpu` | render on the CPU even when there is a GPU |
 | `kodecz preview my-video/ MyVideo --frame 90` | one frame as PNG, in about a second |
 | `kodecz preview my-video/ MyVideo --watch` | re-renders the frames you are looking at on every save |
@@ -169,8 +169,10 @@ plain HTML, the editing blocks are Markdown and the checks answer in JSON. See [
 
 ### Is the output deterministic?
 
-Yes. Frame *N* depends only on the page and on *N*: rendering in order, out of order or from the middle gives the same
-pixels. Timers and the wall clock are not allowed in a composition, and Kodecz tells you if it finds one.
+Frame *N* depends only on the page and on *N*: rendering in order, out of order or from the middle gives the same
+content at the same moment. In our test compositions the pixels are identical too. In real videos, Chromium can
+rasterize animated text slightly differently from one run to the next, by up to 2 color levels out of 255, which you
+cannot see. Timers and the wall clock are not allowed in a composition, and Kodecz tells you if it finds one.
 
 ### Which formats does it export?
 
