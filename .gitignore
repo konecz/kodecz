@@ -10,3 +10,5 @@ target/
 *.hevc
 saida/
 .cache/
+.claude/settings.local.json
+.claude/worktrees/
