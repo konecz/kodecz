@@ -1,6 +1,6 @@
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="marca/logo-nome-animada-escuro.svg">
-  <img alt="Kodecz" src="marca/logo-nome-animada-claro.svg" width="360">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/konecz/kodecz/main/marca/logo-nome-animada-escuro.svg">
+  <img alt="Kodecz" src="https://raw.githubusercontent.com/konecz/kodecz/main/marca/logo-nome-animada-claro.svg" width="360">
 </picture>
 
 # Kodecz

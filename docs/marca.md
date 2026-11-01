@@ -33,6 +33,10 @@ a torção corre pela fita, como a da Konecz no site.
 Não pode: esticar, girar, contornar, pôr sombra ou gradiente, trocar a cor por outra que não as de baixo, nem pôr
 o símbolo sobre foto sem o quadrado azul.
 
+No README e no LEIAME, os cartões entram pelo endereço completo (`https://raw.githubusercontent.com/konecz/kodecz/main/marca/...`),
+nunca pelo caminho curto (`marca/...`): o caminho curto não aparece no app do GitHub no celular nem no README que o npm e o
+crates.io mostram.
+
 ## Cor
 
 | Token | Claro | Escuro | Uso |
