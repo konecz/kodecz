@@ -1,7 +1,7 @@
 <a href="https://konecz.com">
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="marca/cabecalho-escuro.svg">
-  <img alt="Kodecz, the open-source engine that renders a web page into an MP4 video on an NVIDIA GPU or on any CPU. The Kodecz ribbon, a twisted play triangle drawn in fine blue lines, turns in 3D." src="marca/cabecalho-claro.svg" width="100%">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/konecz/kodecz/main/marca/cabecalho-escuro.svg">
+  <img alt="Kodecz, the open-source engine that renders a web page into an MP4 video on an NVIDIA GPU or on any CPU. The Kodecz ribbon, a twisted play triangle drawn in fine blue lines, turns in 3D." src="https://raw.githubusercontent.com/konecz/kodecz/main/marca/cabecalho-claro.svg" width="100%">
 </picture>
 </a>
 
@@ -23,8 +23,8 @@ and HyperFrames, made to be driven by AI agents.
 If Chromium can draw it, Kodecz can render it:
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="marca/tecnologias-escuro.svg">
-  <img alt="HTML, CSS, JavaScript, TypeScript, React, WebGL, three.js, GSAP and SVG." src="marca/tecnologias-claro.svg" width="100%">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/konecz/kodecz/main/marca/tecnologias-escuro.svg">
+  <img alt="HTML, CSS, JavaScript, TypeScript, React, WebGL, three.js, GSAP and SVG." src="https://raw.githubusercontent.com/konecz/kodecz/main/marca/tecnologias-claro.svg" width="100%">
 </picture>
 
 <a id="how-it-works"></a>
@@ -35,8 +35,8 @@ Two paths, one folder. Other tools take a screenshot of every frame and turn it 
 Kodecz never does, with or without a GPU.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="marca/caminho-escuro.svg">
-  <img alt="With an NVIDIA GPU: page, Chromium, shared texture, NVENC, MP4. On the CPU: page, Chromium, raw frame, x264, MP4. Frames move along both lines without becoming PNGs." src="marca/caminho-claro.svg" width="100%">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/konecz/kodecz/main/marca/caminho-escuro.svg">
+  <img alt="With an NVIDIA GPU: page, Chromium, shared texture, NVENC, MP4. On the CPU: page, Chromium, raw frame, x264, MP4. Frames move along both lines without becoming PNGs." src="https://raw.githubusercontent.com/konecz/kodecz/main/marca/caminho-claro.svg" width="100%">
 </picture>
 
 **Page** is your `index.html`. **Chromium** draws frame *N*. On a GPU, that frame stays on the card as a
@@ -49,8 +49,8 @@ always the same pixels, in order, out of order or starting from the middle.
 ## Numbers
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="marca/numeros-escuro.svg">
-  <img alt="One square per second. CPU time: Remotion 43.7 s, Kodecz 4.4 s, 10 times less. Wall time: Remotion 13.6 s, Kodecz 4.6 s, 3 times faster." src="marca/numeros-claro.svg" width="100%">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/konecz/kodecz/main/marca/numeros-escuro.svg">
+  <img alt="One square per second. CPU time: Remotion 43.7 s, Kodecz 4.4 s, 10 times less. Wall time: Remotion 13.6 s, Kodecz 4.6 s, 3 times faster." src="https://raw.githubusercontent.com/konecz/kodecz/main/marca/numeros-claro.svg" width="100%">
 </picture>
 
 Each square is one second. Rendering the same video, Kodecz keeps the processor busy for **10× less time**
@@ -129,8 +129,8 @@ A video is a folder. `index.html` declares the size, frame rate and length; ever
 ## For AI agents
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="marca/agentes-escuro.svg">
-  <img alt="The agent loop: write, preview, check, fix, around the Kodecz ribbon." src="marca/agentes-claro.svg" width="100%">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/konecz/kodecz/main/marca/agentes-escuro.svg">
+  <img alt="The agent loop: write, preview, check, fix, around the Kodecz ribbon." src="https://raw.githubusercontent.com/konecz/kodecz/main/marca/agentes-claro.svg" width="100%">
 </picture>
 
 Kodecz is made for any agent to write video with: a coding agent in a terminal, an agent in your own pipeline, or a
