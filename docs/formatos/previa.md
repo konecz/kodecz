@@ -1,22 +1,25 @@
 # Prévia rápida (S07)
 
-`cli/previa.ts`: os quadros de uma composição em linha do tempo (P10, `linha-do-tempo.md`) em PNG, o mesmo pixel do
+`kodecz preview` (`cli/previa.ts`): os quadros de uma composição em linha do tempo (P10, `linha-do-tempo.md`) em PNG, o mesmo pixel do
 render (R03), sem renderizar o vídeo inteiro; e um modo que refaz esses quadros a cada mudança na pasta, com uma
 página local para o responsável olhar.
 
 ```
-node cli/previa.ts <pasta> <composição> --quadro 30 [--saida x.png]
-node cli/previa.ts <pasta> <composição> --quadro 0,45,120 [--saida pasta]
-node cli/previa.ts <pasta> <composição> --observar [--quadro 0,45,120] [--servir [--porta N]] [--saida pasta]
+kodecz preview <pasta> <composição> --frame 30 [--out x.png]
+kodecz preview <pasta> <composição> --frame 0,45,120 [--out pasta]
+kodecz preview <pasta> <composição> --watch [--frame 0,45,120] [--serve [--port N]] [--out pasta]
 ```
+
+Os nomes antigos das opções (`--quadro`, `--saida`, `--observar`, `--servir`, `--porta`, `--placa`) e
+`node cli/previa.ts` continuam aceitos.
 
 | Opção | O que faz |
 |---|---|
-| `--quadro <N \| lista>` | quadros a gerar; no `--observar`, o padrão é o primeiro, o do meio e o último |
-| `--saida` | um quadro: o PNG (padrão `tmp/previa/<composição>/quadro-N.png`); vários ou `--observar`: a pasta, com `quadro-N.png` (padrão `tmp/previa/<composição>/`) |
-| `--observar` | refaz os quadros a cada mudança na pasta; para com Ctrl+C ou SIGTERM |
-| `--servir`, `--porta` | com `--observar`: página em `http://127.0.0.1:<porta>/` (padrão: porta livre) |
-| `--placa`, `--cpu`, `--sem-contencao` | passados ao `cli/render.ts` |
+| `--frame <N \| lista>` | quadros a gerar; no `--watch`, o padrão é o primeiro, o do meio e o último |
+| `--out` | um quadro: o PNG (padrão `tmp/previa/<composição>/quadro-N.png`); vários ou `--watch`: a pasta, com `quadro-N.png` (padrão `tmp/previa/<composição>/`) |
+| `--watch` | refaz os quadros a cada mudança na pasta; para com Ctrl+C ou SIGTERM |
+| `--serve`, `--port` | com `--watch`: página em `http://127.0.0.1:<porta>/` (padrão: porta livre) |
+| `--gpu`, `--cpu`, `--no-containment` | passados ao render |
 
 ## Como sai o quadro
 

@@ -14,12 +14,12 @@
 .kz-linha-traco {
   fill: none; stroke: var(--linha-cor, var(--color-accent-2, var(--color-accent))); stroke-width: var(--linha-espessura, 8);
   stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1;
-  animation: kz-linha-desenha calc(var(--duracao, 45) * 1s / var(--qps)) linear calc(var(--inicio) * 1s / var(--qps)) both;
+  animation: kz-linha-desenha calc(var(--duracao, 45) * 1s / var(--fps)) linear calc(var(--inicio) * 1s / var(--fps)) both;
 }
 .kz-linha-ponto {
   fill: var(--linha-cor, var(--color-accent-2, var(--color-accent))); transform-box: fill-box; transform-origin: center;
-  animation: kz-linha-ponto calc(8 * 1s / var(--qps)) var(--motion-easing-enter, cubic-bezier(0.16, 1, 0.3, 1))
-             calc((var(--inicio) + var(--ordem) / var(--pontos) * var(--duracao, 45)) * 1s / var(--qps)) both;
+  animation: kz-linha-ponto calc(8 * 1s / var(--fps)) var(--motion-easing-enter, cubic-bezier(0.16, 1, 0.3, 1))
+             calc((var(--inicio) + var(--ordem) / var(--pontos) * var(--duracao, 45)) * 1s / var(--fps)) both;
 }
 .kz-linha-num {
   position: absolute; right: 0; bottom: calc(100% + 16px);

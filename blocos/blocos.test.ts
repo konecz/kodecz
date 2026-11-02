@@ -81,12 +81,12 @@ test("conferencia.json: prioridade, momento e medida conhecidos, mensagem no jei
   }
 });
 
-test("blocos só com animação declarada e tokens: sem relógio, GSAP, SMIL, motor_quadro, imagem animada nem hex solto", () => {
+test("blocos só com animação declarada e tokens: sem relógio, GSAP, SMIL, kodecz_frame, imagem animada nem hex solto", () => {
   const proibidos: [RegExp, string][] = [
     [/requestAnimationFrame|setTimeout|setInterval|Date\.now|performance\.now|Math\.random/, "relógio ou sorteio (R03)"],
     [/gsap|TweenMax|ScrollTrigger/i, "GSAP (licença incompatível com a Apache-2.0)"],
     [/<animate|<set\b|animateTransform|animateMotion/, "SVG SMIL (desliga o quadro repetido)"],
-    [/motor_quadro/, "motor_quadro (desliga o quadro repetido)"],
+    [/motor_quadro|kodecz_frame/, "kodecz_frame ou motor_quadro (desliga o quadro repetido)"],
     [/\.(gif|png|webp|apng)\b/i, "imagem que pode ser animada"],
     [/box-shadow/, "sombra (varia entre renders, R03)"],
     [/https?:\/\//, "rede"],
@@ -257,13 +257,21 @@ test("contagem: conta até 312 no --fim e a regressiva mostra 3, 2 e 1, um por s
   assert.deepEqual([10, 39, 40, 69, 70, 99].map((n) => v(n, 1)), [3, 3, 2, 2, 1, 1]);
 });
 
-test("pagina.qps: --qps da raiz diferente do declarado é acusado (P0)", { skip: semCef }, async () => {
+test("pagina.qps: --fps (ou o antigo --qps) da raiz diferente do declarado é acusado (P0)", { skip: semCef }, async () => {
   const pasta = mkdtempSync(join(tmpdir(), "blocos-qps-"));
   try {
+    // Os nomes antigos (bloco motor-video, qps e --qps) continuam lidos.
     writeFileSync(join(pasta, "index.html"), `<!doctype html><script type="application/json" id="motor-video">
 { "id": "Q", "largura": 800, "altura": 450, "qps": 30, "quadros": 2 }</script><style>:root { --qps: 25; }</style>`);
     const r = await conferirPagina(pasta, "index.html", { checagens: [] });
     assert.deepEqual(r.achados.map((a) => [a.id, a.prioridade, a.valor]), [["pagina.qps", "P0", 25]]);
+    writeFileSync(join(pasta, "index.html"), `<!doctype html><script type="application/json" id="kodecz">
+{ "id": "Q", "width": 800, "height": 450, "fps": 30, "frames": 2 }</script><style>:root { --fps: 25; }</style>`);
+    const s = await conferirPagina(pasta, "index.html", { checagens: [] });
+    assert.deepEqual(s.achados.map((a) => [a.id, a.prioridade, a.valor]), [["pagina.qps", "P0", 25]]);
+    writeFileSync(join(pasta, "index.html"), `<!doctype html><script type="application/json" id="kodecz">
+{ "id": "Q", "width": 800, "height": 450, "fps": 30, "frames": 2 }</script><style>:root { --fps: 30; }</style>`);
+    assert.deepEqual((await conferirPagina(pasta, "index.html", { checagens: [] })).achados, []);
   } finally {
     rmSync(pasta, { recursive: true, force: true });
   }
@@ -289,9 +297,9 @@ async function sintetica(blocos: string[], corpo: string, quadros: number, opcoe
     const css = ["marca/marca.css", ...blocos.map((b) => `${b}/bloco.css`)];
     for (const c of css) writeFileSync(join(pasta, c.replace("/", "-")), ler(c));
     writeFileSync(join(pasta, "index.html"), `<!doctype html><meta charset="utf-8">
-<script type="application/json" id="motor-video">{ "id": "S", "largura": 1920, "altura": 1080, "qps": 30, "quadros": ${quadros} }</script>
+<script type="application/json" id="kodecz">{ "id": "S", "width": 1920, "height": 1080, "fps": 30, "frames": ${quadros} }</script>
 ${css.map((c) => `<link rel="stylesheet" href="${c.replace("/", "-")}">`).join("\n")}
-<style>:root { --qps: 30; } html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; } ${estilo}</style>
+<style>:root { --fps: 30; } html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; } ${estilo}</style>
 ${corpo}`);
     return await conferirPagina(pasta, "index.html", opcoes);
   } finally {

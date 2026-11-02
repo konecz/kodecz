@@ -4,10 +4,10 @@
 .kz-zoom {
   position: absolute; inset: 0;
   transform-origin: var(--zoom-origem, 50% 38%);
-  animation: kz-zoom-entra calc(var(--entrada, 6) * 1s / var(--qps)) var(--motion-easing-move, cubic-bezier(0.65, 0, 0.35, 1))
-               calc(var(--inicio) * 1s / var(--qps)) forwards,
-             kz-zoom-sai calc(var(--saida, 12) * 1s / var(--qps)) var(--motion-easing-move, cubic-bezier(0.65, 0, 0.35, 1))
-               calc(var(--fim) * 1s / var(--qps)) forwards;
+  animation: kz-zoom-entra calc(var(--entrada, 6) * 1s / var(--fps)) var(--motion-easing-move, cubic-bezier(0.65, 0, 0.35, 1))
+               calc(var(--inicio) * 1s / var(--fps)) forwards,
+             kz-zoom-sai calc(var(--saida, 12) * 1s / var(--fps)) var(--motion-easing-move, cubic-bezier(0.65, 0, 0.35, 1))
+               calc(var(--fim) * 1s / var(--fps)) forwards;
 }
 .kz-zoom > * { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 @keyframes kz-zoom-entra { from { transform: none; } to { transform: scale(var(--escala, 1.15)); } }

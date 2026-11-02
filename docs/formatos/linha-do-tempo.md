@@ -1,216 +1,226 @@
-# Formato: composição em linha do tempo declarada (P10)
+# Format: the declared timeline composition
 
-O formato do motor sem o Remotion: uma página HTML comum, com as animações declaradas, que o motor põe no quadro N.
-É o que o serviço de render aceita (`scope.md`, P10 e P09). Exemplo mínimo e completo:
-`cli/fixtures/linha-sintetica/index.html`.
+What Kodecz renders: a plain HTML page with declared animations, which Kodecz puts at frame N. Minimal and complete
+example: `cli/fixtures/linha-sintetica/index.html`.
 
-## Pasta
+## Folder
 
-- `index.html` na raiz, com o bloco de declaração. O resto (CSS, JS, imagens, fontes) fica na mesma pasta e é
-  servido por HTTP local; a rede para fora é bloqueada (fontes do Google só pelo cache, `adr.md` seção 9; a que faltar o render baixa uma vez).
-- O bloco (o `<script>` com `id="motor-video"` e `type="application/json"`, fora de comentário) é o que diferencia
-  do pacote do Remotion:
+- `index.html` at the root, with the declaration block. Everything else (CSS, JS, images, fonts) lives in the same
+  folder and is served over local HTTP; the network outside is blocked (Google Fonts only through a local cache; a
+  missing one is downloaded once by the render).
+- The block is the `<script>` with `id="kodecz"` and `type="application/json"`, outside any comment:
 
 ```html
-<script type="application/json" id="motor-video">
-{ "id": "MinhaComposicao", "largura": 1920, "altura": 1080, "qps": 30, "quadros": 300 }
+<script type="application/json" id="kodecz">
+{ "id": "MyComposition", "width": 1920, "height": 1080, "fps": 30, "frames": 300 }
 </script>
 ```
 
-| Campo | Regra |
+| Field | Rule |
 |---|---|
-| `id` | texto; o `<composição>` do comando tem de ser igual |
-| `largura`, `altura` | px, inteiros pares até 8192 (limite do NVENC); largura ≥ 800 (a faixa da marca tem 800 px), altura ≥ 16 |
-| `qps` | quadros por segundo, inteiro de 1 a 240 |
-| `quadros` | duração em quadros, inteiro ≥ 1 |
+| `id` | text; the `<composition>` argument of the commands must be equal to it |
+| `width`, `height` | px, even integers up to 8192 (the NVENC limit); width ≥ 800 (the frame mark is 800 px wide), height ≥ 16 |
+| `fps` | frames per second, integer from 1 to 240 |
+| `frames` | length in frames, integer ≥ 1 |
 
-## Animação
+**Original names.** The block was born with Portuguese names, still accepted: `id="motor-video"`, `largura` (width),
+`altura` (height), `qps` (fps) and `quadros` (frames). Old and new names can be mixed; the same field under both
+names with different values is an error. Write new compositions with the English names.
 
-- Toda animação da página na `document.timeline` vale: CSS `@keyframes` (`animation:`) e `element.animate()`.
-  Todas começam em t = 0 do vídeo; o momento de entrada é o `delay` (ou `animation-delay`).
-- A `document.timeline` fica parada desde antes de a página carregar: nada anda sozinho, nem a animação curta sem
-  `fill` enquanto a página demora a ficar pronta.
-- No quadro N, o motor pausa cada animação e põe `currentTime = N × 1000 / qps`, inclusive nas que já acabaram sem
-  `fill`. O quadro depende só de N: começar no meio (`--de`) ou fora de ordem dá o mesmo quadro (R03, P10.4). Uma
-  ressalva: com a rasterização na placa, a sombra borrada (`box-shadow`) pode variar até 2 níveis conforme o caminho
-  até o quadro, dentro da régua do R03 (decisão do responsável de 2026-10-30;
-  `docs/experimentos/2026-10-p10-4-ponto-de-partida.md`).
-- `will-change` pode ser usado (camada própria, texto em tons de cinza). O motor tira a dica de transform
-  (`transform`, `translate`, `rotate`, `scale`, `perspective`, `transform-style`) e põe `left` no lugar: com a dica, o
-  Chromium guardava a rasterização da camada na posição em que ela apareceu primeiro, e o quadro N dependia de onde o
-  render começou (até 98 níveis na borda do texto, achado no P13). A camada própria, o contexto de empilhamento e o
-  bloco de contenção ficam (estes por um `translate: 0px` que perde para qualquer regra da página); o `backdrop-filter`
-  de um filho continua vendo a página. A troca acompanha o que a página muda (classe, `style`, elemento ou folha
-  nova) e é desfeita quando a dica sai. O resumo do render conta os elementos trocados no fim em `camadasNeutras`.
-  Uma camada que anda passa a ser rasterizada de novo a cada quadro, como sem `will-change`.
-  Fora do alcance (a dica fica e o começo no meio pode diferir): pseudoelemento (`::before`, `::after`), shadow DOM,
-  iframe, dica que muda por seletor de irmão (`+`, `~`, `:has()`) ou por variável herdada.
-- Tempo em quadros pelo CSS: com `:root { --qps: 30 }`, `animation-delay: calc(var(--inicio) * 1s / var(--qps))` cai
-  exatamente no quadro (conferido de 24 a 60 qps; é o jeito dos blocos do S02, `blocos/INDICE.md`).
-- `@keyframes` com `var()` que um script põe depois que a página já calculou o estilo pode nascer sem o valor (visto
-  no S02, de vez em quando): para valores que o script calcula, usar `element.animate()`.
-- O que não é animação (canvas, WebGL, texto trocado por JS) vai no gancho opcional
-  `window.motor_quadro(n, ms)`, chamado antes das animações; pode devolver uma Promise. Ele tem de depender só de
-  `n`, nunca do quadro anterior nem do relógio.
-- Não usar: `requestAnimationFrame`, `setTimeout`/`setInterval` para animar, `Date.now()`/`performance.now()` (o
-  relógio continua andando). Animação de rolagem (`ScrollTimeline`) ou de outra `DocumentTimeline` não anda com N:
-  sai parada, contada em `animacoesSoltas` no JSON do comando, com aviso no stderr. Transição de CSS vai direto ao
-  fim (contada em `transicoesAoFim`).
+## Animation
 
-## GSAP e Lottie (S01)
+- Every animation of the page on `document.timeline` counts: CSS `@keyframes` (`animation:`) and
+  `element.animate()`. They all start at t = 0 of the video; the moment one enters is its `delay` (or
+  `animation-delay`).
+- `document.timeline` is stopped from before the page loads: nothing moves on its own, not even a short animation
+  without `fill` while the page takes time to be ready.
+- At frame N, Kodecz pauses each animation and sets `currentTime = N × 1000 / fps`, also on the ones that already
+  ended without `fill`. The frame depends only on N: starting in the middle (`--from`) or out of order gives the same
+  frame. One caveat: with GPU rasterization, a blurred shadow (`box-shadow`) can vary by up to 2 levels depending on
+  the path to the frame.
+- `will-change` can be used (its own layer, grayscale text antialiasing). Kodecz removes the transform hint
+  (`transform`, `translate`, `rotate`, `scale`, `perspective`, `transform-style`) and puts `left` in its place: with
+  the hint, Chromium kept the layer's raster at the position where it first appeared, and frame N depended on where
+  the render started (up to 98 levels on the edge of text). The own layer, the stacking context and the containing
+  block stay (the latter through a `translate: 0px` that loses to any rule of the page); a child's `backdrop-filter`
+  still sees the page. The swap follows what the page changes (class, `style`, a new element or stylesheet) and is
+  undone when the hint goes away. The render summary counts the swapped elements at the end in `camadasNeutras`. A
+  moving layer is rasterized again on every frame, as without `will-change`.
+  Out of reach (the hint stays and starting in the middle can differ): pseudo-elements (`::before`, `::after`),
+  shadow DOM, iframes, a hint that changes through a sibling selector (`+`, `~`, `:has()`) or an inherited variable.
+- Time in frames in CSS: with `:root { --fps: 30 }`, `animation-delay: calc(var(--start) * 1s / var(--fps))` lands
+  exactly on the frame (checked from 24 to 60 fps; it is how the blocks do it, `blocos/INDICE.md`).
+- `@keyframes` with a `var()` that a script sets after the page has computed its style can be born without the value
+  (seen now and then): for values a script computes, use `element.animate()`.
+- What is not animation (canvas, WebGL, text changed by JS) goes in the optional hook `window.kodecz_frame(n, ms)`,
+  called before the animations; it can return a Promise. It must depend only on `n`, never on the previous frame or
+  on the clock. The original name, `window.motor_quadro`, still works.
+- Do not use `requestAnimationFrame`, `setTimeout`/`setInterval` to animate, or `Date.now()`/`performance.now()`
+  (the clock keeps running). A scroll animation (`ScrollTimeline`) or one on another `DocumentTimeline` does not move
+  with N: it stays still, counted in `animacoesSoltas` in the command's JSON, with a warning on stderr. CSS
+  transitions jump to their end (counted in `transicoesAoFim`).
 
-O formato é **compatível** com páginas que usam GSAP ou Lottie (lottie-web): **o cliente traz a biblioteca** na pasta
-dele, como qualquer outro arquivo. O motor não distribui nenhuma das duas, não as põe no repositório nem no serviço, e
-o editor e os blocos da Konecz não geram código GSAP (a licença do GSAP não é compatível com a Apache-2.0). Fora
-o bloco de declaração, a página fica como o cliente escreveu. Exemplos: `cli/fixtures/linha-gsap/index.html` e
-`cli/fixtures/linha-lottie/index.html` (sem a biblioteca; os testes a copiam do cache local, `cli/fixtures/bibliotecas.ts`).
+## GSAP and Lottie
 
-**GSAP** (3.x, o arquivo UMD carregado por `<script src="gsap.min.js">`, que põe a `window.gsap`):
+The format is **compatible** with pages that use GSAP or Lottie (lottie-web): **you bring the library** in your
+folder, like any other file. Kodecz does not ship either of them, and its blocks do not generate GSAP code (the GSAP
+license is not compatible with Apache-2.0). Apart from the declaration block, the page stays as you wrote it.
+Examples: `cli/fixtures/linha-gsap/index.html` and `cli/fixtures/linha-lottie/index.html` (without the library; the
+tests copy it from a local cache, `cli/fixtures/bibliotecas.ts`).
 
-- Antes dos scripts da página, o motor vigia a `window.gsap`: quando o GSAP chega, a linha do tempo raiz dele fica
-  pausada em 0 e deixa de remover as animações que acabam. O ticker do GSAP não anda nada sozinho.
-- Toda animação criada na carga da página começa em t = 0 do vídeo (o momento de entrada é o `delay` ou a posição na
-  timeline). No quadro N, o motor põe a raiz no tempo N / qps; a animação de cima pausada (`gsap.timeline({ paused:
-  true })`, por exemplo) vai ao tempo N / qps contado do começo dela, também sem a página dar `play`.
-- `onUpdate` e os outros eventos valem (o contador que escreve o texto pelo `onUpdate` sai certo).
-- Começar no meio, fora de ordem e com saltos dá o mesmo quadro (R03, P10.4), como nas Web Animations; o quadro 0 é
-  sempre o de voltar a 0.
-- Derrubam o render, com o motivo: GSAP fora da `window.gsap` (módulo ES sem `window.gsap = gsap` antes de criar as
-  animações; o GSAP deixa o rastro em `window.gsapVersions`), mais de um GSAP na página, e GSAP que chega à
-  `window.gsap` com animações já criadas.
-- Não usar: animação criada depois da carga (num `setTimeout`, num evento ou num `onComplete`: ela começaria no tempo
-  em que a raiz estiver), `gsap.ticker.add` (o ticker dorme no render), ScrollTrigger e outros plugins que dependem
-  de rolagem ou do mouse.
+**GSAP** (3.x, the UMD file loaded by `<script src="gsap.min.js">`, which sets `window.gsap`):
 
-**Lottie** (lottie-web 5.x, por `<script src="lottie.min.js">`, que põe a `window.lottie`; `lottie.loadAnimation` com
-`animationData` ou `path` para um JSON da pasta):
+- Before the page's scripts, Kodecz watches `window.gsap`: when GSAP arrives, its root timeline is paused at 0 and
+  stops removing animations that end. The GSAP ticker does not move anything on its own.
+- Every animation created while the page loads starts at t = 0 of the video (the moment it enters is its `delay` or
+  its position in the timeline). At frame N, Kodecz puts the root at time N / fps; a paused top-level animation
+  (`gsap.timeline({ paused: true })`, for example) goes to time N / fps counted from its own start, without the page
+  calling `play`.
+- `onUpdate` and the other callbacks work (a counter that writes its text from `onUpdate` comes out right).
+- Starting in the middle, out of order and with jumps gives the same frame, as with Web Animations; frame 0 is always
+  the one of going back to 0.
+- These stop the render, with the reason: GSAP outside `window.gsap` (an ES module without `window.gsap = gsap`
+  before creating the animations; GSAP leaves a trace in `window.gsapVersions`), more than one GSAP on the page, and
+  GSAP arriving at `window.gsap` with animations already created.
+- Do not use: animations created after the page loads (in a `setTimeout`, an event or an `onComplete`: they would
+  start at whatever time the root is at), `gsap.ticker.add` (the ticker sleeps during the render), ScrollTrigger and
+  other plugins that depend on scrolling or the mouse.
 
-- Antes do primeiro quadro, o motor espera cada animação registrada carregar (`DOMLoaded`; a que falha derruba o
-  render) e congela o laço do lottie-web (`lottie.freeze()`).
-- No quadro N, cada animação vai ao quadro `N × fr × velocidade / qps` dela (`goToAndStop(…, true)`, com subquadro):
-  com `loop: true`, volta ao começo a cada `totalFrames`; com `loop: k`, dá k + 1 voltas; sem laço (ou depois da
-  última volta), para no último quadro (`totalFrames − 1`), como o lottie-web. Começa em t = 0 do vídeo.
-- Direção para trás (`setDirection(-1)`), segmentos (`playSegments`) e animação criada depois da carga não seguem N.
-  Toda animação registrada anda com N, também a de `autoplay: false`.
-- O lottie-web empacotado num módulo (sem a `window.lottie`) não é visto e andaria no relógio, sem erro: carregar o
-  `lottie.min.js` por `<script>`. Imagens dentro do Lottie (renderer SVG) não são esperadas.
+**Lottie** (lottie-web 5.x, through `<script src="lottie.min.js">`, which sets `window.lottie`;
+`lottie.loadAnimation` with `animationData` or `path` to a JSON in the folder):
 
-Limites do GSAP, também sem erro: a timeline de cima pausada de propósito anda com N mesmo assim. O GSAP 2
-(`TweenMax`, `TweenLite`) derruba o render.
+- Before the first frame, Kodecz waits for every registered animation to load (`DOMLoaded`; one that fails stops the
+  render) and freezes the lottie-web loop (`lottie.freeze()`).
+- At frame N, each animation goes to its frame `N × fr × speed / fps` (`goToAndStop(…, true)`, with sub-frames): with
+  `loop: true`, it goes back to the start every `totalFrames`; with `loop: k`, it plays k + 1 times; without a loop
+  (or after the last one), it stops at the last frame (`totalFrames − 1`), like lottie-web. It starts at t = 0 of the
+  video.
+- Playing backwards (`setDirection(-1)`), segments (`playSegments`) and animations created after the page loads do
+  not follow N. Every registered animation moves with N, also one with `autoplay: false`.
+- lottie-web bundled in a module (without `window.lottie`) is not seen and would run on the clock, without an error:
+  load `lottie.min.js` with `<script>`. Images inside a Lottie (SVG renderer) are not waited for.
 
-## Quadros parados
+GSAP limits, also without an error: a top-level timeline paused on purpose moves with N anyway. GSAP 2 (`TweenMax`,
+`TweenLite`) stops the render.
 
-Na placa, o motor não desenha de novo o quadro em que nada anda: ele repete o anterior no vídeo, sem passar pela
-página (P10.3). Quem diz o que anda são as próprias animações: o intervalo de cada uma (`delay` até o `endTime` do
-`getComputedTiming()`, sem fim se repete para sempre). Por isso:
+## Still frames
 
-- só vale sem `window.motor_quadro`: com o gancho, o motor não sabe o que ele muda e desenha todos os quadros
-  (`repetirNao: "motor_quadro"` no JSON); o mesmo com animação fora da `document.timeline`;
-- com GSAP ou Lottie na página (S01), também desenha todos (`repetirNao: "GSAP"` ou `"Lottie"`): o motor não lê
-  o que eles mudam;
-- SVG SMIL (`<animate>`, `<animateTransform>`, `<animateMotion>`, `<set>`) e `<img>` que pode ser animada (GIF,
-  APNG, WebP animado; pela extensão, então também `.png` e `.webp`) mudam sem a `document.timeline`: com eles na
-  página, o motor desenha todos (`repetirNao: "SVG SMIL"` ou `"imagem que pode ser animada (GIF, APNG, WebP)"`);
-- uma animação conta como andando no intervalo inteiro dela, mesmo com o valor parado (`from, to { opacity: 1 }`
-  durante uma cena): o motor desenha todos esses quadros. Para ligar e desligar algo, duas animações de duração zero
-  com `forwards`, uma no começo e outra no fim (a de depois vence), como em `blocos/cena/bloco.css` (S02);
-- fora isso, o que muda tem de ser animação. Mudança fora dela não é vista e pode sair parada (script com relógio, já
-  proibido acima);
-- o vídeo embutido muda o quadro sem animação: do primeiro quadro dele (`data-inicio`) ao que limpa o canvas
-  (`data-inicio` + `data-quadros`), o motor desenha todos; fora do trecho, repete. O áudio (de `<audio>` ou de
-  `<video>`) não impede: o motor o mistura pelos tempos declarados, também nos quadros repetidos;
-- começando no meio ou fora de ordem (R03, P10.4), só repete o quadro que vem logo depois do anterior; depois de
-  quadros repetidos, o seguinte desenhado não precisa do N − 1 antes (nada mudou desde o último desenhado);
-- `MOTOR_REPETIR=0` desenha todos (para conferir ou medir).
+On the GPU, Kodecz does not draw again a frame in which nothing moves: it repeats the previous one in the video,
+without going through the page. What moves is said by the animations themselves: the interval of each one (`delay`
+to the `endTime` of `getComputedTiming()`, endless if it repeats forever). So:
 
-## Imagens e fontes
+- it only works without `window.kodecz_frame`: with the hook, Kodecz cannot know what it changes and draws every
+  frame (`repetirNao: "kodecz_frame"` in the JSON, or `"motor_quadro"` with the original name); the same with an
+  animation outside `document.timeline`;
+- with GSAP or Lottie on the page, it also draws every frame (`repetirNao: "GSAP"` or `"Lottie"`): Kodecz does not
+  read what they change;
+- SVG SMIL (`<animate>`, `<animateTransform>`, `<animateMotion>`, `<set>`) and an `<img>` that may be animated (GIF,
+  APNG, animated WebP; by extension, so also `.png` and `.webp`) change without `document.timeline`: with them on the
+  page, Kodecz draws every frame (`repetirNao: "SVG SMIL"` or `"imagem que pode ser animada (GIF, APNG, WebP)"`);
+- an animation counts as moving during its whole interval, even when its value stands still (`from, to { opacity: 1 }`
+  during a scene): Kodecz draws all those frames. To turn something on and off, use two zero-length animations with
+  `forwards`, one at the start and one at the end (the later one wins), as in `blocos/cena/bloco.css`;
+- other than that, what changes must be an animation. A change outside one is not seen and can come out still (a
+  script on the clock, already forbidden above);
+- embedded video changes the frame without an animation: from its first frame (`data-inicio`) to the one that clears
+  the canvas (`data-inicio` + `data-quadros`), Kodecz draws every frame; outside that span, it repeats. Audio (from
+  `<audio>` or `<video>`) does not prevent it: Kodecz mixes it by the declared times, also on repeated frames;
+- starting in the middle or out of order, it only repeats a frame that comes right after the previous one; after
+  repeated frames, the next drawn one does not need N − 1 first (nothing changed since the last drawn one);
+- `MOTOR_REPETIR=0` draws every frame (to check or to measure).
 
-- Antes do primeiro quadro, o motor espera as fontes (`document.fonts.ready`) e a decodificação de cada `<img>`; a
-  cada quadro, também a de `<img>` posta ou trocada depois (pelo `motor_quadro`). Imagem que não carrega derruba o
+## Images and fonts
+
+- Before the first frame, Kodecz waits for the fonts (`document.fonts.ready`) and for every `<img>` to decode; on
+  each frame, also for an `<img>` added or changed later (by `kodecz_frame`). An image that fails to load stops the
   render.
-- Imagem de fundo do CSS (`background-image`) não é esperada: usar `<img>` (com `object-fit`) para o que precisa
-  estar no primeiro quadro.
+- A CSS background image (`background-image`) is not waited for: use an `<img>` (with `object-fit`) for what must be
+  there on the first frame.
 
-## Fundo e alfa
+## Background and alpha
 
-O motor não mexe no fundo da página. Com `--alfa`, o que a página não pinta fica transparente; para uma camada de
-gráficos, deixar `html` e `body` sem fundo. Sem `--alfa`, o transparente sai preto.
+Kodecz does not touch the page background. With `--alpha`, what the page does not paint is transparent; for a
+graphics layer, leave `html` and `body` without a background. Without `--alpha`, transparent comes out black.
 
-## Vídeo e áudio (P10.5)
+## Video and audio
 
-Os `<video>` e `<audio>` que estão no documento quando a página termina de carregar (no HTML ou postos pelos scripts
-dela; não os de `<template>` nem os criados depois) entram no render. Exemplo completo:
-`docs/experimentos/2026-10-p10-5-composicao-nossa/linha/index.html`; mínimo: `cli/fixtures/linha-video/index.html`.
+The `<video>` and `<audio>` elements in the document when the page finishes loading (in the HTML or added by its
+scripts; not those in a `<template>` nor those created later) go into the render. Minimal example:
+`cli/fixtures/linha-video/index.html`.
 
 ```html
-<video class="tela" src="apresentador.mp4" data-inicio="0" data-recorte="12" data-quadros="225"></video>
-<audio src="trilha.wav" data-inicio="30" data-volume="0.6"></audio>
+<video class="screen" src="presenter.mp4" data-inicio="0" data-recorte="12" data-quadros="225"></video>
+<audio src="music.wav" data-inicio="30" data-volume="0.6"></audio>
 ```
 
-| Atributo | Regra |
+| Attribute | Rule |
 |---|---|
-| `src` | arquivo dentro da pasta da composição (o motor serve só ela; um link para fora vale). Sem `<source>` |
-| `data-inicio` | quadro da composição em que a mídia começa, inteiro ≥ 0 (padrão 0) |
-| `data-recorte` | quantos quadros, no qps da composição, cortar do começo da mídia (padrão 0), como o `trimBefore` do Remotion |
-| `data-quadros` | quantos quadros da composição ela ocupa, inteiro ≥ 1 (padrão: até o fim da mídia ou da composição; com velocidade, (duração × qps − recorte) / velocidade) |
-| `data-volume` | volume fixo, de 0 a 10 (padrão 1), ou pontos `quadro:volume` (C02), como `"0:0 6:1 580:1 600:0"`: o quadro é contado do começo da mídia na composição (0 = `data-inicio`) e cresce; entre dois pontos, a reta; antes do primeiro e depois do último, o volume da ponta |
-| `data-velocidade` | velocidade da mídia (C02), número de 0,1 a 10 (padrão 1): 2 anda o dobro, 0,5 a metade. O áudio acelera sem mudar o tom |
-| `muted` | sem som (o vídeo aparece; o áudio dele não entra na mistura) |
+| `src` | a file inside the composition folder (Kodecz serves only that folder; a symlink to elsewhere works). No `<source>` |
+| `data-inicio` | start: the composition frame where the media starts, integer ≥ 0 (default 0) |
+| `data-recorte` | trim: how many frames, at the composition's fps, to cut from the start of the media (default 0), like Remotion's `trimBefore` |
+| `data-quadros` | frames: how many composition frames it lasts, integer ≥ 1 (default: to the end of the media or of the composition; with a speed, (duration × fps − trim) / speed) |
+| `data-volume` | a fixed volume, from 0 to 10 (default 1), or `frame:volume` points, like `"0:0 6:1 580:1 600:0"`: the frame is counted from the start of the media in the composition (0 = `data-inicio`) and grows; between two points, a straight line; before the first and after the last, the volume at that end |
+| `data-velocidade` | speed of the media, a number from 0.1 to 10 (default 1): 2 plays twice as fast, 0.5 half. The audio speeds up without changing pitch |
+| `muted` | no sound (the video shows; its audio is not mixed) |
 
-- **Quadro do vídeo:** no quadro N da composição, o tempo no vídeo é
-  t = (N − `data-inicio`) × `data-velocidade` / qps + `data-recorte` / qps; t vai ao tick mais próximo da base de
-  tempo do vídeo, e o quadro mostrado é o último que começa até esse tick (pts contado do primeiro quadro, sem folga).
-  É a regra do `<OffthreadVideo>` do Remotion 4.0.536 (o compositor: `calc_position` e `get_item_id`), conferida
-  quadro a quadro com vídeos de 24, 25, 29,97 e 30 qps em composições de 25, 30 e 60, com e sem início e recorte. Com
-  o mesmo qps e velocidade 1, é o quadro N − início + recorte, exato; com 29,97 em 30, o quadro N − 1 a partir do 1; a
-  2, 2 × (N − início) + recorte; a 1,1, o piso de 1,1 × (N − início) + recorte. O recorte conta na mídia, sem
-  acelerar. Só depende de N (R03); começar no meio (`--de`) mostra o mesmo quadro. Vale pelos dois caminhos (o canvas
-  e o NVDEC do S08).
-- **Tempos do MP4:** o quadro N sai em N / qps exato (base de 90 kHz), sem deriva. Para comparar com outro render,
-  casar pelo índice do quadro ou pelo tempo; os dois dão o mesmo par.
-- **Quem decodifica é o motor**, não o `<video>` do Chromium: um ffmpeg por vídeo, em ordem, entrega o quadro em I420;
-  a página monta o `VideoFrame` e converte a cor com a mesma conta do vídeo do Remotion (`cor-limpa.js`, M09 e P05). O
-  `<video>` vira um `<canvas>` do tamanho do vídeo, com os mesmos atributos (`class`, `id`, `style`, `data-*`, menos os
-  de mídia e `width`/`height`) e `data-motor-video`. Estilizar por classe ou id, não pelo seletor `video`; o tamanho
-  na tela vem do CSS (`object-fit` vale no canvas). Fora do trecho da mídia, o canvas fica transparente.
-- **Na placa, o vídeo vai por baixo da página (S08):** o H.264 ou HEVC é decodificado no NVDEC e montado por baixo da
-  textura da página antes do NVENC, com a mesma conta de cor; o canvas fica transparente. Vale no quadro em que o vídeo
-  está em tamanho 1:1, no pixel inteiro, posicionado (`position` diferente de `static`), sem opacidade, filtro, máscara,
-  recorte arredondado nem transformação que não seja deslocamento nele ou nos ancestrais, e sem nada pintado por baixo
-  dele além do fundo de cor da raiz, de um ancestral que cobre o quadro inteiro ou de um ancestral que o vídeo cobre.
-  O vídeo ampliado ou reduzido e o **cartão de canto arredondado** também vão pela placa: um ancestral com `overflow`
-  diferente de `visible` e `border-radius` (os quatro cantos iguais, em círculo, a caixa no pixel inteiro, sem
-  `border` nem fundo próprio), com `box-shadow` (de fora) e `outline` (de fora, `outline-offset` ≥ 0) nele. Nada
-  posicionado depois do vídeo pode cruzar os cantos (uma tarja por cima do canto manda o quadro para o canvas), salvo o
-  fundo de um elemento quase opaco (90 % ou mais, sem sombra nem filtro, sem opacidade nos ancestrais) que cobre o canto
-  inteiro, com o texto dele e sem outro elemento no mesmo canto (a legenda passando pelo canto do cartão). Com o texto
-  no canto, até 3 níveis em até 2 pixels por quadro contra o canvas (exceção do R03, `domain.md`).
-  Nos outros quadros (uma entrada com escala ou opacidade, por exemplo), o motor decodifica na CPU e desenha o canvas,
-  como acima; o resultado é o mesmo. Um vídeo por quadro vai pela placa. `MOTOR_TAKE_PLACA=0` põe todos pelo canvas.
-- **Vídeo aceito:** 4:2:0 de 8 bits (`yuv420p`, `yuvj420p`), largura e altura pares, pixel quadrado, sem rotação no
-  metadado; matriz bt709, bt601, smpte240m ou bt2020 (sem marca: bt709 com 720 linhas ou mais, como o Remotion). O
-  resto derruba o render com o motivo.
-- **Áudio:** o `<audio>` sai da página. O som de cada `<audio>` e de cada `<video>` sem `muted` é misturado pelo motor
-  com os tempos declarados (o mesmo ffmpeg único do M07, `composicao/audio.ts`), em AAC 320 kbit/s no MP4. `--sem-audio`
-  desliga. Com `data-velocidade` (C02), o som da mídia é acelerado pelo `atempo` do ffmpeg, que muda a duração sem
-  mudar o tom (encadeado em raízes quando a velocidade sai de 0,5 a 2, como o Remotion), e começa no `data-recorte`
-  da mídia; o volume por pontos conta nos quadros da composição. Laço ainda não existe.
-- **Volume variável (C02):** com pontos, cada quadro leva o volume da reta naquele quadro (a conta do `interpolate` do
-  Remotion), constante dentro do quadro e na mesma expressão do ffmpeg que a entrada do Remotion usa; o quadro com
-  volume 0 sai da mistura, como no Remotion. A rampa `interpolate(f, [0, 6, total − 20, total], [0, 1, 1, 0])` da
-  função de volume do Remotion vira `data-volume="0:0 6:1 <total − 20>:1 <total>:0"`.
-- **No navegador comum** (prévia de quem escreve), `<video>` e `<audio>` tocam sozinhos e não seguem os atributos; o
-  que vale é o render.
+The media attributes still have their Portuguese names; English names will come with the same kind of alias.
 
-## Destino: `data-destino` (G19)
+- **Video frame:** at composition frame N, the time in the video is
+  t = (N − `data-inicio`) × `data-velocidade` / fps + `data-recorte` / fps; t goes to the nearest tick of the video's
+  time base, and the frame shown is the last one that starts at or before that tick (pts counted from the first
+  frame, no slack). It is the rule of Remotion's `<OffthreadVideo>` (4.0.536), checked frame by frame with 24, 25,
+  29.97 and 30 fps videos in 25, 30 and 60 fps compositions, with and without start and trim. At the same fps and
+  speed 1, it is exactly frame N − start + trim; 29.97 in 30 gives frame N − 1 from frame 1 on; at speed 2,
+  2 × (N − start) + trim; at 1.1, the floor of 1.1 × (N − start) + trim. The trim counts in the media, without the
+  speed. It depends only on N; starting in the middle (`--from`) shows the same frame. It holds on both paths (the
+  canvas and NVDEC).
+- **MP4 timestamps:** frame N comes out at exactly N / fps (90 kHz time base), without drift. To compare with another
+  render, match by frame index or by time; both give the same pair.
+- **Kodecz decodes the video**, not Chromium's `<video>`: one ffmpeg per video, in order, hands over the frame in
+  I420; the page builds the `VideoFrame` and converts the color with the same math as Remotion's video
+  (`composicao/cor-limpa.js`, spec in `conversao-de-cor.md`). The `<video>` becomes a `<canvas>` of the video's size,
+  with the same attributes (`class`, `id`, `style`, `data-*`, except the media ones and `width`/`height`) and
+  `data-motor-video`. Style it by class or id, not with the `video` selector; its size on screen comes from CSS
+  (`object-fit` works on the canvas). Outside the media's span, the canvas is transparent.
+- **On the GPU, the video goes under the page:** H.264 or HEVC is decoded by NVDEC and composited under the page
+  texture before NVENC, with the same color math; the canvas stays transparent. This holds on a frame where the video
+  is at 1:1 size, on whole pixels, positioned (`position` other than `static`), with no opacity, filter, mask, rounded
+  clip or transform other than a translation on it or on its ancestors, and nothing painted under it except the
+  background color of the root, of an ancestor that covers the whole frame or of an ancestor the video covers.
+  A scaled video and the **rounded-corner card** also go through the GPU: an ancestor with `overflow` other than
+  `visible` and `border-radius` (all four corners equal, circular, the box on whole pixels, without `border` or its
+  own background), with `box-shadow` (outer) and `outline` (outer, `outline-offset` ≥ 0) on it. Nothing positioned
+  after the video may cross the corners (a strip over a corner sends the frame to the canvas), except the background
+  of an almost opaque element (90 % or more, no shadow or filter, no opacity on its ancestors) that covers the whole
+  corner, with its text and no other element in the same corner (a caption passing by the card's corner). With text
+  in the corner, up to 3 levels in up to 2 pixels per frame against the canvas.
+  On other frames (an entrance with scale or opacity, for example), Kodecz decodes on the CPU and draws the canvas,
+  as above; the result is the same. One video per frame goes through the GPU. `MOTOR_TAKE_PLACA=0` sends all of them
+  through the canvas.
+- **Accepted video:** 8-bit 4:2:0 (`yuv420p`, `yuvj420p`), even width and height, square pixels, no rotation in the
+  metadata; matrix bt709, bt601, smpte240m or bt2020 (untagged: bt709 at 720 lines or more, like Remotion). Anything
+  else stops the render with the reason.
+- **Audio:** `<audio>` leaves the page. The sound of every `<audio>` and of every `<video>` without `muted` is mixed by
+  Kodecz with the declared times (a single ffmpeg pass, `composicao/audio.ts`), as AAC 320 kbit/s in the MP4.
+  `--no-audio` turns it off. With `data-velocidade`, the media's sound is sped up by ffmpeg's `atempo`, which changes
+  the duration without changing the pitch (chained in roots when the speed is outside 0.5 to 2, like Remotion), and
+  starts at the media's `data-recorte`; volume points count in composition frames. Looping does not exist yet.
+- **Variable volume:** with points, each frame takes the volume of the line at that frame (the math of Remotion's
+  `interpolate`), constant within the frame and in the same ffmpeg expression Remotion's input uses; a frame with
+  volume 0 leaves the mix, as in Remotion. The ramp `interpolate(f, [0, 6, total − 20, total], [0, 1, 1, 0])` of a
+  Remotion volume function becomes `data-volume="0:0 6:1 <total − 20>:1 <total>:0"`.
+- **In a normal browser** (the author's own preview), `<video>` and `<audio>` play on their own and do not follow the
+  attributes; what counts is the render.
 
-O destino do vídeo vai no `<html>`: `<html data-destino="reels">`. Valores: `reels`, `instagram`, `anuncio`, `tiktok`,
-`shorts`, `youtube` (sem acento e em minúsculas; a conferência também aceita `Reels` ou `anúncio`). O render ignora o atributo;
-quem lê é a conferência (`docs/formatos/conferencia.md`), depois de a página ficar pronta, então vale também o que um
-script da composição puser em `document.documentElement`. Nos destinos com a interface do aplicativo por cima
-(`reels`, `instagram`, `anuncio`, `tiktok`, `shorts`), a zona segura (G19) é conferida; sem o atributo, ou com outro valor, não é
-(decisão do responsável de 2026-11-01).
+## Destination: `data-destino`
 
-## Ainda não existe
+The video's destination goes on `<html>`: `<html data-destino="reels">`. Values: `reels`, `instagram`, `anuncio` (ad),
+`tiktok`, `shorts`, `youtube` (lowercase, no accents; the check also accepts `Reels` or `anúncio`). The render ignores
+the attribute; the automatic check reads it (`docs/formatos/conferencia.md`) after the page is ready, so whatever a
+script of the composition sets on `document.documentElement` also counts. For destinations with the app's interface
+on top (`reels`, `instagram`, `anuncio`, `tiktok`, `shorts`), the safe area (G19) is checked; without the attribute,
+or with another value, it is not.
 
-Valores de fora (o `--props` era da entrada do Remotion, que saiu do motor em 2026-10-31); laço de mídia.
+## Not there yet
+
+Values passed from outside (`--props` belonged to the Remotion input, removed in 2026-10-31); looping media.

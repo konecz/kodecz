@@ -109,14 +109,14 @@ test("--placa, --cpu, trecho e quadros gravados", () => {
 test("argumentos inválidos dão erro de uso com a correção", () => {
   falha(/faltam argumentos.*<entrada> <composição> <saída.mp4>/s);
   falha(/faltam argumentos/, linha, "Linha");
-  falha(/--placa e --cpu juntos/, linha, "Linha", "s.mp4", "--placa", "--cpu");
+  falha(/--gpu \(--placa\) e --cpu juntos/, linha, "Linha", "s.mp4", "--placa", "--cpu");
   falha(/a saída tem de terminar em \.mp4/, linha, "Linha", "s.mov");
   falha(/entrada não existe/, join(pasta, "nada"), "X", "s.mp4");
   falha(/não é uma composição da linha do tempo.*falta index\.html.*linha-do-tempo\.md/s, pasta, "X", "s.mp4");
   falha(/--quadros tem de ser inteiro ≥ 1/, linha, "Linha", "s.mp4", "--quadros", "0");
   falha(/--de tem de ser inteiro ≥ 0/, linha, "Linha", "s.mp4", "--de=-3");
   falha(/--de tem de ser inteiro ≥ 0/, linha, "Linha", "s.mp4", "--de", "1.5");
-  falha(/opção desconhecida.*--gpu/s, linha, "Linha", "s.mp4", "--gpu");
+  falha(/opção desconhecida.*--gpus/s, linha, "Linha", "s.mp4", "--gpus");
   falha(/argumento a mais/, linha, "Linha", "s.mp4", "sobra");
   falha(/--gravar pede --gravar-pasta/, linha, "Linha", "s.mp4", "--gravar", "1");
   falha(/--gravar: lista de quadros/, linha, "Linha", "s.mp4", "--gravar", "1,a", "--gravar-pasta", pasta);

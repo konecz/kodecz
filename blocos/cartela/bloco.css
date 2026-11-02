@@ -8,14 +8,14 @@
   background: var(--cartela-fundo, var(--color-accent)); color: var(--cartela-tinta, var(--color-ground));
   text-align: center;
   animation: kz-cartela-abre var(--motion-duration-enter, 500ms) var(--motion-easing-move, cubic-bezier(0.65, 0, 0.35, 1))
-               calc(var(--inicio) * 1s / var(--qps)) both,
+               calc(var(--inicio) * 1s / var(--fps)) both,
              kz-cartela-fecha var(--motion-duration-exit, 300ms) var(--motion-easing-exit, ease-in)
-               calc(var(--fim) * 1s / var(--qps) - var(--motion-duration-exit, 300ms)) forwards;
+               calc(var(--fim) * 1s / var(--fps) - var(--motion-duration-exit, 300ms)) forwards;
 }
 .kz-cartela > * {
   margin: 0; max-width: calc(100% - 2 * var(--spacing-margin, 96px));
   animation: kz-cartela-texto var(--motion-duration-enter, 500ms) var(--motion-easing-enter, cubic-bezier(0.16, 1, 0.3, 1))
-             calc((var(--inicio) + var(--atraso, 6)) * 1s / var(--qps)) both;
+             calc((var(--inicio) + var(--atraso, 6)) * 1s / var(--fps)) both;
 }
 .kz-cartela-rotulo {
   font-family: var(--font-label, var(--font-body)); font-weight: var(--font-label-weight, 700);

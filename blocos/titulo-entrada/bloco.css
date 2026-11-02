@@ -9,9 +9,9 @@
 .kz-titulo > * {
   margin: 0;
   animation: kz-titulo-entra var(--motion-duration-enter, 500ms) var(--motion-easing-enter, cubic-bezier(0.16, 1, 0.3, 1))
-               calc((var(--inicio) + var(--atraso, 0)) * 1s / var(--qps)) both,
+               calc((var(--inicio) + var(--atraso, 0)) * 1s / var(--fps)) both,
              kz-titulo-sai var(--motion-duration-exit, 300ms) var(--motion-easing-exit, ease-in)
-               calc(var(--fim) * 1s / var(--qps) - var(--motion-duration-exit, 300ms)) forwards;
+               calc(var(--fim) * 1s / var(--fps) - var(--motion-duration-exit, 300ms)) forwards;
 }
 .kz-titulo-principal {
   font-family: var(--font-display); font-weight: var(--font-display-weight, 800); font-size: var(--font-display-size, 112px);

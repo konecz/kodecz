@@ -30,8 +30,8 @@
   font-size: var(--font-label-size, 28px); color: var(--color-muted, var(--color-ink)); white-space: nowrap;
 }
 .kz-barra-coluna, .kz-barra-num {
-  --kz-d: calc(var(--duracao, 27) * 1s / var(--qps));
-  --kz-t: calc((var(--inicio) + var(--ordem, 0) * var(--passo, 4)) * 1s / var(--qps));
+  --kz-d: calc(var(--duracao, 27) * 1s / var(--fps));
+  --kz-t: calc((var(--inicio) + var(--ordem, 0) * var(--passo, 4)) * 1s / var(--fps));
 }
 .kz-barra-coluna { animation: kz-barra-cresce var(--kz-d) var(--motion-easing-enter, cubic-bezier(0.16, 1, 0.3, 1)) var(--kz-t) both; }
 .kz-barra-num { animation: kz-barra-conta var(--kz-d) var(--motion-easing-enter, cubic-bezier(0.16, 1, 0.3, 1)) var(--kz-t) both; }

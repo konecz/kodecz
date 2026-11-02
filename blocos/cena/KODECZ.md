@@ -7,7 +7,7 @@ estado: em-uso
 regras: [G14, G22]
 quando: [toda composição com mais de um trecho]
 entradas:
-  formato: "qps da composição (:root { --qps })"
+  formato: "qps da composição (:root { --fps })"
 parametros:
   inicio: { padrao: "nenhum", faixa: "quadro em que a cena aparece" }
   fim: { padrao: "nenhum", faixa: "quadro em que a cena some (exclusivo)" }
@@ -32,7 +32,7 @@ borda, e o motor continua repetindo os quadros parados no meio da cena (P10.3).
 
 ## Como aplicar
 
-1. `:root { --qps: N }` com o mesmo qps do bloco `motor-video` (a conversão de quadro em tempo é `× 1s / --qps`).
+1. `:root { --fps: N }` com o mesmo fps do bloco `kodecz` (a conversão de quadro em tempo é `× 1s / --fps`).
 2. Uma `section.kz-cena` por trecho, na ordem do vídeo (a de baixo antes, a de cima depois).
 3. Corte seco: `--fim` de uma = `--inicio` da seguinte. Com transição, a de baixo fica até o fim da transição.
 4. A cena não pinta fundo: o fundo é o do `body` (`--color-ground`) ou o da camada de transição.
@@ -45,11 +45,11 @@ borda, e o motor continua repetindo os quadros parados no meio da cena (P10.3).
 
 ## Conferência
 
-Sem checagem própria; a do `--qps` (`pagina.qps`, P0) roda em toda página com blocos.
+Sem checagem própria; a do `--fps` (`pagina.qps`, P0) roda em toda página com blocos.
 
 ## Erros comuns
 
-- `--qps` diferente do declarado: tudo sai fora do tempo.
+- `--fps` diferente do declarado: tudo sai fora do tempo.
 - Esquecer o `--fim`: a animação fica inválida e a cena não aparece.
 
 ## Exemplos
