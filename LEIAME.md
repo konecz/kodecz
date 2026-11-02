@@ -18,6 +18,10 @@ A mesma pasta renderiza nos dois.
 
 - **10× menos CPU e 3× mais rápido** que o Remotion no mesmo vídeo (1080p, 150 quadros, RTX 5090;
   [`docs/medidas.md`](docs/medidas.md)).
+- **11× menos CPU e 2,4× mais rápido** que o HyperFrames no mesmo vídeo, medido no mesmo dia (22,0 s → 2,0 s de CPU,
+  6,4 s → 2,7 s de parede). Só na CPU, sem placa, o HyperFrames fica um pouco à frente nesse vídeo, que tem um clipe
+  1080p embutido (26,3 s contra 28,1 s de CPU); num audiograma de 27 s, o Kodecz gasta 2,4× menos CPU (24,6 s contra
+  59,9 s). Tudo em [`docs/medidas.md`](docs/medidas.md), com o script para repetir (`scripts/comparar/comparar.sh`).
 - **Determinístico:** o quadro *N* sai com o mesmo conteúdo e no mesmo tempo, em ordem, fora de ordem ou começando do
   meio. O texto animado pode variar até 2 níveis de cor de um render para outro, pela rasterização do Chromium.
 - **Feito para qualquer agente de IA**, sem amarra a um fornecedor: o formato é web comum, cada técnica de edição é

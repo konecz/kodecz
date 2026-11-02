@@ -25,6 +25,8 @@ Nenhum em andamento: o responsável escolhe da lista abaixo.
 
 ## Depois (escolha do responsável; nada daqui vira tarefa sozinho)
 
+- Modo CPU com vídeo embutido: sem placa, o HyperFrames gasta menos CPU que o `--cpu` no Apresentador (26,3 contra
+  28,1 s; `docs/medidas.md`, 2026-11-02). Perfilar a pintura do vídeo no SwiftShader e a conversão de cor.
 - Resto da interface em inglês: atributos de mídia (`data-inicio`, `data-quadros`, `data-recorte`,
   `data-velocidade`) com apelido em inglês; mensagens de erro dos comandos (hoje em português; a ajuda já é em
   inglês); `kodecz references` (`cli/referencias.ts`); o JSON de saída (`quadros`, `repetirNao`…); `window.motor_falas`.
@@ -42,8 +44,7 @@ Nenhum em andamento: o responsável escolhe da lista abaixo.
 - Bench: as 99 acusações fora da diagonal da matriz cruzada e as 5 regras desligadas; a v2 do paper.
 - Reservar o nome `kodecz` no npm e no crates.io (aguarda o OK do responsável). Publicar no npm pede um passo de
   build: o Node não tira os tipos de `.ts` dentro de `node_modules`, então o `bin` só roda hoje do clone (`npm link`,
-  `npm i -g .`); o `package.json` está com `"private": true` para não publicar por engano; prévia social no GitHub
-  (`marca/previa-social.png`, Settings → Social preview).
+  `npm i -g .`); o `package.json` está com `"private": true` para não publicar por engano.
 
 ## Pendências (só do responsável)
 
