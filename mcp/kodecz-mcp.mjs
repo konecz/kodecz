@@ -23,7 +23,7 @@ export const TOOLS = [
   {
     name: "render",
     title: "Render a Kodecz video",
-    description: "Render a Kodecz video folder to MP4 (GPU with NVENC when there is one, CPU with x264 when not). Returns the render's JSON result line. Run `check` first.",
+    description: "Encode the final video file. Use it last: `preview` to look at frames while writing, `check` to catch layout problems, then `render`. Writes `output` atomically (a partial file renamed at the end), replacing a file already there. Takes seconds per few hundred frames on an NVIDIA GPU, several times longer on the CPU (1080p, 150 frames: about 3 s on an RTX 5090, about 7 s on 8 CPU cores). Returns one JSON object: `ok`, `saida` (output path), `modo` (`placa` = GPU or `cpu`), `quadros` (frames), `codec`, `bytes` and `parede` (wall seconds); on failure, the error and the stderr.",
     inputSchema: {
       type: "object",
       properties: {
@@ -43,7 +43,7 @@ export const TOOLS = [
   {
     name: "preview",
     title: "Preview frames",
-    description: "Draw some frames of a Kodecz video as lossless PNGs (the same pixels as the render, one to two seconds) and return them as images. Use it to look at what you wrote instead of guessing.",
+    description: "Look at specific frames while writing a video, instead of guessing: draws them as lossless PNGs with the same pixels the render will produce and returns them as images (one to two seconds for a few frames, no MP4). Use `check` for automatic rule checks over every frame and `render` only for the final file. Frame numbers must be below the composition's frame count; otherwise the call fails and says the valid range. The PNGs are also written under the Kodecz install's tmp/previa/<id>/.",
     inputSchema: {
       type: "object",
       properties: {
@@ -58,7 +58,7 @@ export const TOOLS = [
   {
     name: "check",
     title: "Check a video",
-    description: "Run Kodecz's automatic checks on every frame without rendering: text over the presenter's face, captions on one line, the safe area of a declared social destination, contrast over the real background, zoom timing. Returns the JSON result, each problem with its frame, and pictures of the worst frames. `ok: false` means a rule was broken: fix and check again.",
+    description: "Verify a video before rendering it: runs the automatic layout rules on every frame without encoding (text over a face, captions on one line, social safe area, contrast, zoom timing). Use it after editing and before `render`; use `preview` to see a specific frame. Returns JSON with `ok` and each problem with its frame, plus images of the worst frames; it writes conferencia.json and those images to tmp/conferencia in the working directory. `ok: false` means a rule was broken: fix the page and run `check` again.",
     inputSchema: { type: "object", properties: { ...folderAndId }, required: ["folder", "id"], additionalProperties: false },
     annotations: { readOnlyHint: true, openWorldHint: false },
   },
