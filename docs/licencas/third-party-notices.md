@@ -59,6 +59,12 @@ Unicode-3.0 (ICU4X), ISC, BSD-3-Clause, Unlicense OR MIT, Zlib, bzip2-1.0.6 (`li
 | Google Fonts used by a composition | as requested by the page | mostly SIL Open Font License 1.1; each family has its own | `captura/fontes.ts` |
 | lottie-web (tests only) | 5.13.0 | MIT | `cli/fixtures/bibliotecas.ts` |
 | Test portrait (tests only) | NASA S69-31741, Apollo 11 portrait | Public domain (work of the U.S. Government) | `conferencia/preparar.ts` |
+| HyperFrames CLI (comparison only) | `hyperframes` 0.9.2 and its npm dependencies | Apache-2.0, Copyright HeyGen; it downloads its own Chrome headless shell | `scripts/comparar/comparar.sh`, into the work folder |
+| Remotion (comparison only) | `remotion`, `@remotion/cli`, `@remotion/media` 4.0.536, with React 19.2.0 | Remotion License (not Apache-2.0: free for individuals and companies of up to 3 people) | `scripts/comparar/comparar.sh`, into the work folder |
+
+HyperFrames and Remotion are not dependencies of Kodecz: the comparison script installs them, pinned, outside the
+repository, to measure them. The compositions in `scripts/comparar/casos/` were written by the Kodecz authors in each
+renderer's format; no HyperFrames or Remotion code is copied there.
 
 GSAP is not a dependency and is not in this repository: a composition may bring its own copy, under GSAP's own
 license.

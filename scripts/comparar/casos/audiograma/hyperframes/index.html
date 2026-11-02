@@ -1,0 +1,90 @@
+<!doctype html>
+<!-- Comparison case «audiogram», HyperFrames version (rendered by HyperFrames, Apache-2.0, HeyGen). Written by Konecz
+     in the HyperFrames HTML format from its public docs (`hyperframes docs`); no HyperFrames code is copied here.
+     The same composition as ../kodecz/index.html (see the notes there): same CSS, same times, same Web Animations.
+     Only the frame is the HyperFrames one: a root with data-composition-id, the audio as a timed clip, and an empty
+     root timeline (the animations are CSS and Web Animations, which the HyperFrames runtime seeks itself). -->
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1080, height=1080">
+<style>
+  #root { position: relative; width: 1080px; height: 1080px; }
+  html, body { margin: 0; width: 1080px; height: 1080px; overflow: hidden; background: #14122b; color: #fff;
+               font-family: Inter, sans-serif; }
+  .capa { position: absolute; left: 60px; top: 60px; width: 300px; height: 300px; border-radius: 24px; }
+  .titulo { position: absolute; left: 400px; top: 110px; width: 620px; font-size: 54px; font-weight: 800; line-height: 1.1; }
+  .sub { position: absolute; left: 400px; top: 260px; font-size: 28px; color: #b9b3e6; }
+  .onda { position: absolute; left: 60px; top: 440px; width: 960px; height: 220px; display: flex; gap: 8px;
+          align-items: center; }
+  .barra { flex: 1; height: 220px; border-radius: 6px; background: #f2a541; transform: scaleY(0.04); }
+  .trilho { position: absolute; left: 60px; top: 700px; width: 960px; height: 8px; border-radius: 4px; background: #3a3566; }
+  .progresso { width: 960px; height: 8px; border-radius: 4px; background: #fff; transform-origin: left;
+               animation: anda 27.1333s linear both; }
+  @keyframes anda { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  .trecho { position: absolute; left: 60px; right: 60px; top: 780px; text-align: center; font-size: 52px;
+            font-weight: 700; line-height: 1.25; opacity: 0; }
+  .palavra { opacity: 0.4; }
+  .palavra + .palavra { margin-left: 0.28em; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-duration="27.1333" data-width="1080" data-height="1080">
+  <img class="capa" src="capa.jpg">
+  <div class="titulo">Um audiograma sintético</div>
+  <div class="sub">Episódio 1 · voz gerada pelo ffmpeg</div>
+  <div class="onda" id="onda"></div>
+  <div class="trilho"><div class="progresso"></div></div>
+  <div id="legenda"></div>
+  <audio id="fala" src="fala.wav" data-start="0" data-duration="27.1333"></audio>
+</div>
+<script>
+  const QPS = 30, QUADROS = 814, DUR = QUADROS / QPS * 1000;
+  // The envelope of fala.wav (gerar-midia.sh): syllables of 0.18 s, silent for the first 0.4 s of every 2 s.
+  const envelope = (t) => (0.5 - 0.5 * Math.cos(2 * Math.PI * (t % 0.18) / 0.18)) * (t % 2 > 0.4 ? 1 : 0)
+    * (0.6 + 0.4 * Math.sin(2 * Math.PI * t * 0.37));
+  const onda = document.getElementById('onda');
+  for (let b = 0; b < 48; b++) {
+    const barra = document.createElement('div');
+    barra.className = 'barra';
+    onda.append(barra);
+    const peso = 0.55 + 0.45 * Math.sin(b * 0.7) ** 2;
+    const quadros = [];
+    for (let n = 0; n < QUADROS; n++) {
+      const t = n / QPS;
+      const v = Math.max(0.04, Math.min(1, envelope(t) * peso * (0.75 + 0.25 * Math.sin(t * 9 + b))));
+      quadros.push({ transform: `scaleY(${v.toFixed(3)})`, offset: n / (QUADROS - 1) });
+    }
+    barra.animate(quadros, { duration: DUR * (QUADROS - 1) / QUADROS, fill: 'both' });
+  }
+  // Captions: one line per 2 s cycle, shown while the «voice» speaks (0.4 to 2.0 s), 4 words of 0.4 s.
+  const PALAVRAS = ['este', 'som', 'não', 'é', 'uma', 'pessoa', 'falando', 'é', 'um', 'tom', 'que', 'sobe', 'e',
+    'desce', 'como', 'fala'];
+  const ms = (s) => Math.round(s * 1000);
+  const durante = (el, valor, inicio, fim) => el.animate([valor, valor], { delay: ms(inicio), duration: ms(fim) - ms(inicio) });
+  const legenda = document.getElementById('legenda');
+  for (let c = 0, k = 0; c * 2 < QUADROS / QPS; c++) {
+    const inicio = c * 2 + 0.4, fim = Math.min(c * 2 + 2, QUADROS / QPS);
+    if (inicio >= fim) break;
+    const div = document.createElement('div');
+    div.className = 'trecho';
+    legenda.append(div);
+    durante(div, { opacity: 1 }, inicio, fim);
+    for (let p = 0; p < 4; p++, k++) {
+      const span = document.createElement('span');
+      span.className = 'palavra';
+      span.textContent = PALAVRAS[k % PALAVRAS.length];
+      div.append(span);
+      const de = inicio + p * 0.4;
+      if (de >= fim) continue;
+      durante(span, { opacity: 1 }, de, fim);
+      span.animate([{ color: '#f2a541' }, { color: '#f2a541' }], { delay: ms(de), duration: ms(Math.min(de + 0.4, fim)) - ms(de) });
+    }
+  }
+  // HyperFrames contract: one root timeline per composition. This one has no tweens; the runtime's CSS and Web
+  // Animations adapters seek the animations above to each frame's time.
+  window.__timelines = window.__timelines || {};
+  window.__timelines.main = { paused: () => {}, seek: () => {}, time: () => 0, duration: () => 27.1333 };
+</script>
+</body>
+</html>

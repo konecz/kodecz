@@ -58,14 +58,22 @@ Each square is one second. Rendering the same video, Kodecz keeps the processor 
 
 <sub>1080p · 150 frames · H.264 · RTX 5090 · <a href="docs/medidas.md">how we measured</a></sub>
 
+Against HyperFrames, measured on the same video and the same day: **11× less CPU** (22.0 s → 2.0 s) and **2.4×
+sooner** (6.4 s → 2.7 s) on the GPU. On a machine without a GPU, HyperFrames is slightly ahead on this video, which
+embeds a 1080p clip (26.3 s against 28.1 s of CPU); on a 27-second audiogram, Kodecz uses 2.4× less CPU (24.6 s
+against 59.9 s). All the numbers, and a script to reproduce them, are in [`docs/medidas.md`](docs/medidas.md).
+
 ## Kodecz, Remotion and HyperFrames
 
 | | Kodecz | Remotion | HyperFrames |
 |---|---|---|---|
 | You write the video in | any web page: HTML, CSS, JS, React, WebGL | React components | HTML |
 | How each frame leaves the browser | GPU texture or the raw painted frame, no screenshot | screenshot (`Page.captureScreenshot`) | screenshot (`HeadlessExperimental.beginFrame`) |
-| Encoding | NVENC on the GPU, or x264 on the CPU | ffmpeg, x264 on the CPU by default | ffmpeg |
-| CPU time for the same 1080p video | **4.4 s** | 43.7 s | not measured yet |
+| Encoding | NVENC on the GPU, or x264 on the CPU | ffmpeg, x264 on the CPU by default | ffmpeg, x264 on the CPU by default (NVENC with `--gpu`) |
+| CPU time for the same 1080p video | **4.4 s** | 43.7 s | 22.0 s (measured 2026-11-02, next row) |
+| Same video, all three on the same day (2026-11-02) | **2.0 s** CPU, 2.7 s wall | 37.7 s CPU, 9.9 s wall | 22.0 s CPU, 6.4 s wall |
+| Same video on the CPU only, no GPU | 28.1 s CPU, 7.1 s wall | — | **26.3 s** CPU, **6.8 s** wall |
+| 1080×1080 audiogram, 814 frames, CPU only | **24.6 s** CPU, **9.3 s** wall | — | 59.9 s CPU, 12.2 s wall |
 | License | Apache-2.0 | Remotion License (paid for companies above 3 people) | Apache-2.0 |
 
 <sub>Remotion and HyperFrames are good tools, and Kodecz learned from both. The capture methods come from their source

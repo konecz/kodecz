@@ -22,6 +22,8 @@ Nenhum em andamento: o responsável escolhe da lista abaixo.
 
 ## Depois (escolha do responsável; nada daqui vira tarefa sozinho)
 
+- Modo CPU com vídeo embutido: sem placa, o HyperFrames gasta menos CPU que o `--cpu` no Apresentador (26,3 contra
+  28,1 s; `docs/medidas.md`, 2026-11-02). Perfilar a pintura do vídeo no SwiftShader e a conversão de cor.
 - Interface com os nomes em inglês (`kodecz render|preview|check`, `--alpha`, `--from`, `id="kodecz"`, `width`,
   `height`, `fps`, `frames`, `window.kodecz_frame`), aceitando os antigos por um tempo; `docs/formatos/` e os blocos
   em inglês.

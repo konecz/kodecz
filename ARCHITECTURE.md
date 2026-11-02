@@ -25,9 +25,10 @@ the code and can be ignored.
 | `conferencia/` | Automatic checks of the frames: `regras.ts` (the rules as pure functions), `conferir.ts` (runs the rules marked `conferencia` in `bench-gerador/especificacoes.json`), `falas.ts` (`window.motor_falas`), `rosto.ts` (YuNet face detection on `onnxruntime-node`, CPU), `geometria.js` (page script that reads the DOM), `coletar.ts` (the Electron process of the checks, CPU only, separate from the render), `preparar.ts` (model and test portrait in a cache, by hash), test compositions in `fixtures/`. Format in `docs/formatos/conferencia.md`. |
 | `bench/`, `bench-gerador/` | Kodecz Bench: tasks for AI agents (`bench/`) and the case generator with the single rule set shared with the checks (`bench-gerador/especificacoes.json`, `motores.ts`, `casos.jsonl`). The class catalog is `docs/pesquisa/erros-de-agentes.json`. See `bench/LEIAME.md` and `bench-gerador/LEIAME.md`. |
 | `ferramentas/contencao.mjs` | Optional CPU containment of the render (nice, ionice, CPU cap); on by default, `--sem-contencao` turns it off. |
+| `ferramentas/medir-render.mjs` | Measures one render command (CPU of its cgroup, wall, peak memory) for the numbers in `docs/medidas.md`. |
 | `docs/formatos/` | File format specifications: the timeline (`linha-do-tempo.md`), the brand file (`design-md.md`), reference frames (`referencias.md`), color conversion (`conversao-de-cor.md`), automatic checks (`conferencia.md`), preview (`previa.md`) and per-frame brightness (`brilho.md`). |
 | `docs/licencas/` | Third-party notices and the Rust crate list. |
-| `scripts/` | `marca.mjs` (brand assets) and `trazer-do-motor.sh` (imports the engine code from the internal repository it was developed in, with the opening audit). |
+| `scripts/` | `marca.mjs` (brand assets), `trazer-do-motor.sh` (imports the engine code from the internal repository it was developed in, with the opening audit) and `comparar/` (the measured comparison with HyperFrames and Remotion, [`docs/medidas.md`](docs/medidas.md)). |
 
 ## Render command
 
