@@ -16,7 +16,7 @@ desenha o quadro e ele vai direto ao codificador, sem a «foto» de cada quadro 
 
 A mesma pasta renderiza nos dois.
 
-- **10× menos CPU e 3× mais rápido** que o Remotion no mesmo vídeo (1080p, 150 quadros, RTX 5090;
+- **19× menos CPU e 3,7× mais rápido** que o Remotion no mesmo vídeo, medido no mesmo dia (1080p, 150 quadros, RTX 5090;
   [`docs/medidas.md`](docs/medidas.md)).
 - **11× menos CPU e 2,4× mais rápido** que o HyperFrames no mesmo vídeo, medido no mesmo dia (22,0 s → 2,0 s de CPU,
   6,4 s → 2,7 s de parede). Só na CPU, sem placa, o HyperFrames fica um pouco à frente nesse vídeo, que tem um clipe

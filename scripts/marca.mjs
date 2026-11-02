@@ -193,8 +193,8 @@ function logoRemotion(x, y, alto) {
 function numeros(t) {
   const W = 1200, H = 320, x0 = 44, lado = 11, passo = 14, xq = 300, ritmo = 0.07, ciclo = 6;
   const grupos = [
-    { icone: "cpu", y: 46, remotion: 43.7, kodecz: 4.4, ganho: "10×" },
-    { icone: "clock", y: 186, remotion: 13.6, kodecz: 4.6, ganho: "3×" },
+    { icone: "cpu", y: 46, remotion: 37.7, kodecz: 2.0, ganho: "19×" },
+    { icone: "clock", y: 186, remotion: 9.9, kodecz: 2.7, ganho: "3.7×" },
   ];
   const fila = (v, y, cor) => {
     const inteiros = Math.floor(v), resto = v - inteiros, q = [];
@@ -202,7 +202,7 @@ function numeros(t) {
       const w = i < inteiros ? lado : Math.max(2, lado * resto);
       q.push(`<rect class="seg" style="animation-delay:${f(i * ritmo)}s" x="${xq + i * passo}" y="${y}" width="${f(w)}" height="${lado}" rx="2.5" fill="${cor}"/>`);
     }
-    return q.join("") + `<text x="${xq + Math.ceil(v) * passo + 8}" y="${y + lado - 1}" class="m" font-size="13" fill="${t.fraco}">${v}s</text>`;
+    return q.join("") + `<text x="${xq + Math.ceil(v) * passo + 8}" y="${y + lado - 1}" class="m" font-size="13" fill="${t.fraco}">${v.toFixed(1)}s</text>`;
   };
   const corpo = grupos.map((g) => {
     const yR = g.y + 8, yK = g.y + 56;
@@ -218,7 +218,7 @@ ${fila(g.kodecz, yK, t.azul)}
   }).join("\n");
   const css = `.seg{animation:seg ${ciclo}s linear infinite both}
 @keyframes seg{0%{opacity:.18}3%{opacity:1}88%{opacity:1}96%{opacity:.18}100%{opacity:.18}}`;
-  return svg(W, H, corpo, { fundo: t.fundo, borda: t.borda, css, titulo: "One square per second. CPU time: Remotion 43.7 s, Kodecz 4.4 s, 10 times less. Wall time: Remotion 13.6 s, Kodecz 4.6 s, 3 times faster." });
+  return svg(W, H, corpo, { fundo: t.fundo, borda: t.borda, css, titulo: "One square per second. CPU time: Remotion 37.7 s, Kodecz 2.0 s, 19 times less. Wall time: Remotion 9.9 s, Kodecz 2.7 s, 3.7 times faster." });
 }
 
 // O ciclo do agente (escrever, ver, conferir, corrigir), sem texto: quatro peças em volta da fita, setas no sentido
