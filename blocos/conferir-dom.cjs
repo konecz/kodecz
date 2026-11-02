@@ -208,7 +208,10 @@ app.whenReady().then(async () => {
     webPreferences: { backgroundThrottling: false } });
   const wc = janela.webContents;
   // A declaração lida do arquivo, para a janela já nascer do tamanho do quadro.
-  const decl = JSON.parse(/<script[^>]*id="motor-video"[^>]*>([\s\S]*?)<\/script>/.exec(readFileSync(join(raiz, pagina), 'utf8'))[1]);
+  // O bloco id="kodecz" (ou o antigo id="motor-video"), com os campos em inglês ou os antigos (cli/nomes.ts).
+  const bruto = JSON.parse(/<script[^>]*id="(?:kodecz|motor-video)"[^>]*>([\s\S]*?)<\/script>/.exec(readFileSync(join(raiz, pagina), 'utf8'))[1]);
+  const decl = { id: bruto.id, largura: bruto.width ?? bruto.largura, altura: bruto.height ?? bruto.altura, qps: bruto.fps ?? bruto.qps,
+    quadros: bruto.frames ?? bruto.quadros };
   // O CDP só responde com um documento aberto: about:blank antes (como o main.mjs do M04).
   await wc.loadURL('about:blank');
   wc.debugger.attach('1.3');
@@ -231,10 +234,13 @@ app.whenReady().then(async () => {
   const achados = await wc.executeJavaScript(`(() => { try {
     const checagens = ${JSON.stringify(pedido.checagens)}, quadros = ${JSON.stringify(quadros)}, todos = [];
     const primeiro = quadros.length ? Math.min(...quadros) : 0, ultimo = quadros.length ? Math.max(...quadros) : -1;
-    // Os blocos convertem quadros em tempo com o --qps da raiz: diferente do declarado, tudo sai fora do tempo.
-    const qpsCss = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--qps'));
+    // Os blocos convertem quadros em tempo com o --fps da raiz (o antigo --qps ainda é lido): diferente do declarado,
+    // tudo sai fora do tempo.
+    const raizCss = getComputedStyle(document.documentElement);
+    const varFps = raizCss.getPropertyValue('--fps').trim() === '' && raizCss.getPropertyValue('--qps').trim() !== '' ? '--qps' : '--fps';
+    const qpsCss = parseFloat(raizCss.getPropertyValue(varFps));
     if (qpsCss !== ${decl.qps}) todos.push({ id: 'pagina.qps', prioridade: 'P0', quadro: 0, onde: ':root', valor: qpsCss,
-      mensagem: 't=0,00 · :root · --qps é ' + qpsCss + ', e o bloco motor-video declara ${decl.qps} → pôr :root { --qps: ${decl.qps}; }' });
+      mensagem: 't=0,00 · :root · ' + varFps + ' é ' + qpsCss + ', e o bloco kodecz declara fps ${decl.qps} → pôr :root { --fps: ${decl.qps}; }' });
     window.__ir(primeiro, ${decl.qps});
     todos.push(...window.__conferir.animacoes(${JSON.stringify(pedido.animacoes ?? [])}, primeiro));
     window.__conferir.recortes(primeiro);

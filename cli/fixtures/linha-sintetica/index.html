@@ -2,16 +2,16 @@
 <meta charset="utf-8">
 <title>Linha sintética</title>
 <!-- P10: composição sintética em linha do tempo declarada, para os testes do comando (R01: nada de cliente).
-     Conteúdo nos três caminhos do motor (CSS @keyframes, element.animate e o gancho motor_quadro com canvas) e uma
+     Conteúdo nos três caminhos do motor (CSS @keyframes, element.animate e o gancho kodecz_frame com canvas; com os nomes em inglês, cli/nomes.ts) e uma
      tarja de N em cada um, para conferir que os três chegam ao quadro N junto com a marca:
        y 524: tarja de element.animate; y 508: tarja de CSS @keyframes; y 492: tarja desenhada no canvas.
      Na linha de cima, quadrados de 32 px para casos que o teste confere pelo pixel do centro:
        x 0: animação de 30 ms sem fill (vermelha só no quadro 0, mesmo que a página demore a ficar pronta);
        x 40: <img> local (verde em todos os quadros);
-       x 80: transição de CSS de 10 s ligada pelo motor_quadro no quadro 30 (azul do 30 em diante: vai ao fim).
+       x 80: transição de CSS de 10 s ligada pelo kodecz_frame no quadro 30 (azul do 30 em diante: vai ao fim).
      Tarja = faixa do M03 (nativo/src/marca.rs): blocos de 16 px, branco, preto, 24 bits de N e o complemento. -->
-<script type="application/json" id="motor-video">
-{ "id": "LinhaSintetica", "largura": 960, "altura": 540, "qps": 30, "quadros": 60 }
+<script type="application/json" id="kodecz">
+{ "id": "LinhaSintetica", "width": 960, "height": 540, "fps": 30, "frames": 60 }
 </script>
 <style>
   /* Fonte embutida (cli/fixtures/fonte-padrao): o quadro não depende das fontes da máquina. */
@@ -79,7 +79,7 @@
   document.head.append(estilo);
 
   const tela = document.getElementById('tela').getContext('2d');
-  window.motor_quadro = (n) => {
+  window.kodecz_frame = (n) => {
     document.getElementById('transicao').style.opacity = n >= 30 ? '1' : '0';
     for (let i = 0; i < 2 + 2 * BITS; i++) { tela.fillStyle = bitDoBloco(i, n) ? '#fff' : '#000'; tela.fillRect(i * 16, 0, 16, 16); }
   };

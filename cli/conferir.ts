@@ -22,6 +22,7 @@ import { parseArgs } from "node:util";
 import { spawnSync, type ChildProcess } from "node:child_process";
 import { createInterface } from "node:readline";
 import { CAMINHOS, ErroDeUso, lerDeclaracao, SEM_REMOTION, type Declaracao } from "./regras.ts";
+import { OPCOES_CONFERIR, traduzirOpcoes } from "./nomes.ts";
 import { Recursos } from "./processos.ts";
 // @ts-ignore: módulo .mjs sem tipos
 import { prefixoContencao } from "../ferramentas/contencao.mjs";
@@ -37,27 +38,32 @@ const LARGURA_LIMPO = 640;
 const MAX_FOTOS = 30;
 const avisar = (texto: string) => process.stderr.write(`conferência: ${texto}\n`);
 
-export const USO = `uso: node cli/conferir.ts <entrada> <composição> [<entrada> <composição> …] [opções]
+export const USO = `usage: kodecz check <folder> <composition> [<folder> <composition> …] [options]
+       (same as: node cli/conferir.ts <folder> <composition> … [options])
 
-Confere sem renderizar as regras do conjunto único (bench-gerador/especificacoes.json, campo «conferencia»): G15 (texto
-fora do rosto), G17 (legenda numa linha), G19 (zona segura, só com data-destino reels, instagram, anuncio, tiktok ou shorts no
-<html>), G20 (contraste sobre o fundo real), G21 (zoom até o fim da frase) e o aviso de tremor.
-<entrada> é a pasta da composição em linha do tempo (index.html com o bloco motor-video); <composição>, o id dela.
-Vários pares de uma vez (G04: 16:9 e 9:16).
+Checks every frame of the page without rendering the video, with the rules marked «conferencia» in
+bench-gerador/especificacoes.json: G15 (text off the face), G17 (captions on one line), G19 (safe area, only with
+data-destino reels, instagram, anuncio, tiktok or shorts on <html>), G20 (contrast over the real background), G21
+(zoom that ends with the sentence) and the shake warning.
+<folder> is the composition (index.html with the id="kodecz" block); <composition>, its id.
+Several pairs at once (G04: 16:9 and 9:16).
 
-opções:
-  --falas arquivo.json  falas no tempo do vídeo, [{ t, ini, fim, bloco }], por cima do window.motor_falas da página
-  --saida pasta         onde gravar conferencia.json e as fotos (padrão tmp/conferencia)
-  --amostra K           rosto procurado a cada K quadros com o apresentador (padrão ${LIMITES.amostraRosto})
-  --manter              guarda a pasta temporária (quadros limpos, geometria)
-  --dados               grava <composição>-dados.json na saída (geometria, rostos, falas, destino e fundos), para
-                        calibrar os limites de novo sem coletar (conferencia/conferir.ts, conferir())
-  --sem-contencao       sem nice/ionice/teto de CPU (padrão: contido, ferramentas/contencao.mjs)
-  --ajuda               esta ajuda
+options:
+  --speech file.json    speech timing, [{ t, ini, fim, bloco }], over the page's window.motor_falas
+  --out dir             where conferencia.json and the pictures go (default tmp/conferencia)
+  --sample K            look for the face every K frames with the presenter (default ${LIMITES.amostraRosto})
+  --keep                keep the temporary folder (clean frames, geometry)
+  --data                write <composition>-dados.json to the output (geometry, faces, speech, destination and
+                        backgrounds), to calibrate the limits again without collecting (conferencia/conferir.ts)
+  --no-containment      no nice/ionice/CPU cap (default: contained, ferramentas/contencao.mjs)
+  -h, --help            this help
 
-Preparação (uma vez, com rede): node conferencia/preparar.ts (modelo de rosto no cache, conferido por hash) e
-npm ci --ignore-scripts em conferencia/. Papéis na composição: data-papel="apresentador|legenda|faixa" (G41).
-Saída 0 sem falha, 1 erro, 2 argumentos, 4 regra quebrada.`;
+The original Portuguese names still work (deprecated): --falas, --saida, --amostra, --manter, --dados,
+--sem-contencao, --ajuda.
+
+Setup (once, online): node conferencia/preparar.ts (face model in a cache, checked by hash) and
+npm ci --ignore-scripts in conferencia/. Roles in the page: data-papel="apresentador|legenda|faixa" (G41).
+Exit code 0 no problem, 1 error, 2 usage, 4 a rule is broken.`;
 
 export type ArgumentosConferir = {
   pares: { pasta: string; declaracao: Declaracao }[]; falas: string | null; saida: string; amostra: number;
@@ -68,7 +74,7 @@ export type ArgumentosConferir = {
 export function lerArgumentosConferir(argv: string[]): ArgumentosConferir {
   let r;
   try {
-    r = parseArgs({ args: argv, allowPositionals: true, strict: true, options: {
+    r = parseArgs({ args: traduzirOpcoes(argv, OPCOES_CONFERIR), allowPositionals: true, strict: true, options: {
       falas: { type: "string" }, saida: { type: "string" }, amostra: { type: "string" }, manter: { type: "boolean" }, dados: { type: "boolean" },
       "sem-contencao": { type: "boolean" }, ajuda: { type: "boolean", short: "h" },
     } });
@@ -83,7 +89,7 @@ export function lerArgumentosConferir(argv: string[]): ArgumentosConferir {
     const html = join(pasta, "index.html");
     if (!existsSync(html)) throw new ErroDeUso(`${pasta}: falta index.html (a conferência abre a composição em linha do tempo declarada, docs/formatos/linha-do-tempo.md)`);
     const declaracao = lerDeclaracao(readFileSync(html, "utf8"));
-    if (!declaracao) throw new ErroDeUso(`${pasta}: o index.html não tem o bloco <script id="motor-video">; se é um pacote do Remotion, ${SEM_REMOTION}`);
+    if (!declaracao) throw new ErroDeUso(`${pasta}: o index.html não tem o bloco <script id="kodecz">; se é um pacote do Remotion, ${SEM_REMOTION}`);
     if (declaracao.id !== id) throw new ErroDeUso(`${pasta}: a composição é «${declaracao.id}», não «${id}»`);
     pares.push({ pasta, declaracao });
   }

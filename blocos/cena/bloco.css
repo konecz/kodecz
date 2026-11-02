@@ -1,5 +1,5 @@
 /* cena (H04): uma cena que aparece no quadro --inicio e some no --fim, em corte seco. Base das transições.
-   Tempos em quadros; a conversão para tempo é do CSS (× 1s / --qps, com --qps na raiz da composição).
+   Tempos em quadros; a conversão para tempo é do CSS (× 1s / --fps, com --fps na raiz da composição).
    Liga e desliga com duas animações de duração zero (forwards): o intervalo de cada uma é só a borda, e o motor
    continua repetindo os quadros parados no meio da cena (P10.3). Uma animação que durasse a cena inteira faria o motor
    desenhar todos os quadros dela.
@@ -7,8 +7,8 @@
 .kz-cena {
   position: absolute; inset: 0; overflow: hidden;
   opacity: 0;
-  animation: kz-cena-entra 0s linear calc(var(--inicio) * 1s / var(--qps)) forwards,
-             kz-cena-sai 0s linear calc(var(--fim) * 1s / var(--qps)) forwards;
+  animation: kz-cena-entra 0s linear calc(var(--inicio) * 1s / var(--fps)) forwards,
+             kz-cena-sai 0s linear calc(var(--fim) * 1s / var(--fps)) forwards;
 }
 @keyframes kz-cena-entra { from, to { opacity: 1; } }
 @keyframes kz-cena-sai { from, to { opacity: 0; } }

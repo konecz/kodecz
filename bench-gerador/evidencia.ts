@@ -70,7 +70,7 @@ export type Pedido = {
 export async function evidencia(pasta: string, tarefa: Tarefa, rotulos: Evidencia["rotulos"], o: Pedido): Promise<Evidencia> {
   const fonte = readFileSync(join(pasta, "index.html"), "utf8");
   const ev: Evidencia = { tarefa, rotulos, fonte, arquivos: listar(pasta), col: null, col2: null, travou: false, console: [], mp4: null, render: null, antes: null, cache: new Map() };
-  const decl = /"quadros":\s*(\d+)/.exec(fonte);
+  const decl = /"(?:frames|quadros)":\s*(\d+)/.exec(fonte);
   const limiteMs = 20_000 + Number(decl?.[1] ?? 3000) * 40;
   try {
     ev.col = await coletar(pasta, { extras: [SONDA_ESTILO], limiteMs });

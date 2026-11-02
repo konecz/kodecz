@@ -7,12 +7,12 @@
   background: var(--color-ground);
 }
 .kz-desliza-entra {
-  animation: kz-desliza-entra calc(var(--duracao, 15) * 1s / var(--qps)) var(--motion-easing-move, cubic-bezier(0.65, 0, 0.35, 1))
-             calc(var(--inicio) * 1s / var(--qps)) both;
+  animation: kz-desliza-entra calc(var(--duracao, 15) * 1s / var(--fps)) var(--motion-easing-move, cubic-bezier(0.65, 0, 0.35, 1))
+             calc(var(--inicio) * 1s / var(--fps)) both;
 }
 .kz-desliza-sai {
-  animation: kz-desliza-sai calc(var(--duracao, 15) * 1s / var(--qps)) var(--motion-easing-move, cubic-bezier(0.65, 0, 0.35, 1))
-             calc((var(--fim) - var(--duracao, 15)) * 1s / var(--qps)) forwards;
+  animation: kz-desliza-sai calc(var(--duracao, 15) * 1s / var(--fps)) var(--motion-easing-move, cubic-bezier(0.65, 0, 0.35, 1))
+             calc((var(--fim) - var(--duracao, 15)) * 1s / var(--fps)) forwards;
 }
 @keyframes kz-desliza-entra { from { transform: translateX(var(--desliza-x, 100%)); } to { transform: none; } }
 @keyframes kz-desliza-sai { from { transform: none; } to { transform: translateX(calc(-1 * var(--desliza-x, 100%))); } }

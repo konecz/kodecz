@@ -18,7 +18,7 @@ fi
 
 # Sem placa nem navegador.
 node --test cli/brilho.test.ts captura/codificador-cpu.test.ts captura/faixa.test.ts captura/fontes.test.ts captura/marca-video.test.ts cli/midia-linha.test.ts \
-  cli/processos.test.ts cli/regras.test.ts composicao/audio.test.ts composicao/cor-limpa.test.ts composicao/parados.test.ts \
+  cli/processos.test.ts cli/regras.test.ts cli/nomes.test.ts composicao/audio.test.ts composicao/cor-limpa.test.ts composicao/parados.test.ts \
   conferencia/falas.test.ts \
   conferencia/regras.test.ts conferencia/rosto.test.ts identidade/design-md.test.ts instalar/instalar.test.ts \
   bench-gerador/expandir.test.ts bench-gerador/adaptador.test.ts

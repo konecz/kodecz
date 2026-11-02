@@ -5,7 +5,7 @@
 version: alpha
 name: Farol Ateliê (marca fictícia)
 description: >
-  Ateliê de vídeo inventado para demonstrar os blocos do motor-video.
+  Ateliê de vídeo inventado para demonstrar os blocos do Kodecz.
   Noite azul-marinho, tinta clara e um âmbar de farol como destaque.
 
 colors:

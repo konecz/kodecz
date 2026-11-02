@@ -18,12 +18,12 @@
   letter-spacing: var(--font-caption-letter-spacing, normal);
   color: var(--color-muted, var(--color-ink));
   opacity: 0;
-  animation: kz-legenda-entra 0s linear calc(var(--inicio) * 1s / var(--qps)) forwards,
-             kz-legenda-sai 0s linear calc(var(--fim) * 1s / var(--qps)) forwards;
+  animation: kz-legenda-entra 0s linear calc(var(--inicio) * 1s / var(--fps)) forwards,
+             kz-legenda-sai 0s linear calc(var(--fim) * 1s / var(--fps)) forwards;
 }
 .kz-palavra {
-  animation: kz-palavra-agora 0s linear calc(var(--inicio) * 1s / var(--qps)) forwards,
-             kz-palavra-dita 0s linear calc(var(--fim) * 1s / var(--qps)) forwards;
+  animation: kz-palavra-agora 0s linear calc(var(--inicio) * 1s / var(--fps)) forwards,
+             kz-palavra-dita 0s linear calc(var(--fim) * 1s / var(--fps)) forwards;
 }
 @keyframes kz-legenda-entra { from, to { opacity: 1; } }
 @keyframes kz-legenda-sai { from, to { opacity: 0; } }
