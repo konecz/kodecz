@@ -34,7 +34,7 @@ regressiva (`.kz-regressiva`), a mesma propriedade desce de `--de` até 1 em deg
 ## Por quê
 
 Contar chama o olho para o número no momento em que ele é dito (G14: o `--inicio` vem da palavra). Inteiro pelo CSS:
-nada de texto trocado por script a cada quadro (que obrigaria o `motor_quadro` e desligaria o quadro repetido).
+nada de texto trocado por script a cada quadro (que obrigaria o `kodecz_frame` e desligaria o quadro repetido).
 
 ## Como aplicar
 

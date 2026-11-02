@@ -4,6 +4,7 @@
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { parseArgs } from "node:util";
+import { CAMPOS, ID_BLOCO, ID_BLOCO_ANTIGO, OPCOES_RENDER, traduzirOpcoes } from "./nomes.ts";
 
 const RAIZ = resolve(dirname(new URL(import.meta.url).pathname), "..");
 /** Onde mora o código do produto (P04, adr.md seção 4): a captura (o processo que fala com o host do CEF, com os modos
@@ -24,26 +25,30 @@ export const CAMINHOS = {
 /** O ICD do Vulkan da NVIDIA: o pacote do driver põe em /usr/share; o instalador .run e o contêiner (CDI), em /etc. */
 export const ICD_VULKAN_NVIDIA = ["/usr/share/vulkan/icd.d/nvidia_icd.json", "/etc/vulkan/icd.d/nvidia_icd.json"];
 
-export const USO = `uso: node cli/render.ts <entrada> <composição> <saída.mp4> [opções]
+export const USO = `usage: kodecz render <folder> <composition> <out.mp4> [options]
+       (same as: node cli/render.ts <folder> <composition> <out.mp4> [options])
 
-  <entrada>      composição em linha do tempo: pasta com index.html e o bloco <script id="motor-video">
-                 (docs/formatos/linha-do-tempo.md); a entrada do Remotion saiu do motor em 2026-10-31
-  <composição>   id declarado no bloco motor-video
-  <saída.mp4>    MP4 final em H.264 (perfil High, sem quadros B, toca em todo navegador), com áudio se a composição tiver
+  <folder>       the composition: a folder with index.html and the <script type="application/json" id="kodecz">
+                 block (docs/formatos/linha-do-tempo.md)
+  <composition>  the id declared in the block
+  <out.mp4>      the MP4, H.264 (High profile, no B-frames, plays in every browser), with audio if the page has any
 
-  --placa        só na placa (RTX: textura → Vulkan → NVENC); sem placa, falha (saída 3)
-  --cpu          só na CPU (desenho por software, x264)
-  --hevc         vídeo em HEVC (arquivo menor, mas não toca em todo navegador); só na placa
-                 sem nenhum dos dois: a placa; sem placa NVIDIA na máquina, CPU com aviso; placa presente
-                 mas ocupada (NVENC sem sessão, VRAM cheia), sai com 3: esperar ou usar --cpu
-  --de <N>       primeiro quadro (padrão 0)
-  --quadros <N>  quantos quadros (padrão: até o fim)
-  --sem-audio    não coleta nem mistura o áudio
-  --alfa         camada com alfa para a montagem do M05: saída .hevc, só na placa, sem áudio
-  --gravar <0,10,20> --gravar-pasta <pasta>   grava esses quadros em BGRA (conferência, SSIM)
-  --manter       não apaga a pasta temporária (depuração)
-  --sem-contencao  sem nice/ionice/teto de CPU (padrão: contido, ferramentas/contencao.mjs)
-  -h, --ajuda    esta ajuda`;
+  --gpu          GPU only (texture → Vulkan → NVENC); without a usable NVIDIA GPU, exits with 3
+  --cpu          CPU only (software paint, x264)
+                 neither: the GPU; on a machine without an NVIDIA GPU, the CPU with a warning; with a GPU that
+                 is busy right now (no NVENC session, VRAM full), exits with 3: wait, or use --cpu
+  --hevc         HEVC video (smaller file, does not play in every browser); GPU only
+  --alpha        transparent layer: raw HEVC with alpha (.hevc output), GPU only, no audio
+  --from <N>     first frame (default 0)
+  --frames <N>   how many frames (default: to the end)
+  --no-audio     do not collect or mix the audio
+  --save-frames <0,10,20> --save-frames-dir <dir>   also write these frames as raw BGRA
+  --keep         keep the temporary folder (debugging)
+  --no-containment  no nice/ionice/CPU cap (default: contained, ferramentas/contencao.mjs)
+  -h, --help     this help
+
+The original Portuguese names still work (deprecated): --placa (--gpu), --alfa (--alpha), --de (--from),
+--quadros (--frames), --sem-audio, --manter, --sem-contencao, --gravar, --gravar-pasta, --ajuda.`;
 
 /** Erro com a correção na mensagem; `codigo` é a saída do processo (2 uso, 3 placa pedida e ausente). */
 export class ErroDeUso extends Error {
@@ -54,7 +59,7 @@ export class ErroDeUso extends Error {
   }
 }
 
-/** P10: o bloco <script id="motor-video"> do index.html de uma composição em linha do tempo. */
+/** P10: o bloco <script id="kodecz"> (ou o antigo id="motor-video") do index.html de uma composição em linha do tempo. */
 export type Declaracao = { id: string; largura: number; altura: number; qps: number; quadros: number };
 /** A entrada do render: só a composição em linha do tempo (P10); a do Remotion saiu do motor (adr.md, seção 16). */
 export type Entrada = { tipo: "linha"; pasta: string; declaracao: Declaracao };
@@ -69,7 +74,7 @@ export type Argumentos = {
 /** Para quem ainda tem composição do Remotion: o motivo e o que fazer. */
 export const SEM_REMOTION = "a entrada do Remotion saiu do motor em 2026-10-31 (docs/adr.md, seção 16: sem a licença do " +
   "Remotion e com um caminho só de captura, o CEF); escreva a composição na linha do tempo, uma pasta com index.html e o " +
-  'bloco <script type="application/json" id="motor-video"> (docs/formatos/linha-do-tempo.md)';
+  'bloco <script type="application/json" id="kodecz"> (docs/formatos/linha-do-tempo.md)';
 
 const ENTRADAS_REMOTION = ["index.ts", "index.tsx", "index.js", "index.jsx", "index.mjs"];
 const inteiro = (texto: string | undefined, nome: string, minimo: number): number | null => {
@@ -88,49 +93,63 @@ function lerEntrada(caminho: string): Entrada {
     throw new ErroDeUso(`${p}: ${SEM_REMOTION}`);
   }
   if (!existsSync(html)) {
-    throw new ErroDeUso(`${p} não é uma composição da linha do tempo: falta index.html com o bloco <script id="motor-video"> ` +
+    throw new ErroDeUso(`${p} não é uma composição da linha do tempo: falta index.html com o bloco <script id="kodecz"> ` +
       "(docs/formatos/linha-do-tempo.md)");
   }
   const declaracao = lerDeclaracao(readFileSync(html, "utf8"));
   // index.html sem o bloco: o pacote do Remotion (remotion bundle) ou a página que esqueceu a declaração.
-  if (!declaracao) throw new ErroDeUso(`${html} não tem o bloco <script id="motor-video">; se é um pacote do Remotion, ${SEM_REMOTION}`);
+  if (!declaracao) throw new ErroDeUso(`${html} não tem o bloco <script id="kodecz">; se é um pacote do Remotion, ${SEM_REMOTION}`);
   return { tipo: "linha", pasta: p, declaracao };
 }
 
 /**
  * A declaração da composição em linha do tempo (P10), ou null se o HTML não tem o bloco.
- * O bloco é o <script> cujo atributo id é motor-video (com ou sem aspas), fora de comentário; sem
- * type="application/json" o navegador o executaria como código. Largura ≥ 800 porque a faixa da marca tem 50 blocos
- * de 16 px; largura e altura pares por causa do 4:2:0 e até 8192, o limite do NVENC.
+ * O bloco é o <script> cujo atributo id é kodecz (ou o antigo motor-video), com ou sem aspas, fora de comentário; sem
+ * type="application/json" o navegador o executaria como código. Os campos têm os nomes em inglês (width, height, fps,
+ * frames; cli/nomes.ts) ou os antigos (largura, altura, qps, quadros); os dois com valores diferentes é erro.
+ * Largura ≥ 800 porque a faixa da marca tem 50 blocos de 16 px; largura e altura pares por causa do 4:2:0 e até 8192,
+ * o limite do NVENC.
  */
 export function lerDeclaracao(html: string): Declaracao | null {
   const atributo = (attrs: string, nome: string) =>
     new RegExp(`(?:^|\\s)${nome}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s"'>]+))`, "i").exec(attrs)?.slice(1).find((x) => x !== undefined);
   const bloco = [...html.replace(/<!--[\s\S]*?-->/g, "").matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)]
-    .find((m) => atributo(m[1], "id") === "motor-video");
+    .find((m) => { const id = atributo(m[1], "id"); return id === ID_BLOCO || id === ID_BLOCO_ANTIGO; });
   if (!bloco) return null;
+  const tag = `<script id="${atributo(bloco[1], "id")}">`;
   if (atributo(bloco[1], "type")?.toLowerCase() !== "application/json") {
-    throw new ErroDeUso('o bloco <script id="motor-video"> precisa de type="application/json" (sem ele, o navegador o executa como código)');
+    throw new ErroDeUso(`o bloco ${tag} precisa de type="application/json" (sem ele, o navegador o executa como código)`);
   }
   let d: any;
-  try { d = JSON.parse(bloco[2]); } catch (e) { throw new ErroDeUso(`o bloco <script id="motor-video"> não é JSON válido: ${(e as Error).message}`); }
-  if (d === null || typeof d !== "object") throw new ErroDeUso('o bloco <script id="motor-video"> tem de ser um objeto');
-  const campo = (nome: string, regra: string) => new ErroDeUso(`motor-video: «${nome}» ${regra}: ${JSON.stringify(d[nome])}`);
+  try { d = JSON.parse(bloco[2]); } catch (e) { throw new ErroDeUso(`o bloco ${tag} não é JSON válido: ${(e as Error).message}`); }
+  if (d === null || typeof d !== "object" || Array.isArray(d)) throw new ErroDeUso(`o bloco ${tag} tem de ser um objeto`);
+  const campo = (nome: string, regra: string) => new ErroDeUso(`${tag}: «${nome}» ${regra}: ${JSON.stringify(d[nome])}`);
   if (typeof d.id !== "string" || !d.id) throw campo("id", "tem de ser o nome da composição (texto)");
+  // O nome que a página usou (o novo, se tem os dois ou nenhum) e o valor; os dois nomes com valores diferentes é erro.
+  const ler = (novo: string): [string, any] => {
+    const antigo = CAMPOS[novo];
+    if (d[novo] !== undefined && d[antigo] !== undefined && d[novo] !== d[antigo]) {
+      throw new ErroDeUso(`${tag}: «${novo}» (${JSON.stringify(d[novo])}) e o nome antigo «${antigo}» (${JSON.stringify(d[antigo])}) ` +
+        `dizem coisas diferentes: deixe só «${novo}»`);
+    }
+    const nome = d[novo] === undefined && d[antigo] !== undefined ? antigo : novo;
+    return [nome, d[nome]];
+  };
   const inteiro = (x: unknown, min: number) => Number.isInteger(x) && (x as number) >= min;
-  for (const [nome, min] of [["largura", 800], ["altura", 16]] as const) {
-    if (!inteiro(d[nome], min) || d[nome] % 2 || d[nome] > 8192) throw campo(nome, `tem de ser inteiro par ≥ ${min} e ≤ 8192 (px)`);
+  const [[nl, largura], [na, altura], [nq, qps], [nf, quadros]] = ["width", "height", "fps", "frames"].map(ler);
+  for (const [nome, v, min] of [[nl, largura, 800], [na, altura, 16]] as const) {
+    if (!inteiro(v, min) || v % 2 || v > 8192) throw campo(nome, `tem de ser inteiro par ≥ ${min} e ≤ 8192 (px)`);
   }
-  if (!inteiro(d.qps, 1) || d.qps > 240) throw campo("qps", "tem de ser inteiro de 1 a 240");
-  if (!inteiro(d.quadros, 1)) throw campo("quadros", "tem de ser inteiro ≥ 1");
-  return { id: d.id, largura: d.largura, altura: d.altura, qps: d.qps, quadros: d.quadros };
+  if (!inteiro(qps, 1) || qps > 240) throw campo(nq, "tem de ser inteiro de 1 a 240 (quadros por segundo)");
+  if (!inteiro(quadros, 1)) throw campo(nf, "tem de ser inteiro ≥ 1 (duração em quadros)");
+  return { id: d.id, largura, altura, qps, quadros };
 }
 
 /** Lê os argumentos (sem o `node` e o script). Lança ErroDeUso com a correção. */
 export function lerArgumentos(argv: string[]): Argumentos {
   let r;
   try {
-    r = parseArgs({ args: argv, allowPositionals: true, strict: true, options: {
+    r = parseArgs({ args: traduzirOpcoes(argv, OPCOES_RENDER), allowPositionals: true, strict: true, options: {
       placa: { type: "boolean" }, cpu: { type: "boolean" }, hevc: { type: "boolean" }, props: { type: "string" }, de: { type: "string" },
       quadros: { type: "string" }, public: { type: "string" }, "sem-audio": { type: "boolean" }, alfa: { type: "boolean" },
       gravar: { type: "string" }, "gravar-pasta": { type: "string" }, manter: { type: "boolean" },
@@ -143,7 +162,7 @@ export function lerArgumentos(argv: string[]): Argumentos {
   if (o.ajuda) throw new ErroDeUso(USO, 0);
   if (p.length < 3) throw new ErroDeUso(`faltam argumentos (recebi ${p.length} de 3): <entrada> <composição> <saída.mp4>\n\n${USO}`);
   if (p.length > 3) throw new ErroDeUso(`argumento a mais: ${p.slice(3).join(" ")} (as opções começam com --)`);
-  if (o.placa && o.cpu) throw new ErroDeUso("--placa e --cpu juntos: escolha um, ou nenhum para a escolha automática");
+  if (o.placa && o.cpu) throw new ErroDeUso("--gpu (--placa) e --cpu juntos: escolha um, ou nenhum para a escolha automática");
   const alfa = o.alfa === true, hevc = o.hevc === true;
   if (alfa && o.cpu) throw new ErroDeUso("--alfa só existe no modo placa (o x264 da CPU não tem camada de alfa)");
   // P01: HEVC na CPU seria o x265, lento, e a CPU é dos sites (CLAUDE.md, «Segurança e operação»).

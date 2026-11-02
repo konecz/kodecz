@@ -18,16 +18,22 @@ A mesma pasta renderiza nos dois.
 
 - **10× menos CPU e 3× mais rápido** que o Remotion no mesmo vídeo (1080p, 150 quadros, RTX 5090;
   [`docs/medidas.md`](docs/medidas.md)).
+- **11× menos CPU e 2,4× mais rápido** que o HyperFrames no mesmo vídeo, medido no mesmo dia (22,0 s → 2,0 s de CPU,
+  6,4 s → 2,7 s de parede). Só na CPU, sem placa, o HyperFrames fica um pouco à frente nesse vídeo, que tem um clipe
+  1080p embutido (26,3 s contra 28,1 s de CPU); num audiograma de 27 s, o Kodecz gasta 2,4× menos CPU (24,6 s contra
+  59,9 s). Tudo em [`docs/medidas.md`](docs/medidas.md), com o script para repetir (`scripts/comparar/comparar.sh`).
 - **Determinístico:** o quadro *N* sai com o mesmo conteúdo e no mesmo tempo, em ordem, fora de ordem ou começando do
   meio. O texto animado pode variar até 2 níveis de cor de um render para outro, pela rasterização do Chromium.
 - **Feito para qualquer agente de IA**, sem amarra a um fornecedor: o formato é web comum, cada técnica de edição é
   um bloco Kodecz em Markdown, documentado e testável, e a conferência automática olha os quadros e devolve em JSON
   onde está o erro.
 
-A interface ainda usa os nomes em português: `./instalar.sh`, `node cli/render.ts <pasta> <id> saida.mp4` (com
-`--cpu`, `--placa`, `--hevc`, `--alfa`, `--de` e `--quadros`), `node cli/previa.ts`, `node cli/conferir.ts` e o bloco
-`<script type="application/json" id="motor-video">` com `largura`, `altura`, `qps` e `quadros`. Os nomes em inglês
-vêm depois.
+A interface tem os nomes em inglês: `./instalar.sh` e `npm link` (ou `node cli/kodecz.ts`), depois
+`kodecz render <pasta> <id> saida.mp4` (com `--cpu`, `--gpu`, `--hevc`, `--alpha`, `--from` e `--frames`),
+`kodecz preview`, `kodecz check` e o bloco `<script type="application/json" id="kodecz">` com `width`, `height`,
+`fps` e `frames`; o gancho do canvas é `window.kodecz_frame(n, ms)`. Os nomes antigos, em português (`node cli/render.ts`,
+`--placa`, `--alfa`, `--de`, `--quadros`, `id="motor-video"`, `largura`, `altura`, `qps`, `quadros`,
+`window.motor_quadro`), ainda funcionam.
 
 Para agentes de IA, o método vem em skills no formato aberto Agent Skills (`skills/`): `kodecz` (fazer o vídeo),
 `remotion-to-kodecz` e `hyperframes-to-kodecz` (portar um projeto). No Claude Code, `/plugin install kodecz

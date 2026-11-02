@@ -13,7 +13,7 @@
   let proximo = 0;
   const chave = (e) => { if (!ids.has(e)) ids.set(e, ++proximo); return ids.get(e); };
   const caixa = (r) => [+r.x.toFixed(2), +r.y.toFixed(2), +r.width.toFixed(2), +r.height.toFixed(2)];
-  const QPS = window.motor_conf?.qps ?? (() => { try { return JSON.parse(document.getElementById('motor-video').textContent).qps; } catch { return 30; } })();
+  const QPS = window.motor_conf?.qps ?? (() => { try { const d = JSON.parse((document.getElementById('kodecz') ?? document.getElementById('motor-video')).textContent); return d.fps ?? d.qps; } catch { return 30; } })();
   const PASSO = Math.max(1, Math.round(QPS / 2));
   const transparente = (c) => !c || c === 'transparent' || /rgba\(.*,\s*0\)$/.test(c);
   const textoProprio = (e) => [...e.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join('').replace(/\s+/g, ' ').trim();
@@ -74,7 +74,7 @@
     const audios = [...document.querySelectorAll('audio, video')].map((a) => ({ src: a.getAttribute('src'), inicio: a.getAttribute('data-inicio'), volume: a.getAttribute('data-volume'),
       velocidade: a.getAttribute('data-velocidade'), quadros: a.getAttribute('data-quadros'), recorte: a.getAttribute('data-recorte'), mudo: a.muted }));
     return { anims, fontes, audios, paginaFundo: getComputedStyle(document.body).backgroundColor, htmlFundo: getComputedStyle(document.documentElement).backgroundColor,
-      blocos: document.querySelectorAll('script#motor-video, script[id="motor-video"]').length };
+      blocos: document.querySelectorAll('script[id="kodecz"], script[id="motor-video"]').length };
   };
 
   window.motor_extra = (n) => {

@@ -189,7 +189,7 @@ async function servirVideo(caminho, busca, res) {
 // P10: código que roda na página da linha do tempo declarada. Todas as animações da página (CSS
 // @keyframes e element.animate) começam em t = 0 do vídeo; o quadro N é posto pausando cada uma e ajustando
 // currentTime para N × 1000 / qps, o que é síncrono com a marca (experimento da linha do tempo, degrau 1). Antes, o
-// gancho opcional window.motor_quadro(n, ms) desenha o que não é animação (canvas, WebGL). Transição de CSS vai ao fim
+// gancho opcional window.kodecz_frame(n, ms) (ou o antigo window.motor_quadro) desenha o que não é animação (canvas, WebGL). Transição de CSS vai ao fim
 // (estado final, determinístico); animação de outra linha do tempo (rolagem, ou uma DocumentTimeline própria) não tem como ser posta
 // no quadro N e é contada em motor_soltas. As duas contagens são de animações distintas, não de quadros. A linha do
 // tempo do documento fica parada desde antes de a página rodar (Animation.setPlaybackRate 0, ver abaixo): sem isso, a
@@ -461,7 +461,9 @@ const auxiliarLinha = (qps) => `
     const ms = (n * 1000) / ${qps};
     const take = videos.length > 0 && globalThis.motorTake?.ligado === true;
     if (videos.length && !take) await desenharVideos(n, aquecer);
-    if (typeof window.motor_quadro === 'function') await window.motor_quadro(n, ms);
+    // O gancho do quadro: window.kodecz_frame, ou o nome antigo window.motor_quadro (cli/nomes.ts).
+    const gancho = typeof window.kodecz_frame === 'function' ? window.kodecz_frame : typeof window.motor_quadro === 'function' ? window.motor_quadro : null;
+    if (gancho) await gancho(n, ms);
     // S01: GSAP e Lottie no quadro N, depois do gancho e antes das Web Animations.
     if (raizGsap) porGsap(n / ${qps});
     const lotties = animacoesLottie();
@@ -530,7 +532,7 @@ const auxiliarLinha = (qps) => `
       intervalos.push([Math.max(0, fim === null ? t.delay : Math.min(t.delay, fim)), fim]);
     }
     // S01: GSAP e Lottie mudam o quadro sem a document.timeline; o motor não lê os intervalos deles e desenha todos.
-    return { quadro: typeof window.motor_quadro === 'function', gsap: !!raizGsap, lottie: animacoesLottie().length > 0, soltas, smil, imagensAnimadas, intervalos };
+    return { quadro: typeof window.kodecz_frame === 'function' ? 'kodecz_frame' : typeof window.motor_quadro === 'function' ? 'motor_quadro' : null, gsap: !!raizGsap, lottie: animacoesLottie().length > 0, soltas, smil, imagensAnimadas, intervalos };
   };
   true`;
 
@@ -806,7 +808,7 @@ ${COR_LIMPA}
   conta.repetidos = 0;
   if (!cpu && (env.M04_REPETIR ?? '1') === '1') {
     const info = await avaliar('window.motor_intervalos()');
-    conta.repetirMotivo = info.quadro ? 'motor_quadro' : info.gsap ? 'GSAP' : info.lottie ? 'Lottie' : info.soltas ? 'animações soltas' : info.smil ? 'SVG SMIL'
+    conta.repetirMotivo = info.quadro ? info.quadro : info.gsap ? 'GSAP' : info.lottie ? 'Lottie' : info.soltas ? 'animações soltas' : info.smil ? 'SVG SMIL'
       : info.imagensAnimadas ? 'imagem que pode ser animada (GIF, APNG, WebP)' : null;
     const trechos = (midias ?? []).filter((m) => m.tipo === 'video').map((m) => [m.inicio, m.inicio + m.quadros]);
     if (!conta.repetirMotivo) parados = new Set(quadrosParados(info.intervalos, primeiro, total, comp.fps, trechos));

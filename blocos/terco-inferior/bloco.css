@@ -8,14 +8,14 @@
   background: var(--color-surface, var(--color-ground)); border-left: 10px solid var(--color-accent);
   border-radius: var(--rounded-card, 20px);
   animation: kz-terco-abre var(--motion-duration-enter, 500ms) var(--motion-easing-enter, cubic-bezier(0.16, 1, 0.3, 1))
-               calc(var(--inicio) * 1s / var(--qps)) both,
+               calc(var(--inicio) * 1s / var(--fps)) both,
              kz-terco-recolhe var(--motion-duration-exit, 300ms) var(--motion-easing-exit, ease-in)
-               calc(var(--fim) * 1s / var(--qps) - var(--motion-duration-exit, 300ms)) forwards;
+               calc(var(--fim) * 1s / var(--fps) - var(--motion-duration-exit, 300ms)) forwards;
 }
 .kz-terco > * {
   margin: 0; white-space: nowrap; overflow: hidden;
   animation: kz-terco-texto var(--motion-duration-enter, 500ms) var(--motion-easing-enter, cubic-bezier(0.16, 1, 0.3, 1))
-             calc((var(--inicio) + var(--atraso, 4)) * 1s / var(--qps)) both;
+             calc((var(--inicio) + var(--atraso, 4)) * 1s / var(--fps)) both;
 }
 .kz-terco-nome {
   font-family: var(--font-title, var(--font-display)); font-weight: var(--font-title-weight, 700);

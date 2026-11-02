@@ -16,7 +16,7 @@ export type Checagem = { id: string; prioridade: "P0" | "P1"; seletor: string; q
 export type Achado = { id: string; prioridade: string; quadro: number; onde: string; valor: number; mensagem: string };
 export type Resultado = { declaracao: { id: string; largura: number; altura: number; qps: number; quadros: number };
   quadros: number; achados: Achado[]; medidas: Record<string, unknown[]> | null };
-/** Uma regra do bloco.css que anima, com as variáveis sem padrão de que a animação depende (fora o --qps). */
+/** Uma regra do bloco.css que anima, com as variáveis sem padrão de que a animação depende (fora o --fps e o antigo --qps). */
 export type Animacao = { bloco: string; seletor: string; variaveis: string[] };
 
 /** Os nomes dos blocos usados na página (atributo data-bloco), na ordem em que aparecem, sem repetir. */
@@ -53,7 +53,7 @@ export function animacoesDoBloco(nome: string): Animacao[] {
     const animacao = r.corpo.split(";").filter((d) => /^\s*animation\s*:/.test(d));
     if (!animacao.length) return [];
     const vistas = new Set<string>();
-    return [{ bloco: nome, seletor: r.seletor, variaveis: animacao.flatMap((d) => semPadrao(d, vistas)).filter((v) => v !== "--qps") }];
+    return [{ bloco: nome, seletor: r.seletor, variaveis: animacao.flatMap((d) => semPadrao(d, vistas)).filter((v) => v !== "--fps" && v !== "--qps") }];
   });
 }
 

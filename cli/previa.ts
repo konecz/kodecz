@@ -24,6 +24,7 @@ import { createServer, type IncomingMessage, type Server, type ServerResponse } 
 import { basename, dirname, join, relative, resolve } from "node:path";
 import { parseArgs } from "node:util";
 import { CAMINHOS, ErroDeUso, lerDeclaracao, type Declaracao } from "./regras.ts";
+import { OPCOES_PREVIA, traduzirOpcoes } from "./nomes.ts";
 import { Recursos } from "./processos.ts";
 import { paraPng } from "./quadros.ts";
 
@@ -32,20 +33,24 @@ const RENDER = new URL("./render.ts", import.meta.url).pathname;
 const RAJADA_MS = 120;
 const avisar = (texto: string) => process.stderr.write(`prévia: ${texto}\n`);
 
-export const USO = `uso: node cli/previa.ts <pasta> <composição> [opções]
+export const USO = `usage: kodecz preview <folder> <composition> [options]
+       (same as: node cli/previa.ts <folder> <composition> [options])
 
-Os quadros da composição em PNG, o mesmo pixel do render (R03), sem renderizar o vídeo inteiro.
-<pasta> é a composição em linha do tempo (index.html com o bloco motor-video); <composição>, o id declarado.
+Frames of the composition as PNG, the same pixels as the render, without rendering the whole video.
+<folder> is the composition (index.html with the id="kodecz" block); <composition>, the id declared in it.
 
-  --quadro <N | 0,45,120>  quadros a gerar (padrão no --observar: o primeiro, o do meio e o último)
-  --saida <arquivo.png | pasta>  um quadro: o PNG (padrão tmp/previa/<composição>/quadro-N.png); vários ou
-                 --observar: a pasta, com quadro-N.png (padrão tmp/previa/<composição>)
-  --observar     refaz os quadros a cada mudança na pasta, com o navegador quente; para com Ctrl+C
-  --servir       com --observar: página em http://127.0.0.1:<porta>/ com os quadros e um controle de N
-  --porta <N>    porta da página (padrão: uma livre)
-  --placa | --cpu  o modo do render (padrão: o do cli/render.ts, placa e CPU se não houver placa)
-  --sem-contencao  passado ao cli/render.ts
-  -h, --ajuda    esta ajuda`;
+  --frame <N | 0,45,120>  frames to make (default with --watch: the first, the middle and the last)
+  --out <file.png | dir>  one frame: the PNG (default tmp/previa/<composition>/quadro-N.png); several, or
+                 --watch: the folder, with quadro-N.png (default tmp/previa/<composition>)
+  --watch        re-renders the frames on every change in the folder, with a warm browser; Ctrl+C stops
+  --serve        with --watch: a page at http://127.0.0.1:<port>/ with the frames and a frame slider
+  --port <N>     port of that page (default: a free one)
+  --gpu | --cpu  render mode (default: the GPU, or the CPU when there is no NVIDIA GPU)
+  --no-containment  passed to the render
+  -h, --help     this help
+
+The original Portuguese names still work (deprecated): --quadro, --saida, --observar, --servir, --porta, --placa,
+--sem-contencao, --ajuda.`;
 
 export type OpcoesPrevia = {
   pasta: string; composicao: string; declaracao: Declaracao; quadros: number[]; saida: string; arquivoUnico: boolean;
@@ -56,7 +61,7 @@ export type OpcoesPrevia = {
 export function lerOpcoesPrevia(argv: string[]): OpcoesPrevia {
   let r;
   try {
-    r = parseArgs({ args: argv, allowPositionals: true, strict: true, options: {
+    r = parseArgs({ args: traduzirOpcoes(argv, OPCOES_PREVIA), allowPositionals: true, strict: true, options: {
       quadro: { type: "string" }, saida: { type: "string" }, observar: { type: "boolean" }, servir: { type: "boolean" },
       porta: { type: "string" }, placa: { type: "boolean" }, cpu: { type: "boolean" }, "sem-contencao": { type: "boolean" },
       ajuda: { type: "boolean", short: "h" },
@@ -74,7 +79,7 @@ export function lerOpcoesPrevia(argv: string[]): OpcoesPrevia {
   const html = join(pasta, "index.html");
   if (!existsSync(html) || !statSync(pasta).isDirectory()) throw new ErroDeUso(`${pasta}: falta o index.html da composição em linha do tempo`);
   const declaracao = lerDeclaracao(readFileSync(html, "utf8"));
-  if (!declaracao) throw new ErroDeUso(`${html} não tem o bloco <script id="motor-video">: a prévia só atende a linha do tempo declarada (docs/formatos/linha-do-tempo.md)`);
+  if (!declaracao) throw new ErroDeUso(`${html} não tem o bloco <script id="kodecz">: a prévia só atende a linha do tempo declarada (docs/formatos/linha-do-tempo.md)`);
   if (declaracao.id !== composicao) throw new ErroDeUso(`composição «${composicao}» não existe em ${pasta}; a declarada é ${declaracao.id}`);
   let quadros: number[];
   if (o.quadro === undefined) {

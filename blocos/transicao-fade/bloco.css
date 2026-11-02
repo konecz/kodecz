@@ -3,7 +3,7 @@
 .kz-fade {
   position: absolute; inset: 0;
   background: var(--color-ground);
-  animation: kz-fade-entra calc(var(--duracao, 15) * 1s / var(--qps)) linear
-             calc(var(--inicio) * 1s / var(--qps)) both;
+  animation: kz-fade-entra calc(var(--duracao, 15) * 1s / var(--fps)) linear
+             calc(var(--inicio) * 1s / var(--fps)) both;
 }
 @keyframes kz-fade-entra { from { opacity: 0; } to { opacity: 1; } }

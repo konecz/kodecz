@@ -6,7 +6,7 @@
   position: absolute; left: var(--contagem-x, 50%); top: var(--contagem-topo, 50%); transform: translate(-50%, -50%);
   display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;
   animation: kz-contagem-entra var(--motion-duration-enter, 500ms) var(--motion-easing-enter, cubic-bezier(0.16, 1, 0.3, 1))
-             calc(var(--inicio) * 1s / var(--qps)) both;
+             calc(var(--inicio) * 1s / var(--fps)) both;
 }
 .kz-contagem-num {
   font-family: var(--font-display); font-weight: var(--font-display-weight, 800);
@@ -14,8 +14,8 @@
   letter-spacing: var(--font-display-letter-spacing, normal); color: var(--color-accent); white-space: nowrap;
   font-variant-numeric: tabular-nums;
   counter-reset: kz-contagem var(--kz-valor);
-  animation: kz-conta calc((var(--fim) - var(--inicio)) * 1s / var(--qps)) cubic-bezier(0.33, 1, 0.68, 1)
-             calc(var(--inicio) * 1s / var(--qps)) both;
+  animation: kz-conta calc((var(--fim) - var(--inicio)) * 1s / var(--fps)) cubic-bezier(0.33, 1, 0.68, 1)
+             calc(var(--inicio) * 1s / var(--fps)) both;
 }
 .kz-contagem-num::before { content: var(--prefixo, "") counter(kz-contagem) var(--sufixo, ""); }
 .kz-contagem-rotulo {
@@ -23,8 +23,8 @@
   color: var(--color-muted, var(--color-ink)); white-space: nowrap;
 }
 .kz-regressiva .kz-contagem-num {
-  animation: kz-regride calc(var(--de) * 1s) steps(var(--de), jump-none) calc(var(--inicio) * 1s / var(--qps)) both,
-             kz-pulso 1s var(--motion-easing-enter, cubic-bezier(0.16, 1, 0.3, 1)) calc(var(--inicio) * 1s / var(--qps)) var(--de) both;
+  animation: kz-regride calc(var(--de) * 1s) steps(var(--de), jump-none) calc(var(--inicio) * 1s / var(--fps)) both,
+             kz-pulso 1s var(--motion-easing-enter, cubic-bezier(0.16, 1, 0.3, 1)) calc(var(--inicio) * 1s / var(--fps)) var(--de) both;
 }
 @keyframes kz-contagem-entra { from { opacity: 0; translate: 0 0.5em; } to { opacity: 1; translate: none; } }
 @keyframes kz-conta { from { --kz-valor: 0; } to { --kz-valor: var(--valor); } }
