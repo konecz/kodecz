@@ -9,7 +9,7 @@ Key facts:
 - The original Portuguese names (`id="motor-video"`, `largura`, `altura`, `qps`, `quadros`, `window.motor_quadro`, `--placa`, `--alfa`, `--de`, `--quadros`) are still accepted.
 - Animation comes from CSS `@keyframes`, the Web Animations API, GSAP or Lottie; Kodecz puts every animation at frame N before drawing it. Canvas and WebGL go in `window.kodecz_frame(n, ms)`. Timers, `requestAnimationFrame` and the wall clock are not allowed.
 - Frame N is deterministic in content and timing, in order, out of order or starting from the middle; Chromium can rasterize animated text up to 2 color levels differently between runs.
-- On the same 1080p, 150-frame video, Kodecz used 4.4 s of CPU against 43.7 s for Remotion, and finished in 4.6 s against 13.6 s (RTX 5090).
+- On the same 1080p, 150-frame video, measured the same day (2026-11-02, RTX 5090): Kodecz used 2.0 s of CPU against 37.7 s for Remotion and 22.0 s for HyperFrames, and finished in 2.7 s against 9.9 s and 6.4 s. On the CPU only, HyperFrames is slightly ahead on that video (26.3 s against 28.1 s of CPU).
 - Output: MP4 with H.264 or HEVC (GPU only), a transparent layer as raw HEVC with alpha (`--alpha`, GPU only), AAC audio mixed from the page.
 
 ## Docs

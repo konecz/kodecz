@@ -50,11 +50,11 @@ always the same frame, in order, out of order or starting from the middle: same 
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/konecz/kodecz/main/marca/numeros-escuro.svg">
-  <img alt="One square per second. CPU time: Remotion 43.7 s, Kodecz 4.4 s, 10 times less. Wall time: Remotion 13.6 s, Kodecz 4.6 s, 3 times faster." src="https://raw.githubusercontent.com/konecz/kodecz/main/marca/numeros-claro.svg" width="100%">
+  <img alt="One square per second. CPU time: Remotion 37.7 s, Kodecz 2.0 s, 19 times less. Wall time: Remotion 9.9 s, Kodecz 2.7 s, 3.7 times faster." src="https://raw.githubusercontent.com/konecz/kodecz/main/marca/numeros-claro.svg" width="100%">
 </picture>
 
-Each square is one second. Rendering the same video, Kodecz keeps the processor busy for **10× less time**
-(43.7 s → 4.4 s of CPU) and hands you the MP4 **3× sooner** (13.6 s → 4.6 s on the clock).
+Each square is one second. Rendering the same video on the same day, Kodecz keeps the processor busy for **19× less
+time** (37.7 s → 2.0 s of CPU) and hands you the MP4 **3.7× sooner** (9.9 s → 2.7 s on the clock).
 
 <sub>1080p · 150 frames · H.264 · RTX 5090 · <a href="docs/medidas.md">how we measured</a></sub>
 
@@ -70,8 +70,7 @@ against 59.9 s). All the numbers, and a script to reproduce them, are in [`docs/
 | You write the video in | any web page: HTML, CSS, JS, React, WebGL | React components | HTML |
 | How each frame leaves the browser | GPU texture or the raw painted frame, no screenshot | screenshot (`Page.captureScreenshot`) | screenshot (`HeadlessExperimental.beginFrame`) |
 | Encoding | NVENC on the GPU, or x264 on the CPU | ffmpeg, x264 on the CPU by default | ffmpeg, x264 on the CPU by default (NVENC with `--gpu`) |
-| CPU time for the same 1080p video | **4.4 s** | 43.7 s | 22.0 s (measured 2026-11-02, next row) |
-| Same video, all three on the same day (2026-11-02) | **2.0 s** CPU, 2.7 s wall | 37.7 s CPU, 9.9 s wall | 22.0 s CPU, 6.4 s wall |
+| Same 1080p video, all three on the same day (2026-11-02) | **2.0 s** CPU, **2.7 s** wall | 37.7 s CPU, 9.9 s wall | 22.0 s CPU, 6.4 s wall |
 | Same video on the CPU only, no GPU | 28.1 s CPU, 7.1 s wall | — | **26.3 s** CPU, **6.8 s** wall |
 | 1080×1080 audiogram, 814 frames, CPU only | **24.6 s** CPU, **9.3 s** wall | — | 59.9 s CPU, 12.2 s wall |
 | License | Apache-2.0 | Remotion License (paid for companies above 3 people) | Apache-2.0 |
@@ -81,7 +80,7 @@ code; the CPU numbers are ours, in <a href="docs/medidas.md">docs/medidas.md</a>
 
 ## Quick start
 
-> **Status:** early (0.1), Linux only, installed from a clone (not on npm yet). It is the engine we render our own
+> **Status:** early (0.1), Linux only, installed from a clone. It is the engine we render our own
 > videos with. Parts of the code, the internal docs and some media attributes (`data-inicio`…) are still in
 > Portuguese.
 
