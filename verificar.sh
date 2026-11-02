@@ -13,7 +13,7 @@ if [ "${1:-rapido}" = "completo" ]; then
   export MOTOR_TRAVA_PLACA_TOMADA=1
   exec flock "$TRAVA" node --test "cli/*.test.ts" "captura/*.test.ts" "composicao/*.test.ts" "blocos/*.test.ts" \
     "conferencia/*.test.ts" "instalar/*.test.ts" identidade/design-md.test.ts \
-    "bench-gerador/*.test.ts"
+    "bench-gerador/*.test.ts" "mcp/*.test.mjs" "scripts/*.test.mjs"
 fi
 
 # Sem placa nem navegador.
@@ -21,7 +21,7 @@ node --test cli/brilho.test.ts captura/codificador-cpu.test.ts captura/faixa.tes
   cli/processos.test.ts cli/regras.test.ts composicao/audio.test.ts composicao/cor-limpa.test.ts composicao/parados.test.ts \
   conferencia/falas.test.ts \
   conferencia/regras.test.ts conferencia/rosto.test.ts identidade/design-md.test.ts instalar/instalar.test.ts \
-  bench-gerador/expandir.test.ts bench-gerador/adaptador.test.ts
+  bench-gerador/expandir.test.ts bench-gerador/adaptador.test.ts mcp/kodecz-mcp.test.mjs scripts/agentes.test.mjs
 
 # Um render de prova na placa: a linha sintética (60 quadros) sai com o quadro N certo (a marca confere cada quadro).
 saida=$(mktemp -d)

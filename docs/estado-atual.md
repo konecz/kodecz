@@ -2,7 +2,7 @@
 
 > Checkpoint de continuidade entre sessões. Curto: sobrescrever, nunca acumular.
 
-**Atualizado em:** 2026-11-01, na abertura.
+**Atualizado em:** 2026-11-02, na distribuição para agentes.
 
 ## Onde estamos
 
@@ -13,6 +13,10 @@
   privado (`SECURITY.md`), `main` só por PR, sem force push, só squash.
 - **Papers** (figshare, 2026-11-01): o motor contra o Remotion e o HyperFrames, e o editor para agentes com o Kodecz
   Bench (modo 1 em 300 casos: o Claude Opus errou 35 de 219, 16,0 %).
+- **Distribuição para agentes** (branch `feature/plugin-e-skills`): skills `kodecz`, `remotion-to-kodecz` e
+  `hyperframes-to-kodecz` (`skills/`, formato Agent Skills), plugin e marketplace do Claude Code (`.claude-plugin/`),
+  servidor MCP sem dependência (`mcp/`) e `server.json` do registro. Escritos já com os nomes em inglês. Envios
+  externos prontos e não enviados em `docs/distribuicao.md`.
 - **Render:** `node cli/render.ts <pasta> <composição> <saída.mp4> --placa` (H.264; `--hevc`, `--alfa`, `--cpu`,
   `--de N`). Instalar: `./instalar.sh`.
 
@@ -37,6 +41,9 @@ Nenhum em andamento: o responsável escolhe da lista abaixo.
 
 ## Pendências (só do responsável)
 
+- Envios da distribuição (`docs/distribuicao.md`), depois da interface em inglês na `main`: `npm publish` do
+  `kodecz-mcp`, registro do MCP, listas (awesome-claude-code a partir de 2026-11-14) e, se quiser, o diretório da
+  Anthropic.
 - Sandbox do Chromium e `chrome-sandbox` (pede `sudo`; aviso do `./instalar.sh`).
 - Teste da demonstração dos blocos: falha intermitente do Chromium (rasterização que depende do relógio); manter
   estrito é o recomendado.

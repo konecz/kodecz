@@ -1,0 +1,20 @@
+{
+  "name": "kodecz",
+  "displayName": "Kodecz",
+  "version": "0.1.0",
+  "description": "Make videos as web pages with Kodecz (HTML to MP4 on an NVIDIA GPU or any CPU): write, preview, check and render, plus ports from Remotion and HyperFrames",
+  "author": { "name": "Konecz", "url": "https://konecz.com" },
+  "homepage": "https://github.com/konecz/kodecz",
+  "repository": "https://github.com/konecz/kodecz",
+  "license": "Apache-2.0",
+  "icon": "./.claude-plugin/icon.png",
+  "documentationUrl": "https://github.com/konecz/kodecz/blob/main/AGENTS.md",
+  "supportUrl": "https://github.com/konecz/kodecz/issues",
+  "keywords": ["video", "render", "html-to-video", "motion-graphics", "nvenc", "remotion", "hyperframes", "mcp"],
+  "mcpServers": {
+    "kodecz": {
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/mcp/kodecz-mcp.mjs"]
+    }
+  }
+}

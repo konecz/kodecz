@@ -29,6 +29,11 @@ A interface ainda usa os nomes em português: `./instalar.sh`, `node cli/render.
 `<script type="application/json" id="motor-video">` com `largura`, `altura`, `qps` e `quadros`. Os nomes em inglês
 vêm depois.
 
+Para agentes de IA, o método vem em skills no formato aberto Agent Skills (`skills/`): `kodecz` (fazer o vídeo),
+`remotion-to-kodecz` e `hyperframes-to-kodecz` (portar um projeto). No Claude Code, `/plugin install kodecz
+--marketplace konecz/kodecz` instala as skills e o servidor MCP (`mcp/`, com `render`, `preview` e `check`); nos
+outros agentes, `npx skills add konecz/kodecz`.
+
 O README completo, com o passo a passo, está em inglês: [`README.md`](README.md).
 
 Criado por **Pedro Henrique Lahr** e **Vanessa Cristine**, pela [Konecz](https://konecz.com), AI Factory. Licença [Apache-2.0](LICENSE).

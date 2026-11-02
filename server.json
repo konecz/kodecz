@@ -1,0 +1,26 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.konecz/kodecz",
+  "title": "Kodecz",
+  "description": "Render, preview and check videos written as web pages (HTML to MP4 on NVIDIA GPU or CPU)",
+  "websiteUrl": "https://github.com/konecz/kodecz",
+  "repository": { "url": "https://github.com/konecz/kodecz", "source": "github", "subfolder": "mcp" },
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "kodecz-mcp",
+      "version": "0.1.0",
+      "transport": { "type": "stdio" },
+      "environmentVariables": [
+        {
+          "name": "KODECZ_BIN",
+          "description": "Path to the kodecz command (default: kodecz on the PATH)",
+          "isRequired": false,
+          "isSecret": false
+        }
+      ]
+    }
+  ]
+}

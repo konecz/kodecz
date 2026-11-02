@@ -7,6 +7,16 @@ with files and shell commands; nothing depends on one vendor.
 > file uses them as they are. **Roadmap:** English names (`kodecz render`, `id="kodecz"`, `fps`...) are coming, with
 > the current names still accepted for a while.
 
+## Skills, plugin and MCP server
+
+The method below also ships as installable skills, in the open Agent Skills format (`skills/`): `kodecz` (make a
+video), `remotion-to-kodecz` and `hyperframes-to-kodecz` (port a project).
+
+- Claude Code: `/plugin install kodecz --marketplace konecz/kodecz` (the skills and the MCP server).
+- Codex, Cursor, Gemini CLI, Copilot and other agents: `npx skills add konecz/kodecz`.
+- Any MCP client: `mcp/kodecz-mcp.mjs` (npm `kodecz-mcp`), with the tools `render`, `preview` (returns the frames as
+  images) and `check`. It runs the `kodecz` command installed on the machine.
+
 ## The loop
 
 1. **Write** the video as a folder: `index.html` with the `<script type="application/json" id="motor-video">` block
