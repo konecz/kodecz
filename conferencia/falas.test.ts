@@ -13,11 +13,11 @@ test("falas válidas: pontuação preservada, ordem do tempo", () => {
 
 test("falas inválidas são recusadas com mensagem", () => {
   const recusa = (valor: unknown, re: RegExp) => assert.throws(() => lerFalas(valor), (e: Error) => re.test(e.message));
-  recusa({}, /lista/);
-  recusa([{ t: "", ini: 0, fim: 1, bloco: 1 }], /palavra 0.*«t» vazio/);
-  recusa([{ t: "a", ini: "0", fim: 1, bloco: 1 }], /palavra 0.*«ini»/);
-  recusa([{ t: "a", ini: 0, fim: 1 }], /palavra 0.*«bloco»/);
-  recusa([{ t: "a", ini: 1, fim: 0.5, bloco: 1 }], /palavra 0.*fim antes do início/);
-  recusa([{ t: "a", ini: 1, fim: 2, bloco: 1 }, { t: "b", ini: 0.5, fim: 3, bloco: 1 }], /palavra 1.*fora de ordem/);
-  recusa([{ t: "a", ini: -1, fim: 2, bloco: 1 }], /palavra 0.*«ini»/);
+  recusa({}, /list/);
+  recusa([{ t: "", ini: 0, fim: 1, bloco: 1 }], /word 0.*«t» is empty/);
+  recusa([{ t: "a", ini: "0", fim: 1, bloco: 1 }], /word 0.*«ini»/);
+  recusa([{ t: "a", ini: 0, fim: 1 }], /word 0.*«bloco»/);
+  recusa([{ t: "a", ini: 1, fim: 0.5, bloco: 1 }], /word 0.*«fim» is before «ini»/);
+  recusa([{ t: "a", ini: 1, fim: 2, bloco: 1 }, { t: "b", ini: 0.5, fim: 3, bloco: 1 }], /word 1.*out of order/);
+  recusa([{ t: "a", ini: -1, fim: 2, bloco: 1 }], /word 0.*«ini»/);
 });

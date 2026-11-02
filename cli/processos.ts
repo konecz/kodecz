@@ -87,9 +87,9 @@ export class Recursos {
     let primeiro: string | null = null;
     for (const [sinal, codigo] of Object.entries(SINAIS)) {
       process.on(sinal, () => {
-        if (primeiro) { process.stderr.write(`motor: ${sinal} ignorado: ainda encerrando depois do ${primeiro}\n`); return; }
+        if (primeiro) { process.stderr.write(`kodecz: ${sinal} ignored: still shutting down after ${primeiro}\n`); return; }
         primeiro = sinal;
-        process.stderr.write(`\nmotor: ${sinal} recebido: encerrando os processos e apagando os temporários\n`);
+        process.stderr.write(`\nkodecz: ${sinal} received: stopping the processes and deleting temporary files\n`);
         this.liberar().finally(() => process.exit(codigo));
       });
     }

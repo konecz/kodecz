@@ -68,7 +68,7 @@ test("sem driver da NVIDIA: não bloqueia por ele (o modo CPU instala), diz o co
   assert.deepEqual(c.nvenc, []);
   const driver = c.faltas.find((f) => /driver/.test(f.oQue));
   assert.ok(driver && !driver.bloqueia && /ubuntu-drivers/.test(driver.comando ?? ""));
-  assert.deepEqual(c.faltas.filter((f) => f.bloqueia).map((f) => f.oQue), ["Rust (cargo) ausente: o host do CEF (e, com placa, o módulo nativo) é compilado nesta máquina"]);
+  assert.deepEqual(c.faltas.filter((f) => f.bloqueia).map((f) => f.oQue), ["Rust (cargo) not found: the Chromium (CEF) host, and with a GPU the native module, are compiled on this machine"]);
   const comCargo = conferirSistema(maquina({ ler: () => null, vendors: () => [], existe: (p) => p.startsWith("/etc/ssl/"),
     comando: (n) => (n === "cc" || n === "cmake" || n === "ninja" ? null : `/usr/bin/${n}`) }));
   assert.equal(comCargo.cargo, "/usr/bin/cargo");
@@ -109,7 +109,7 @@ test("placa sem o ICD do Vulkan da NVIDIA em nenhum dos dois lugares: placa fora
   assert.equal(so.placa, true, "o de /etc/vulkan/icd.d serve");
   const c = conferirSistema(maquina({ existe: (p) => !p.endsWith("nvidia_icd.json") }));
   assert.equal(c.placa, false);
-  assert.ok(c.faltas.some((f) => !f.bloqueia && /ICD do Vulkan/.test(f.oQue)));
+  assert.ok(c.faltas.some((f) => !f.bloqueia && /Vulkan ICD/.test(f.oQue)));
 });
 
 test("bwrap que não cria namespace (userns barrado): aviso com o motivo, sem bloquear a instalação", () => {
@@ -126,7 +126,7 @@ test("bwrap que não cria namespace (userns barrado): aviso com o motivo, sem bl
 test("Node abaixo do 24, sem fonte nenhuma e disco curto: bloqueiam com o que fazer", () => {
   const c = conferirSistema(maquina({ node: "v22.11.0", saida: (c) => (c.endsWith("cargo") ? "cargo 1.91.0" : ""), livreBytes: () => 1e9 }));
   assert.ok(c.faltas.some((f) => f.bloqueia && /Node 22/.test(f.oQue)));
-  assert.ok(c.faltas.some((f) => f.bloqueia && /espaço/.test(f.oQue)));
+  assert.ok(c.faltas.some((f) => f.bloqueia && /disk space/.test(f.oQue)));
   assert.deepEqual(c.pacotes, ["fonts-dejavu-core"]);
 });
 
@@ -190,7 +190,7 @@ test("nativo: compila e copia para nativo.node; de novo não refaz; fonte mudada
   await rodarEtapas([etapa], { verificar: false, avisar: () => {} });
   assert.equal(chamadas.length, 1);
   writeFileSync(join(fonte, "src", "lib.rs"), "// 2");
-  assert.match(etapa.conferir() ?? "", /fontes/);
+  assert.match(etapa.conferir() ?? "", /sources/);
   await rodarEtapas([etapa], { verificar: false, avisar: () => {} });
   assert.equal(readFileSync(c.modulo, "utf8"), "so // 2");
   writeFileSync(c.modulo, "estragado");
@@ -225,7 +225,7 @@ test("CEF: baixa, confere e achata pelo preparar-cef.sh e compila o host; de nov
     }
   });
   const etapa = etapaCef(c, { cargo: "/x/cargo", placa: true, nvenc: [so] }, x);
-  assert.match(etapa.conferir() ?? "", /falta o CEF/);
+  assert.match(etapa.conferir() ?? "", /CEF 156\.0\.14 is missing/);
   assert.deepEqual((await rodarEtapas([etapa], { verificar: false, avisar: () => {} })).faltas, []);
   assert.deepEqual(chamadas, [`${c.preparar}  @${fonte}`, `${c.montar}  @${fonte}`]);
   // O CEF vai para a pasta do cache do motor; o cargo e as .so do driver chegam ao montar.sh.
@@ -236,12 +236,12 @@ test("CEF: baixa, confere e achata pelo preparar-cef.sh e compila o host; de nov
   assert.equal(chamadas.length, 2, "rodar de novo não pode refazer");
   // O host inclui o núcleo do nativo por caminho: mudar o núcleo recompila (sem baixar de novo).
   writeFileSync(join(nucleo, "src", "lib.rs"), "// núcleo 2");
-  assert.match(etapa.conferir() ?? "", /fontes/);
+  assert.match(etapa.conferir() ?? "", /sources/);
   await rodarEtapas([etapa], { verificar: false, avisar: () => {} });
   assert.deepEqual(chamadas.slice(2), [`${c.montar}  @${fonte}`]);
   // CEF trocado: baixa de novo.
   writeFileSync(join(raiz, "rs", "archive.json"), JSON.stringify({ sha1: "outro" }));
-  assert.match(etapa.conferir() ?? "", /não confere/);
+  assert.match(etapa.conferir() ?? "", /does not match/);
 });
 
 // P14: sem driver, o host é montado sem a feature `placa` (sem o NVENC/NVDEC, que ligam nas .so do driver), e a troca
@@ -272,11 +272,11 @@ test("CEF sem placa: não pula, monta o host com --no-default-features e sem as 
   assert.equal(sem.conferir(), null);
   // O driver chegou: o host sem a placa não serve mais; remonta com ela.
   const com = etapaCef(c, { cargo: "/x/cargo", placa: true, nvenc: [] }, x);
-  assert.match(com.conferir() ?? "", /sem a placa/);
+  assert.match(com.conferir() ?? "", /without GPU/);
   await rodarEtapas([com], { verificar: false, avisar: () => {} });
   assert.deepEqual(chamadas.slice(1), [`${c.montar}  @${fonte}`]);
   assert.equal(com.conferir(), null);
-  assert.match(sem.conferir() ?? "", /com a placa/);
+  assert.match(sem.conferir() ?? "", /with GPU/);
   // Placa fora só agora (driver novo antes do reboot, nvidia-drm descarregado), com as .so do driver no lugar: o host
   // com a placa fica; não é trocado por um sem placa.
   const so = join(tmp, "libnvcuvid.so.1");
@@ -311,7 +311,7 @@ test("sem o Remotion: nada do Electron remendado nem do composicao/ no instalado
     writeFileSync(join(cwd, "dist", "electron"), "");
   });
   const etapa = etapaElectron(c, x);
-  assert.match(etapa.conferir() ?? "", /não foi baixado/);
+  assert.match(etapa.conferir() ?? "", /was not downloaded/);
   assert.deepEqual((await rodarEtapas([etapa], { verificar: false, avisar: () => {} })).faltas, []);
   assert.equal(etapa.conferir(), null, "baixado basta: sem a cópia remendada (dist-nativo)");
   assert.deepEqual(chamadas, [`${process.execPath} ${c.instalador} @${pasta}`]);

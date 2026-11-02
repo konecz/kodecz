@@ -24,11 +24,11 @@ export function gravarMarca(arquivo: string, dados: Record<string, string>) {
 export async function rodarEtapas(etapas: Etapa[], { verificar, avisar }: { verificar: boolean; avisar: (linha: string) => void }) {
   const faltas: string[] = [];
   for (const e of etapas) {
-    if (e.pular) { avisar(`– ${e.nome}: pulado (${e.pular})`); continue; }
+    if (e.pular) { avisar(`– ${e.nome}: skipped (${e.pular})`); continue; }
     const antes = e.conferir();
     if (!antes) { avisar(`✓ ${e.nome}`); continue; }
     if (verificar) { avisar(`✗ ${e.nome}: ${antes}`); faltas.push(`${e.nome}: ${antes}`); continue; }
-    avisar(`… ${e.nome}: ${antes}; instalando`);
+    avisar(`… ${e.nome}: ${antes}; installing`);
     let depois: string | null;
     try { await e.fazer(); depois = e.conferir(); } catch (erro) { depois = (erro as Error).message; }
     if (depois) { avisar(`✗ ${e.nome}: ${depois}`); faltas.push(`${e.nome}: ${depois}`); break; }
@@ -42,12 +42,12 @@ export function etapaNpm(nome: string, pasta: string, x: Executar): Etapa {
   const lock = join(pasta, "package-lock.json");
   const marca = join(pasta, "node_modules", ".motor-video.json");
   return {
-    nome: `dependências: ${nome}`,
+    nome: `dependencies: ${nome}`,
     conferir: () => {
-      if (!existsSync(lock)) return `sem package-lock.json em ${pasta}`;
+      if (!existsSync(lock)) return `no package-lock.json in ${pasta}`;
       const m = lerMarca(marca);
-      if (!m) return existsSync(join(pasta, "node_modules")) ? "node_modules sem registro do instalador" : "falta o node_modules";
-      return m.lock === sha256(lock) ? null : "o package-lock.json mudou desde o último npm ci";
+      if (!m) return existsSync(join(pasta, "node_modules")) ? "node_modules has no installer record" : "node_modules is missing";
+      return m.lock === sha256(lock) ? null : "package-lock.json changed since the last npm ci";
     },
     fazer: () => {
       x("npm", ["ci", "--ignore-scripts", "--no-audit", "--no-fund"], { cwd: pasta });
@@ -78,17 +78,17 @@ export function etapaNativo(c: { fonte: string; biblioteca: string; modulo: stri
   // desenvolvimento traz; links próprios para as .so.1 do driver dispensam o sudo (o binário pede a .so.1 do mesmo jeito).
   const ligacao = join(c.fonte, "target", "ligacao-nvidia");
   return {
-    nome: "módulo nativo (Rust: Vulkan e NVENC)",
-    pular: placa ? undefined : "sem placa NVIDIA: o modo CPU não usa o nativo",
+    nome: "native module (Rust: Vulkan and NVENC)",
+    pular: placa ? undefined : "no NVIDIA GPU: CPU mode does not use it",
     conferir: () => {
-      if (!existsSync(c.modulo)) return "falta o nativo.node";
+      if (!existsSync(c.modulo)) return "nativo.node is missing";
       const m = lerMarca(marca);
-      if (!m) return "nativo.node sem registro de compilação";
-      if (m.fontes !== hashFontes(c.fonte)) return "as fontes do nativo mudaram";
-      return m.modulo === sha256(c.modulo) ? null : "o nativo.node não confere com o compilado";
+      if (!m) return "nativo.node has no build record";
+      if (m.fontes !== hashFontes(c.fonte)) return "the native module sources changed";
+      return m.modulo === sha256(c.modulo) ? null : "nativo.node does not match the build";
     },
     fazer: () => {
-      if (!cargo) throw new Error("sem cargo");
+      if (!cargo) throw new Error("cargo not found");
       rmSync(ligacao, { recursive: true, force: true });
       mkdirSync(ligacao, { recursive: true });
       for (const so of nvenc) symlinkSync(so, join(ligacao, basename(so).replace(/\.so\.\d+$/, ".so")));
@@ -103,7 +103,7 @@ export function etapaNativo(c: { fonte: string; biblioteca: string; modulo: stri
 /** Modelo de rosto e retrato de teste da conferência (S04), pelo preparar.ts dela, que confere o SHA-256 de cada um. */
 export function etapaConferencia(c: { pasta: string; preparar: string }, conferir: () => string | null, x: Executar): Etapa {
   return {
-    nome: "conferência (modelo de rosto e retrato de teste)",
+    nome: "check tools (face model and test portrait)",
     conferir,
     fazer: () => x(process.execPath, [c.preparar], { cwd: c.pasta }),
   };

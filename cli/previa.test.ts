@@ -34,16 +34,16 @@ test("opções: quadro, lista, saída, observar e servir; erros com a correção
   assert.deepEqual(ob.quadros, [0, 30, 59], "padrão: o primeiro, o do meio e o último");
   assert.equal(ob.porta, 8199);
   for (const [argv, re] of [
-    [[SINTETICA, ID], /--quadro/],
-    [[SINTETICA, ID, "--quadro", "60"], /fora da composição/],
-    [[SINTETICA, ID, "--quadro", "1;2"], /vírgula/],
-    [[SINTETICA, "Outra", "--quadro", "1"], /declarada é LinhaSintetica/],
-    [[join(SINTETICA, ".."), "Sintetica", "--quadro", "1"], /linha do tempo|index.html/],
-    [[SINTETICA, ID, "--quadro", "1,2", "--saida", "x.png"], /só com um quadro/],
-    [[SINTETICA, ID, "--quadro", "1", "--servir"], /só com --observar/],
-    [[SINTETICA, ID, "--observar", "--servir", "--porta", "0"], /porta/],
-    [[SINTETICA, ID, "--quadro", "1", "--placa", "--cpu"], /juntos/],
-    [[SINTETICA, ID, "--observar", "--saida", SINTETICA], /própria pasta observada/],
+    [[SINTETICA, ID], /--frame/],
+    [[SINTETICA, ID, "--quadro", "60"], /outside the composition/],
+    [[SINTETICA, ID, "--quadro", "1;2"], /comma-separated/],
+    [[SINTETICA, "Outra", "--quadro", "1"], /declared one is LinhaSintetica/],
+    [[join(SINTETICA, ".."), "Sintetica", "--quadro", "1"], /index.html/],
+    [[SINTETICA, ID, "--quadro", "1,2", "--saida", "x.png"], /only works with one frame/],
+    [[SINTETICA, ID, "--quadro", "1", "--servir"], /--serve needs --watch/],
+    [[SINTETICA, ID, "--observar", "--servir", "--porta", "0"], /--port/],
+    [[SINTETICA, ID, "--quadro", "1", "--placa", "--cpu"], /together/],
+    [[SINTETICA, ID, "--observar", "--saida", SINTETICA], /the watched folder itself/],
   ] as const) {
     assert.throws(() => lerOpcoesPrevia([...argv]), (e: unknown) => e instanceof ErroDeUso && re.test(e.message), argv.join(" "));
   }
@@ -69,11 +69,11 @@ test("job da prévia: --gravar e «ordem» só com --previa; ordem conferida", (
   assert.equal(a.ordem, "1,5");
   assert.equal(lerJob(job({ argumentos: ["--placa", SINTETICA, ID, "/tmp/x.mp4"] })).ordem, null);
   for (const [linha, previa, re] of [
-    [job({ argumentos }), false, /--gravar/],
-    [job({ argumentos: ["--placa", SINTETICA, ID, "/tmp/x.mp4"], ordem: "1" }), false, /só na prévia/],
+    [job({ argumentos }), false, /--save-frames/],
+    [job({ argumentos: ["--placa", SINTETICA, ID, "/tmp/x.mp4"], ordem: "1" }), false, /only in preview/],
     [job({ argumentos, ordem: "1,60" }), true, /ordem/],
     [job({ argumentos, ordem: "1;2" }), true, /ordem/],
-    [job({ argumentos: ["--placa", "--manter", SINTETICA, ID, "/tmp/x.mp4"] }), true, /--manter/],
+    [job({ argumentos: ["--placa", "--manter", SINTETICA, ID, "/tmp/x.mp4"] }), true, /--keep/],
   ] as const) {
     assert.throws(() => lerJob(linha, { previa }), (e: unknown) => e instanceof ErroDeUso && re.test(e.message), linha);
   }

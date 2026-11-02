@@ -41,8 +41,8 @@ function rodar(args: string[], env: Record<string, string> = {}, aoErro?: (texto
     });
   });
 }
-const grupos = (erro: string) => [...erro.matchAll(/grupo (\d+):/g)].map((m) => Number(m[1]));
-const temporaria = (erro: string) => /temporária (\S+)/.exec(erro)?.[1] ?? "";
+const grupos = (erro: string) => [...erro.matchAll(/group (\d+):/g)].map((m) => Number(m[1]));
+const temporaria = (erro: string) => /temporary folder (\S+)/.exec(erro)?.[1] ?? "";
 /** Nada sobrou: a temporária foi anunciada e sumiu; houve ao menos `minimo` grupos e todos morreram. */
 function semSobras(erro: string, minimo = 1) {
   const t = temporaria(erro);
@@ -108,17 +108,17 @@ function pixelsDoFfmpeg(arquivo: string, n: number, largura: number, pontos: [nu
 test("argumento inválido: sai com 2 e diz o que corrigir, sem subir nada", async () => {
   const r = await rodar([RASTRO, "LinhaRastro"]);
   assert.equal(r.codigo, 2);
-  assert.match(r.erro, /^erro: faltam argumentos/);
+  assert.match(r.erro, /^error: missing arguments/);
   assert.match(r.erro, /usage: kodecz render/);
   const s = await rodar([RASTRO, "LinhaRastro", join(saidas, "x.mov")]);
   assert.equal(s.codigo, 2);
-  assert.match(s.erro, /a saída tem de terminar em \.mp4/);
+  assert.match(s.erro, /the output must end in \.mp4/);
 });
 
 test("--placa sem placa (simulada): sai com 3 e sugere --cpu", async () => {
   const r = await rodar([RASTRO, "LinhaRastro", join(saidas, "x.mp4"), "--placa"], { MOTOR_SEM_PLACA: "1" });
   assert.equal(r.codigo, 3);
-  assert.match(r.erro, /--placa pedido, mas a placa não serve: simulado por MOTOR_SEM_PLACA=1.*--cpu/);
+  assert.match(r.erro, /--gpu was requested, but the GPU is not usable: simulated by MOTOR_SEM_PLACA=1.*--cpu/);
   assert.equal(existsSync(join(saidas, "x.mp4")), false);
 });
 
@@ -126,7 +126,7 @@ test("sem placa (simulada), sem opção: cai para CPU avisando e entrega o MP4",
   const saida = join(saidas, "auto-cpu.mp4");
   const r = await rodar([RASTRO, "LinhaRastro", saida, "--quadros", "12", "--de", "40"], { MOTOR_SEM_PLACA: "1", MOTOR_DEPURAR: "1" });
   assert.equal(r.codigo, 0, r.erro);
-  assert.match(r.erro, /aviso: sem placa \(simulado por MOTOR_SEM_PLACA=1\): renderizando na CPU/);
+  assert.match(r.erro, /warning: no GPU \(simulated by MOTOR_SEM_PLACA=1\): rendering on the CPU/);
   assert.equal(r.json.modo, "cpu");
   assert.equal(r.json.caiuParaCpu, true);
   const s = sondar(saida);
@@ -147,7 +147,7 @@ test("--cpu com áudio e quadros gravados: MP4 com H.264 e AAC, tempo-limite ref
   assert.deepEqual(readdirSync(gravados).sort(), ["motor-0.bgra", "motor-39.bgra"]);
   assert.equal(r.json.quadros, 40);
   // Sem --quadros, o tempo-limite é refeito com a duração real da composição (40 quadros na CPU: 204 s).
-  assert.match(r.erro, /tempo-limite refeito: 204 s \(40 quadros\)/);
+  assert.match(r.erro, /timeout reset: 204 s \(40 frames\)/);
   const s = sondar(saida);
   const tipos = s.streams.map((x: any) => `${x.codec_type}:${x.codec_name}`).sort();
   assert.deepEqual(tipos, ["audio:aac", "video:h264"]);
@@ -173,8 +173,8 @@ test("composição que não existe: sai com 2, diz a declarada e não sobe nada"
   const saida = join(saidas, "nao-existe.mp4");
   const r = await rodar([RASTRO, "NaoExiste", saida, "--cpu"], { MOTOR_DEPURAR: "1" });
   assert.equal(r.codigo, 2);
-  assert.match(r.erro, /erro: composição «NaoExiste» não existe em .*linha-rastro; a declarada é LinhaRastro/);
-  assert.doesNotMatch(r.erro, /grupo \d+:/, "não subiu processo");
+  assert.match(r.erro, /error: composition «NaoExiste» not found in .*linha-rastro; the declared one is LinhaRastro/);
+  assert.doesNotMatch(r.erro, /group \d+:/, "não subiu processo");
   assert.equal(existsSync(saida), false);
 });
 
@@ -189,8 +189,8 @@ test("entrada do Remotion: recusada com o motivo e o que fazer, sem subir nada",
   for (const entrada of [pacote, projeto, join(projeto, "src", "index.ts")]) {
     const r = await rodar([entrada, "Sintetica", join(saidas, "remotion.mp4"), "--cpu"], { MOTOR_DEPURAR: "1" });
     assert.equal(r.codigo, 2, r.erro);
-    assert.match(r.erro, /a entrada do Remotion saiu do motor em 2026-10-31 \(docs\/adr\.md, seção 16.*docs\/formatos\/linha-do-tempo\.md/);
-    assert.doesNotMatch(r.erro, /grupo \d+:/, "não subiu processo");
+    assert.match(r.erro, /Remotion projects are no longer accepted as input \(removed on 2026-10-31, docs\/adr\.md, section 16.*docs\/formatos\/linha-do-tempo\.md/);
+    assert.doesNotMatch(r.erro, /group \d+:/, "não subiu processo");
   }
   assert.equal(existsSync(join(saidas, "remotion.mp4")), false);
 });
@@ -200,11 +200,11 @@ test("SIGTERM no meio do render: sai com 143, sem processo vivo, temporária nem
   let mandou = false;
   const r = await rodar([RASTRO, "LinhaRastro", saida, "--cpu"], { MOTOR_DEPURAR: "1" }, (texto, p) => {
     // Espera a captura estar renderizando (a composição já aberta) e mais um pouco.
-    if (!mandou && /composição \{/.test(texto)) { mandou = true; setTimeout(() => p.kill("SIGTERM"), 1500); }
+    if (!mandou && /composition \{/.test(texto)) { mandou = true; setTimeout(() => p.kill("SIGTERM"), 1500); }
   });
   assert.equal(mandou, true, r.erro);
   assert.equal(r.codigo, 143, r.erro);
-  assert.match(r.erro, /SIGTERM recebido/);
+  assert.match(r.erro, /SIGTERM received/);
   semSobras(r.erro);
   assert.equal(existsSync(saida), false);
   assert.deepEqual(readdirSync(saidas).filter((f) => f.includes("parcial")), []);
@@ -283,11 +283,11 @@ test("SIGTERM no meio do render na placa: weston e captura morrem, nada sobra", 
   const saida = join(saidas, "sigterm-placa.mp4");
   let mandou = false;
   const r = await rodar([RASTRO, "LinhaRastro", saida, "--placa"], { MOTOR_DEPURAR: "1" }, (texto, p) => {
-    if (!mandou && /composição \{/.test(texto)) { mandou = true; setTimeout(() => p.kill("SIGTERM"), 1000); }
+    if (!mandou && /composition \{/.test(texto)) { mandou = true; setTimeout(() => p.kill("SIGTERM"), 1000); }
   });
   assert.equal(mandou, true, r.erro);
   assert.equal(r.codigo, 143, r.erro);
-  assert.match(r.erro, /grupo \d+: weston/);
+  assert.match(r.erro, /group \d+: weston/);
   semSobras(r.erro, 2); // weston e a captura
   assert.equal(existsSync(saida), false);
   assert.deepEqual(readdirSync(saidas).filter((f) => f.includes("parcial")), []);
@@ -297,7 +297,7 @@ test("arquivo divergente (quadro a menos, injetado): sai com 1 e não deixa a sa
   const saida = join(saidas, "divergente.mp4");
   const r = await rodar([RASTRO, "LinhaRastro", saida, "--cpu", "--quadros", "10"], { MOTOR_DEPURAR: "1", MOTOR_TESTE_DIVERGIR: "quadro" });
   assert.equal(r.codigo, 1, r.erro);
-  assert.match(r.erro, /erro: o arquivo final não confere: .*9 quadros de vídeo; o render mandou 10/);
+  assert.match(r.erro, /error: the final file does not check out: .*9 video frames; the render sent 10/);
   assert.equal(existsSync(saida), false);
   assert.deepEqual(readdirSync(saidas).filter((f) => f.includes("parcial")), []);
   semSobras(r.erro);
@@ -367,7 +367,7 @@ test("brilho por quadro na placa: a piscada de um quadro acusa e o clarão de do
   // O fundo #1a1d2e e o branco na escala do Y do MP4 (16 a 235): o pico é quase a faixa inteira.
   assert.ok(com.b.piscadas[0].pico > 180, `pico ${com.b.piscadas[0].pico}`);
   assert.ok(Math.abs(com.j.brilho[12] - 235) < 0.5, `clarão ${com.j.brilho[12]}`);
-  assert.match(com.r.erro, /aviso: piscada no quadro 12 /);
+  assert.match(com.r.erro, /warning: flash at frame 12 /);
   const sem = await brilho("linha-sem-piscada", "LinhaSemPiscada");
   assert.deepEqual(sem.b.piscadas, []);
   assert.doesNotMatch(sem.r.erro, /piscada/);
@@ -410,7 +410,7 @@ async function hashesLinha(nome: string, args: string[], quadros: number[], env:
     { MOTOR_DEPURAR: "1", ...env });
   assert.equal(r.codigo, 0, r.erro);
   assert.equal(r.json.quadros, quadros.length);
-  assert.doesNotMatch(r.erro, /aviso/, "nenhum aviso ao começar no meio");
+  assert.doesNotMatch(r.erro, /warning/, "nenhum aviso ao começar no meio");
   return new Map(quadros.map((n) => [n, createHash("sha256").update(readFileSync(join(pasta, `motor-${n}.bgra`))).digest("hex")]));
 }
 

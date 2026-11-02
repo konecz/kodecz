@@ -73,24 +73,24 @@ function cobertura({ comp, geometrias, rostos, destino }: Dados): Aviso[] {
   const avisos: Aviso[] = [];
   const d = destinoDe(destino);
   if (d && d !== "youtube" && !DESTINOS_COM_INTERFACE.has(d)) {
-    avisos.push({ regra: "G19", motivo: `data-destino «${destino}» desconhecido (reels, instagram, anuncio, tiktok, shorts ou youtube): G19 não conferida` });
+    avisos.push({ regra: "G19", motivo: `unknown data-destino «${destino}» (reels, instagram, anuncio, tiktok, shorts or youtube): G19 not checked` });
   } else if (!d && comp.altura > comp.largura) {
-    avisos.push({ regra: "G19", motivo: "vídeo vertical sem data-destino no <html>: G19 (zona segura do Reels e do anúncio) não conferida" });
+    avisos.push({ regra: "G19", motivo: "vertical video without data-destino on <html>: G19 (Reels and ad safe area) not checked" });
   }
   for (const t of trechos(rostos.filter((r) => !r.rel && geometrias[r.n]?.apresentador).map((r) => ({ n: r.n, chave: "", valor: 0 })))) {
-    avisos.push({ regra: "G15", de: t.de, ate: t.ate, motivo: `apresentador na tela sem rosto encontrado (quadro ${t.de}${t.ate !== t.de ? ` a ${t.ate}` : ""} da amostra): G15 conferida pelas amostras vizinhas` });
+    avisos.push({ regra: "G15", de: t.de, ate: t.ate, motivo: `presenter on screen but no face found (sampled frame ${t.de}${t.ate !== t.de ? ` to ${t.ate}` : ""}): G15 checked from the neighboring samples` });
   }
   if (!rostos.some((r) => r.rel) && geometrias.some((g) => g.apresentador)) {
-    avisos.push({ regra: "G15", motivo: "nenhum rosto encontrado no apresentador: G15 não conferida" });
+    avisos.push({ regra: "G15", motivo: "no face found on the presenter: G15 not checked" });
   }
   if (geometrias.some((g) => g.textos.length) && !geometrias.some((g) => g.textos.some((t) => t.papel === "legenda"))) {
-    avisos.push({ regra: "G41", motivo: 'texto na tela, mas nenhum elemento com data-papel="legenda": G17 não conferida' });
+    avisos.push({ regra: "G41", motivo: 'text on screen, but no element with data-papel="legenda": G17 not checked' });
   }
   if (!geometrias.some((g) => g.apresentador)) {
-    avisos.push({ regra: "G41", motivo: 'nenhum elemento com data-papel="apresentador" visível: G15 e G21 não conferidas' });
+    avisos.push({ regra: "G41", motivo: 'no visible element with data-papel="apresentador": G15 and G21 not checked' });
   }
   for (const t of trechos(geometrias.flatMap((g) => g.naoConferidos.map((c) => ({ n: g.n, chave: c.tipo, valor: 0 }))))) {
-    avisos.push({ regra: "G15", de: t.de, ate: t.ate, motivo: `<${t.chave}> sobre o apresentador: texto desenhado nele não é conferido` });
+    avisos.push({ regra: "G15", de: t.de, ate: t.ate, motivo: `<${t.chave}> over the presenter: text drawn inside it is not checked` });
   }
   return avisos;
 }

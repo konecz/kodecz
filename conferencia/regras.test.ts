@@ -110,13 +110,13 @@ test("zoom passa: entra em «muda» e sai na pausa entre as frases", () => {
 test("zoom falha: saída por duração fixa, antes do ponto, com quanto faltou em ms", () => {
   const r = conferirZoom(zoom(26, 41), FALAS, semFaixa(120), QPS, 120);
   assert.equal(r.falhas.length, 1);
-  assert.match(r.falhas[0].motivo, /zoom volta 233 ms antes do fim da frase «Isto muda tudo\.»/);
+  assert.match(r.falhas[0].motivo, /zoom returns 233 ms before the end of the sentence «Isto muda tudo\.»/);
 });
 
 test("zoom falha: saída já na frase seguinte", () => {
   const r = conferirZoom(zoom(26, 70), FALAS, semFaixa(120), QPS, 120);
   assert.equal(r.falhas.length, 1);
-  assert.match(r.falhas[0].motivo, /zoom volta já na frase seguinte/);
+  assert.match(r.falhas[0].motivo, /zoom returns during the next sentence/);
 });
 
 test("zoom: a borda de 1 quadro nos dois lados", () => {
@@ -131,9 +131,9 @@ test("zoom: frase sem pausa dá aviso; zoom sem fala dá aviso", () => {
   const colada = FALAS.map((f) => (f.t === "Agora" ? { ...f, ini: 1.6 } : f));
   const r = conferirZoom(zoom(26, 48), colada, semFaixa(120), QPS, 120);
   assert.deepEqual(r.falhas, []);
-  assert.match(r.avisos.join("\n"), /sem pausa/);
+  assert.match(r.avisos.join("\n"), /with no pause/);
   const mudo = conferirZoom(zoom(100, 110), FALAS, semFaixa(120), QPS, 120);
-  assert.match(mudo.avisos.join("\n"), /sem fala/);
+  assert.match(mudo.avisos.join("\n"), /without speech/);
 });
 
 test("zoom: a faixa sai junto (até 3 quadros); a que fica dá falha", () => {
@@ -143,7 +143,7 @@ test("zoom: a faixa sai junto (até 3 quadros); a que fica dá falha", () => {
   faixas[57].push("0"); faixas[58].push("0");
   const r = conferirZoom(zoom(26, 54), FALAS, faixas, QPS, 120);
   assert.equal(r.falhas.length, 1);
-  assert.match(r.falhas[0].motivo, /faixa só começa a sair 5 quadros depois do início da saída do zoom/);
+  assert.match(r.falhas[0].motivo, /lower third only starts leaving 5 frames after the zoom starts returning/);
 });
 
 test("trechos: quadros seguidos viram um trecho, com o pior quadro", () => {
@@ -167,7 +167,7 @@ test("conferir: texto sobre o rosto (G15) só nos quadros em que encosta, com o 
     caixas: [n === 1 || n === 2 ? [380, 250 + n, 100, 40] : [50, 50, 100, 40]] as Caixa[] }, { texto: "Legenda", papel: "legenda", caixas: legenda.caixas }] }));
   const r = conferir({ comp: COMP, geometrias: g, rostos: ROSTOS, falas: [] });
   assert.deepEqual(r.falhas.map((f) => [f.regra, f.de, f.ate, f.texto]), [["G15", 1, 2, "Chip"]]);
-  assert.match(r.falhas[0].motivo, /texto sobre o rosto/);
+  assert.match(r.falhas[0].motivo, /text over the presenter's face/);
 });
 
 test("conferir: legenda em duas linhas e legenda cortada (G17)", () => {
@@ -178,8 +178,8 @@ test("conferir: legenda em duas linhas e legenda cortada (G17)", () => {
   const r = conferir({ comp: COMP, geometrias: g, rostos: ROSTOS, falas: [] });
   const g17 = r.falhas.filter((f) => f.regra === "G17").map((f) => [f.texto, f.de, f.ate]).sort((a, b) => String(a[0]).localeCompare(String(b[0])));
   assert.deepEqual(g17, [["Duas", 0, 1], ["Larga", 0, 3]]);
-  assert.match(r.falhas.find((f) => f.texto === "Duas")!.motivo, /legenda em 2 linhas/);
-  assert.match(r.falhas.find((f) => f.texto === "Larga")!.motivo, /legenda cortada/);
+  assert.match(r.falhas.find((f) => f.texto === "Duas")!.motivo, /caption on 2 lines/);
+  assert.match(r.falhas.find((f) => f.texto === "Larga")!.motivo, /caption cut off/);
 });
 
 test("conferir: sem legenda marcada com texto na tela e sem rosto dão aviso, não falha; 9:16 sem destino não confere a zona", () => {
@@ -188,13 +188,13 @@ test("conferir: sem legenda marcada com texto na tela e sem rosto dão aviso, n�
   assert.deepEqual(r.falhas, []);
   const avisos = r.avisos.map((a) => a.motivo).join("\n");
   assert.match(avisos, /data-papel="legenda"/);
-  assert.match(avisos, /sem rosto/);
+  assert.match(avisos, /no face found/);
   const vertical = { ...COMP, largura: 540, altura: 960 };
   const gv = [0, 1, 2, 3].map((n) => geo(n, { apresentador: [0, 0, 540, 960], textos: [{ texto: "Baixo", papel: "legenda", caixas: [[100, 800, 300, 40]] as Caixa[] }],
     legendas: [{ texto: "Baixo", caixas: [[100, 800, 300, 40]], estouro: false }] }));
   const rv = conferir({ comp: vertical, geometrias: gv, rostos: ROSTOS, falas: [] });
   assert.deepEqual(rv.falhas, []);
-  assert.deepEqual(rv.avisos.filter((a) => a.regra === "G19").map((a) => a.motivo), ["vídeo vertical sem data-destino no <html>: G19 (zona segura do Reels e do anúncio) não conferida"]);
+  assert.deepEqual(rv.avisos.filter((a) => a.regra === "G19").map((a) => a.motivo), ["vertical video without data-destino on <html>: G19 (Reels and ad safe area) not checked"]);
 });
 
 // Calibração nos vídeos reais (2026-11, docs/experimentos/2026-11-s04-calibrar.md): os casos de fronteira, em sintético.
@@ -248,7 +248,7 @@ test("faixa calibrada: fade de 13 quadros que começa na saída passa; que come�
   assert.deepEqual(conferirZoom(zoom(26, 54), FALAS, comFade(1), QPS, 120).falhas, []);
   const tarde = conferirZoom(zoom(26, 54), FALAS, comFade(2), QPS, 120);
   assert.equal(tarde.falhas.length, 1);
-  assert.match(tarde.falhas[0].motivo, /faixa só começa a sair 4 quadros depois/);
+  assert.match(tarde.falhas[0].motivo, /lower third only starts leaving 4 frames after/);
 });
 
 test("faixa calibrada: a que só flutua (anda, mas fica na tela) falha por não sumir em 30 quadros", () => {
@@ -256,7 +256,7 @@ test("faixa calibrada: a que só flutua (anda, mas fica na tela) falha por não 
   for (let n = 26; n < 120; n++) f[n].push({ chave: "0", opacidade: 1, caixa: [80, 900 + 3 * Math.sin(n), 600, 80] });
   const r = conferirZoom(zoom(26, 54), FALAS, f, QPS, 120);
   assert.equal(r.falhas.length, 1);
-  assert.match(r.falhas[0].motivo, /faixa ainda na tela 66 quadros depois .* \(limite 30\)/);
+  assert.match(r.falhas[0].motivo, /lower third still on screen 66 frames after .* \(limit 30\)/);
 });
 
 test("faixa calibrada: deslizar para fora (a caixa anda) conta como saindo", () => {
@@ -278,7 +278,7 @@ test("tremor: texto que cresce devagar por mais de 5 s dá aviso; 5 s, a flutua�
   const r = textosTremendo(lento(151), 30);
   assert.equal(r.length, 1);
   assert.deepEqual([r[0].regra, r[0].de, r[0].ate], ["tremor", 0, 151]);
-  assert.match(r[0].motivo, /texto «Linha de teste» andando devagar sem parar .* por 5\.1 s: treme/);
+  assert.match(r[0].motivo, /text «Linha de teste» drifting slowly without stopping .* for 5\.1 s: it shakes/);
   // Apagado (abaixo de 0,5) não conta.
   assert.deepEqual(textosTremendo(lento(300, 0.4), 30), []);
   // A frase que flutua no reel aprovado: 105 quadros (3,5 s).
@@ -299,5 +299,5 @@ test("tremor: textos que tremem juntos (a tela respirando) viram um aviso só", 
     { texto, papel: null, caixas: [[100, 100 + 100 * i + 0.2 * n, 300, 60]] as Caixa[] })) }));
   const r = textosTremendo(g, 30);
   assert.equal(r.length, 1);
-  assert.match(r[0].motivo, /3 textos \(como «A»\)/);
+  assert.match(r[0].motivo, /3 texts \(like «A»\)/);
 });

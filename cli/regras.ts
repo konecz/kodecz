@@ -72,33 +72,33 @@ export type Argumentos = {
 };
 
 /** Para quem ainda tem composição do Remotion: o motivo e o que fazer. */
-export const SEM_REMOTION = "a entrada do Remotion saiu do motor em 2026-10-31 (docs/adr.md, seção 16: sem a licença do " +
-  "Remotion e com um caminho só de captura, o CEF); escreva a composição na linha do tempo, uma pasta com index.html e o " +
-  'bloco <script type="application/json" id="kodecz"> (docs/formatos/linha-do-tempo.md)';
+export const SEM_REMOTION = "Remotion projects are no longer accepted as input (removed on 2026-10-31, docs/adr.md, " +
+  "section 16); write the composition as a timeline page: a folder with index.html and the " +
+  '<script type="application/json" id="kodecz"> block (docs/formatos/linha-do-tempo.md)';
 
 const ENTRADAS_REMOTION = ["index.ts", "index.tsx", "index.js", "index.jsx", "index.mjs"];
 const inteiro = (texto: string | undefined, nome: string, minimo: number): number | null => {
   if (texto === undefined) return null;
   const n = Number(texto);
-  if (!/^-?\d+$/.test(texto) || n < minimo) throw new ErroDeUso(`${nome} tem de ser inteiro ≥ ${minimo}: ${texto}`);
+  if (!/^-?\d+$/.test(texto) || n < minimo) throw new ErroDeUso(`${nome} must be an integer ≥ ${minimo}: ${texto}`);
   return n;
 };
 
 function lerEntrada(caminho: string): Entrada {
   const p = resolve(caminho);
-  if (!existsSync(p)) throw new ErroDeUso(`entrada não existe: ${p}`);
+  if (!existsSync(p)) throw new ErroDeUso(`folder not found: ${p}`);
   const html = join(p, "index.html");
   // Arquivo de entrada ou pasta do projeto do Remotion (src/index.ts e companhia).
   if (statSync(p).isFile() || (!existsSync(html) && ENTRADAS_REMOTION.some((e) => existsSync(join(p, "src", e))))) {
     throw new ErroDeUso(`${p}: ${SEM_REMOTION}`);
   }
   if (!existsSync(html)) {
-    throw new ErroDeUso(`${p} não é uma composição da linha do tempo: falta index.html com o bloco <script id="kodecz"> ` +
+    throw new ErroDeUso(`${p} is not a composition: it needs an index.html with the <script id="kodecz"> block ` +
       "(docs/formatos/linha-do-tempo.md)");
   }
   const declaracao = lerDeclaracao(readFileSync(html, "utf8"));
   // index.html sem o bloco: o pacote do Remotion (remotion bundle) ou a página que esqueceu a declaração.
-  if (!declaracao) throw new ErroDeUso(`${html} não tem o bloco <script id="kodecz">; se é um pacote do Remotion, ${SEM_REMOTION}`);
+  if (!declaracao) throw new ErroDeUso(`${html} has no <script id="kodecz"> block; if it is a Remotion bundle: ${SEM_REMOTION}`);
   return { tipo: "linha", pasta: p, declaracao };
 }
 
@@ -118,19 +118,19 @@ export function lerDeclaracao(html: string): Declaracao | null {
   if (!bloco) return null;
   const tag = `<script id="${atributo(bloco[1], "id")}">`;
   if (atributo(bloco[1], "type")?.toLowerCase() !== "application/json") {
-    throw new ErroDeUso(`o bloco ${tag} precisa de type="application/json" (sem ele, o navegador o executa como código)`);
+    throw new ErroDeUso(`the ${tag} block needs type="application/json" (without it, the browser runs it as code)`);
   }
   let d: any;
-  try { d = JSON.parse(bloco[2]); } catch (e) { throw new ErroDeUso(`o bloco ${tag} não é JSON válido: ${(e as Error).message}`); }
-  if (d === null || typeof d !== "object" || Array.isArray(d)) throw new ErroDeUso(`o bloco ${tag} tem de ser um objeto`);
+  try { d = JSON.parse(bloco[2]); } catch (e) { throw new ErroDeUso(`the ${tag} block is not valid JSON: ${(e as Error).message}`); }
+  if (d === null || typeof d !== "object" || Array.isArray(d)) throw new ErroDeUso(`the ${tag} block must be an object`);
   const campo = (nome: string, regra: string) => new ErroDeUso(`${tag}: «${nome}» ${regra}: ${JSON.stringify(d[nome])}`);
-  if (typeof d.id !== "string" || !d.id) throw campo("id", "tem de ser o nome da composição (texto)");
+  if (typeof d.id !== "string" || !d.id) throw campo("id", "must be the composition name (a string)");
   // O nome que a página usou (o novo, se tem os dois ou nenhum) e o valor; os dois nomes com valores diferentes é erro.
   const ler = (novo: string): [string, any] => {
     const antigo = CAMPOS[novo];
     if (d[novo] !== undefined && d[antigo] !== undefined && d[novo] !== d[antigo]) {
-      throw new ErroDeUso(`${tag}: «${novo}» (${JSON.stringify(d[novo])}) e o nome antigo «${antigo}» (${JSON.stringify(d[antigo])}) ` +
-        `dizem coisas diferentes: deixe só «${novo}»`);
+      throw new ErroDeUso(`${tag}: «${novo}» (${JSON.stringify(d[novo])}) and the old name «${antigo}» (${JSON.stringify(d[antigo])}) ` +
+        `disagree: keep only «${novo}»`);
     }
     const nome = d[novo] === undefined && d[antigo] !== undefined ? antigo : novo;
     return [nome, d[nome]];
@@ -138,10 +138,10 @@ export function lerDeclaracao(html: string): Declaracao | null {
   const inteiro = (x: unknown, min: number) => Number.isInteger(x) && (x as number) >= min;
   const [[nl, largura], [na, altura], [nq, qps], [nf, quadros]] = ["width", "height", "fps", "frames"].map(ler);
   for (const [nome, v, min] of [[nl, largura, 800], [na, altura, 16]] as const) {
-    if (!inteiro(v, min) || v % 2 || v > 8192) throw campo(nome, `tem de ser inteiro par ≥ ${min} e ≤ 8192 (px)`);
+    if (!inteiro(v, min) || v % 2 || v > 8192) throw campo(nome, `must be an even integer ≥ ${min} and ≤ 8192 (px)`);
   }
-  if (!inteiro(qps, 1) || qps > 240) throw campo(nq, "tem de ser inteiro de 1 a 240 (quadros por segundo)");
-  if (!inteiro(quadros, 1)) throw campo(nf, "tem de ser inteiro ≥ 1 (duração em quadros)");
+  if (!inteiro(qps, 1) || qps > 240) throw campo(nq, "must be an integer from 1 to 240 (frames per second)");
+  if (!inteiro(quadros, 1)) throw campo(nf, "must be an integer ≥ 1 (duration in frames)");
   return { id: d.id, largura, altura, qps, quadros };
 }
 
@@ -156,35 +156,35 @@ export function lerArgumentos(argv: string[]): Argumentos {
       "sem-contencao": { type: "boolean" }, ajuda: { type: "boolean", short: "h" }, captura: { type: "string" },
     } });
   } catch (e) {
-    throw new ErroDeUso(`opção desconhecida ou sem valor: ${(e as Error).message}\n\n${USO}`);
+    throw new ErroDeUso(`unknown option or missing value: ${(e as Error).message}\n\n${USO}`);
   }
   const { values: o, positionals: p } = r;
   if (o.ajuda) throw new ErroDeUso(USO, 0);
-  if (p.length < 3) throw new ErroDeUso(`faltam argumentos (recebi ${p.length} de 3): <entrada> <composição> <saída.mp4>\n\n${USO}`);
-  if (p.length > 3) throw new ErroDeUso(`argumento a mais: ${p.slice(3).join(" ")} (as opções começam com --)`);
-  if (o.placa && o.cpu) throw new ErroDeUso("--gpu (--placa) e --cpu juntos: escolha um, ou nenhum para a escolha automática");
+  if (p.length < 3) throw new ErroDeUso(`missing arguments (got ${p.length} of 3): <folder> <composition> <out.mp4>\n\n${USO}`);
+  if (p.length > 3) throw new ErroDeUso(`unexpected argument: ${p.slice(3).join(" ")} (options start with --)`);
+  if (o.placa && o.cpu) throw new ErroDeUso("--gpu and --cpu together: pick one, or neither for the automatic choice");
   const alfa = o.alfa === true, hevc = o.hevc === true;
-  if (alfa && o.cpu) throw new ErroDeUso("--alfa só existe no modo placa (o x264 da CPU não tem camada de alfa)");
+  if (alfa && o.cpu) throw new ErroDeUso("--alpha is GPU only (the CPU encoder, x264, has no alpha layer)");
   // P01: HEVC na CPU seria o x265, lento, e a CPU é dos sites (CLAUDE.md, «Segurança e operação»).
-  if (hevc && o.cpu) throw new ErroDeUso("--hevc só existe no modo placa (na CPU o vídeo sai em H.264): tire o --cpu, ou rode sem --hevc");
+  if (hevc && o.cpu) throw new ErroDeUso("--hevc is GPU only (on the CPU the video is H.264): drop --cpu, or run without --hevc");
   const [caminho, composicao, saida] = p;
-  if (alfa && !saida.endsWith(".hevc")) throw new ErroDeUso("com --alfa a saída é .hevc (HEVC cru com a camada de alfa, a entrada --graficos do render-camadas.mjs)");
-  if (!alfa && !saida.endsWith(".mp4")) throw new ErroDeUso(`a saída tem de terminar em .mp4: ${saida}`);
+  if (alfa && !saida.endsWith(".hevc")) throw new ErroDeUso("with --alpha the output is .hevc (raw HEVC with the alpha layer)");
+  if (!alfa && !saida.endsWith(".mp4")) throw new ErroDeUso(`the output must end in .mp4: ${saida}`);
   // As opções que eram só da entrada do Remotion e do Electron dizem por que saíram.
-  if (o.props !== undefined) throw new ErroDeUso(`--props era da entrada do Remotion; na linha do tempo os valores ficam na própria página. ${SEM_REMOTION}`);
-  if (o.public !== undefined) throw new ErroDeUso(`--public era da entrada do Remotion; na linha do tempo os arquivos ficam na pasta da composição. ${SEM_REMOTION}`);
-  if (o.captura !== undefined) throw new ErroDeUso("--captura saiu com a entrada do Remotion (2026-10-31): a captura é sempre pelo CEF (captura/cef/)");
+  if (o.props !== undefined) throw new ErroDeUso(`--props was for Remotion input; on a timeline page the values live in the page itself. ${SEM_REMOTION}`);
+  if (o.public !== undefined) throw new ErroDeUso(`--public was for Remotion input; on a timeline page the files live in the composition folder. ${SEM_REMOTION}`);
+  if (o.captura !== undefined) throw new ErroDeUso("--captura was removed with the Remotion input (2026-10-31): capture is always through CEF (captura/cef/)");
   const entrada = lerEntrada(caminho);
   const gravar = o.gravar === undefined ? [] : o.gravar.split(",").map((x) => {
-    if (!/^\d+$/.test(x)) throw new ErroDeUso(`--gravar: lista de quadros separados por vírgula, como 0,10,20: ${o.gravar}`);
+    if (!/^\d+$/.test(x)) throw new ErroDeUso(`--save-frames: a comma-separated list of frames, like 0,10,20: ${o.gravar}`);
     return Number(x);
   });
-  if (gravar.length && !o["gravar-pasta"]) throw new ErroDeUso("--gravar pede --gravar-pasta <pasta> (onde os BGRA vão)");
-  const de = inteiro(o.de, "--de", 0) ?? 0, quadros = inteiro(o.quadros, "--quadros", 1);
+  if (gravar.length && !o["gravar-pasta"]) throw new ErroDeUso("--save-frames needs --save-frames-dir <dir> (where the BGRA files go)");
+  const de = inteiro(o.de, "--from", 0) ?? 0, quadros = inteiro(o.quadros, "--frames", 1);
   const d = entrada.declaracao;
-  if (composicao !== d.id) throw new ErroDeUso(`composição «${composicao}» não existe em ${entrada.pasta}; a declarada é ${d.id}`);
-  if (de >= d.quadros) throw new ErroDeUso(`--de ${de} fora da composição (${d.quadros} quadros)`);
-  if (quadros !== null && de + quadros > d.quadros) throw new ErroDeUso(`--de ${de} --quadros ${quadros} passa do fim (${d.quadros} quadros)`);
+  if (composicao !== d.id) throw new ErroDeUso(`composition «${composicao}» not found in ${entrada.pasta}; the declared one is ${d.id}`);
+  if (de >= d.quadros) throw new ErroDeUso(`--from ${de} is past the end of the composition (${d.quadros} frames)`);
+  if (quadros !== null && de + quadros > d.quadros) throw new ErroDeUso(`--from ${de} --frames ${quadros} goes past the end (${d.quadros} frames)`);
   return {
     entrada, composicao, saida: resolve(saida), modo: alfa || hevc || o.placa ? "placa" : o.cpu ? "cpu" : "auto",
     de, quadros,
@@ -210,17 +210,17 @@ export type Ambiente = {
 /** O que o motor usa do nativo.node (captura/main.ts e cli/sonda-nvenc.ts); `versao` só existe desde o P04. */
 export const NATIVO_FUNCOES = ["Motor", "lerMarca", "versao"];
 export const NATIVO_METODOS = ["quadro", "quadroMarcado", "repetir", "fechar"];
-export const COMPILAR_NATIVO = "compile com: cd nativo && cargo build --release && cp target/release/libnativo.so nativo.node";
+export const COMPILAR_NATIVO = "build it with: cd nativo && cargo build --release && cp target/release/libnativo.so nativo.node (or ./instalar.sh)";
 
 /** P04: o nativo.node carrega e expõe as funções e os métodos do motor? null se sim; senão, o motivo e como compilar. */
 export function conferirNativo(carregar: () => unknown): string | null {
   let m: any;
   try { m = carregar(); } catch (e) {
-    return `o nativo.node não carrega (${String((e as Error)?.message ?? e).split("\n")[0]}); ${COMPILAR_NATIVO}`;
+    return `nativo.node does not load (${String((e as Error)?.message ?? e).split("\n")[0]}); ${COMPILAR_NATIVO}`;
   }
   const faltam = [...NATIVO_FUNCOES.filter((f) => typeof m?.[f] !== "function"),
     ...NATIVO_METODOS.filter((f) => typeof m?.Motor?.prototype?.[f] !== "function").map((f) => `Motor.${f}`)];
-  if (faltam.length) return `o nativo.node não tem ${faltam.join(", ")} (compilado de outra versão do código); ${COMPILAR_NATIVO}`;
+  if (faltam.length) return `nativo.node lacks ${faltam.join(", ")} (built from another version of the code); ${COMPILAR_NATIVO}`;
   return null;
 }
 /**
@@ -234,18 +234,18 @@ export type Sonda = { ok: true; renderNode: string } | { ok: false; ausente: boo
 export function sondarPlaca(a: Ambiente, { codec = "h264", alfa = false }: { codec?: Codec; alfa?: boolean } = {}): Sonda {
   const ausente = (motivo: string): Sonda => ({ ok: false, ausente: true, motivo });
   const naoServe = (motivo: string): Sonda => ({ ok: false, ausente: false, motivo });
-  if (a.env.MOTOR_SEM_PLACA === "1") return ausente("simulado por MOTOR_SEM_PLACA=1");
+  if (a.env.MOTOR_SEM_PLACA === "1") return ausente("simulated by MOTOR_SEM_PLACA=1");
   const no = a.vendors().find(([, v]) => v.trim() === "0x10de");
-  if (!no) return ausente("nenhum render node da NVIDIA em /sys/class/drm");
-  if (!a.existe("/dev/nvidiactl")) return ausente("sem /dev/nvidiactl (driver da NVIDIA ausente ou placa escondida)");
-  if (!a.noPath("weston")) return naoServe("weston fora do PATH (a tela virtual do modo placa)");
-  if (!a.existe(CAMINHOS.hostCef)) return naoServe(`falta o host do CEF (${CAMINHOS.hostCef}): captura/cef/montar.sh`);
-  if (!a.existe(CAMINHOS.nativo)) return naoServe(`falta o nativo.node (${CAMINHOS.nativo}); ${COMPILAR_NATIVO}`);
+  if (!no) return ausente("no NVIDIA render node in /sys/class/drm");
+  if (!a.existe("/dev/nvidiactl")) return ausente("no /dev/nvidiactl (NVIDIA driver missing, or the GPU is hidden)");
+  if (!a.noPath("weston")) return naoServe("weston not in PATH (the virtual display of GPU mode)");
+  if (!a.existe(CAMINHOS.hostCef)) return naoServe(`the CEF host is missing (${CAMINHOS.hostCef}): run ./instalar.sh`);
+  if (!a.existe(CAMINHOS.nativo)) return naoServe(`nativo.node is missing (${CAMINHOS.nativo}); ${COMPILAR_NATIVO}`);
   const nativo = a.sondarNativo();
   if (nativo) return naoServe(nativo);
   const renderNode = `/dev/dri/${no[0]}`;
   const erro = a.sondarNvenc(renderNode, { codec, alfa });
-  if (erro) return naoServe(`Vulkan/NVENC em ${codec === "h264" ? "H.264" : "HEVC"}${alfa ? " com a camada de alfa" : ""} não abriu: ${erro}`);
+  if (erro) return naoServe(`Vulkan/NVENC for ${codec === "h264" ? "H.264" : "HEVC"}${alfa ? " with the alpha layer" : ""} did not open: ${erro}`);
   return { ok: true, renderNode };
 }
 
@@ -260,14 +260,14 @@ export function escolherModo(pedido: Pedido, sondar: () => Sonda): Escolha {
   const s = sondar();
   if (s.ok) return { modo: "placa", renderNode: s.renderNode, aviso: null };
   if (pedido === "placa") {
-    throw new ErroDeUso(`--placa pedido, mas a placa não serve: ${s.motivo}. ` +
-      (s.ausente ? "Use --cpu." : "Espere a placa liberar (ela é dividida com outros serviços) e rode de novo, ou use --cpu."), 3);
+    throw new ErroDeUso(`--gpu was requested, but the GPU is not usable: ${s.motivo}. ` +
+      (s.ausente ? "Use --cpu." : "Wait for the GPU to free up (it may be shared with other jobs) and run again, or use --cpu."), 3);
   }
   if (!s.ausente) {
-    throw new ErroDeUso(`a placa NVIDIA está aqui, mas não serve agora: ${s.motivo}. Sem cair para a CPU (a CPU é dos sites): ` +
-      "esperar a placa liberar (ela é dividida com outros serviços) e rodar de novo, ou usar --cpu de propósito.", 3);
+    throw new ErroDeUso(`there is an NVIDIA GPU here, but it is not usable right now: ${s.motivo}. Not falling back to the CPU: ` +
+      "wait for the GPU to free up (it may be shared with other jobs) and run again, or pass --cpu on purpose.", 3);
   }
-  return { modo: "cpu", renderNode: null, aviso: `sem placa (${s.motivo}): renderizando na CPU (desenho por software e x264), bem mais lento` };
+  return { modo: "cpu", renderNode: null, aviso: `no GPU (${s.motivo}): rendering on the CPU (software paint and x264), much slower` };
 }
 
 export type ArquivoSondado = { quadros: number | null; video: string | null; audio: string | null;
@@ -278,13 +278,13 @@ export type ArquivoSondado = { quadros: number | null; video: string | null; aud
  * se havia áudio para misturar, a faixa existe e dura o vídeo, com folga de um quadro. null se confere; senão, o erro.
  */
 export function conferirArquivo(s: ArquivoSondado, esperado: { quadros: number; fps: number; audio: boolean }): string | null {
-  if (s.quadros === null) return "sem faixa de vídeo legível (ffprobe)";
-  if (s.quadros !== esperado.quadros) return `o arquivo tem ${s.quadros} quadros de vídeo; o render mandou ${esperado.quadros}`;
+  if (s.quadros === null) return "no readable video stream (ffprobe)";
+  if (s.quadros !== esperado.quadros) return `the file has ${s.quadros} video frames; the render sent ${esperado.quadros}`;
   if (!esperado.audio) return null;
-  if (!s.audio || s.duracaoAudio === null) return "a mistura tinha áudio, mas o arquivo saiu sem a faixa de áudio";
+  if (!s.audio || s.duracaoAudio === null) return "the mix had audio, but the file has no audio stream";
   const video = esperado.quadros / esperado.fps;
   if (Math.abs(s.duracaoAudio - video) > 1 / esperado.fps) {
-    return `o áudio dura ${s.duracaoAudio.toFixed(3)} s; o vídeo, ${video.toFixed(3)} s (diferença acima de um quadro)`;
+    return `the audio lasts ${s.duracaoAudio.toFixed(3)} s and the video ${video.toFixed(3)} s (more than one frame apart)`;
   }
   return null;
 }
@@ -301,11 +301,11 @@ export const PREFIXO_SEM_PLACA = ["bwrap", "--dev-bind", "/", "/", "--dev", "/de
  */
 export function esconderPlaca(rodar: (comando: string[]) => boolean, placa: boolean): { prefixo: string[]; aviso: string | null } {
   if (!rodar(["sh", "-c", "command -v bwrap"])) {
-    return { prefixo: [], aviso: placa ? "bwrap ausente: a placa fica visível ao Chromium no modo CPU (o desenho continua por software)" : null };
+    return { prefixo: [], aviso: placa ? "bwrap not found: the GPU stays visible to Chromium in CPU mode (painting is still done in software)" : null };
   }
   if (!rodar([...PREFIXO_SEM_PLACA, "true"])) {
-    return { prefixo: [], aviso: placa ? "o bwrap não cria namespace de usuário (AppArmor do Ubuntu 24.04+?): a placa fica visível ao " +
-      "Chromium no modo CPU (o desenho continua por software); ./instalar.sh --verificar diz como liberar" : null };
+    return { prefixo: [], aviso: placa ? "bwrap cannot create a user namespace (AppArmor on Ubuntu 24.04+?): the GPU stays visible to " +
+      "Chromium in CPU mode (painting is still done in software); ./instalar.sh --verificar shows how to allow it" : null };
   }
   return { prefixo: PREFIXO_SEM_PLACA, aviso: null };
 }

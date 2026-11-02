@@ -5,7 +5,7 @@
 # (/proc/driver/nvidia, os módulos nvidia_drm e nvidia_uvm) continua visível, e nada do motor o lê.
 #
 # Passos dentro do contêiner, como root (o apt sem sudo): ./instalar.sh --sistema; se ele pedir o Rust, o rustup que ele
-# imprime e ./instalar.sh de novo; tem de terminar «pronto». Depois, o render da composição sintética na CPU, com os 60
+# imprime e ./instalar.sh de novo; tem de terminar `ready`. Depois, o render da composição sintética na CPU, com os 60
 # quadros gravados: cada um tem de trazer N nas três tarjas da página (cli/fixtures/linha-sintetica), além da marca que
 # o próprio render confere. Por fim, o --placa tem de ser recusado com a instrução (saída 3), sem render, e os testes
 # do protocolo do host sem a feature `placa` (a recusa das operações do modo placa) passam.
@@ -15,7 +15,7 @@
 #   --cache-cef   usa o CEF já achatado desta máquina (~/.cache/motor-video/cef/156.0.14, só leitura) em vez de baixar
 #                 os 332 MB de novo; o resto (apt, Rust, npm, compilação) é sempre do zero
 #   --saida       onde ficam o log, o framemd5, o hash de cada quadro BGRA e o MP4 (padrão: tmp/sem-nvidia/ na raiz)
-# Saída: 0 se instalou («pronto») e o render saiu certo; 1 senão (o log diz onde parou). Leva de 5 a 15 min.
+# Saída: 0 se instalou (`ready`) e o render saiu certo; 1 senão (o log diz onde parou). Leva de 5 a 15 min.
 # As fontes vão ao contêiner como estão no disco (o que o git rastreia e os arquivos novos não ignorados), sem
 # node_modules nem target. O contêiner é apagado no fim, mesmo interrompido.
 set -euo pipefail
@@ -66,7 +66,7 @@ echo "sem /dev/nvidia*, sem /dev/dri, sem libnvidia-*, sem /sys/module/nvidia"
 echo "== ./instalar.sh --sistema"
 ./instalar.sh --sistema 2>&1 | tee /resultado/instalar-1.txt
 estado=${PIPESTATUS[0]}
-if grep -q "Rust (cargo) ausente" /resultado/instalar-1.txt; then
+if grep -q "Rust (cargo) not found" /resultado/instalar-1.txt; then
   echo "== rustup (o comando que o instalador imprimiu) e ./instalar.sh de novo"
   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal >/resultado/rustup.txt 2>&1 \
     || falhou "rustup"

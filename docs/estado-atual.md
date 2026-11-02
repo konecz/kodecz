@@ -16,6 +16,10 @@
 - **Interface em inglês:** `kodecz render|preview|check` (`cli/kodecz.ts`, `bin` do `package.json`; `npm link` no
   clone), `--gpu`, `--alpha`, `--from`, `--frames`, bloco `id="kodecz"` com `width`, `height`, `fps`, `frames`,
   `window.kodecz_frame` e `--fps` nos blocos. Os nomes antigos seguem aceitos (mapa em `cli/nomes.ts`).
+- **Mensagens em inglês** (branch `feature/mensagens-em-ingles`, 2026-11-02): o `./instalar.sh` inteiro (termina em
+  `ready`), os avisos e erros de `kodecz render|preview|check` (prefixo `kodecz:`, `error:`, `warning:`), a página do
+  `preview --serve` e os motivos das regras da conferência em `conferencia/`. O README ganhou o FAQ do Node 24 + Rust
+  (`curl | sh` só sugerido) e do `--no-sandbox`.
 - **Distribuição para agentes**: skills `kodecz`, `remotion-to-kodecz` e
   `hyperframes-to-kodecz` (`skills/`, formato Agent Skills), plugin e marketplace do Claude Code (`.claude-plugin/`),
   servidor MCP sem dependência (`mcp/`) e `server.json` do registro. Escritos já com os nomes em inglês. Envios
@@ -32,9 +36,15 @@ Nenhum em andamento: o responsável escolhe da lista abaixo.
 - Modo CPU com vídeo embutido: sem placa, o HyperFrames gasta menos CPU que o `--cpu` no Apresentador (26,3 contra
   28,1 s; `docs/medidas.md`, 2026-11-02). Perfilar a pintura do vídeo no SwiftShader e a conversão de cor.
 - Resto da interface em inglês: atributos de mídia (`data-inicio`, `data-quadros`, `data-recorte`,
-  `data-velocidade`) com apelido em inglês; mensagens de erro dos comandos (hoje em português; a ajuda já é em
-  inglês); `kodecz references` (`cli/referencias.ts`); o JSON de saída (`quadros`, `repetirNao`…); `window.motor_falas`;
-  as mensagens do `./instalar.sh` e o aviso `motor:` do render (o README avisa que ainda são em português).
+  `data-velocidade`) com apelido em inglês; `kodecz references` (`cli/referencias.ts`); o JSON de saída (`quadros`,
+  `repetirNao`…, e a linha `composition {…}` do stderr, que é o JSON da captura); `window.motor_falas`. Mensagens que
+  ainda saem em português: os motivos das medidas do bench que a conferência usa (`bench-gerador/motores.ts`: o G20 de
+  contraste e outros; mudar mexe nas matrizes do bench), os erros de dentro da captura e da composição
+  (`captura/main.ts`, `composicao/audio.ts`: GSAP, fonte fora do cache, áudio) e as linhas `falhou:` que o render
+  repassa quando a captura cai.
+- Sandbox do Chromium ligado por padrão: hoje o render (CEF) e a conferência (Electron) passam `--no-sandbox` sempre;
+  o `MOTOR_CAPTURA_SANDBOX=1` do host é experimento do P02 e o aviso do instalador só cobre o `chrome-sandbox` do
+  Electron (o do CEF fica em `captura/cef/target/release/`).
 - Instalação fora do Debian/Ubuntu (Fedora, Arch): hoje o instalador só diz os nomes do Debian e o `--sistema` recusa.
   E a instalação do zero com placa num contêiner (CDI) ou VM: a de 2026-11-02 foi só no modo CPU (Ubuntu 24.04 em VM,
   Ubuntu 22.04 e Debian 12 em contêiner).

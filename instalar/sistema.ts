@@ -68,8 +68,8 @@ export function conferirSistema(a: AmbienteSistema): ConferenciaSistema {
   };
 
   const node = Number(/^v(\d+)/.exec(a.node)?.[1] ?? 0);
-  if (node < NODE_MINIMO) faltas.push({ oQue: `Node ${node} (precisa do ${NODE_MINIMO})`, comando: "nvm install 24 (ou https://nodejs.org)", bloqueia: true });
-  if (!a.comando("npm")) faltas.push({ oQue: "npm fora do PATH", comando: "vem com o Node 24", bloqueia: true });
+  if (node < NODE_MINIMO) faltas.push({ oQue: `Node ${node} (needs ${NODE_MINIMO})`, comando: "nvm install 24 (or https://nodejs.org)", bloqueia: true });
+  if (!a.comando("npm")) faltas.push({ oQue: "npm not in PATH", comando: "it ships with Node 24", bloqueia: true });
 
   // Placa: driver, render node e /dev/nvidiactl. Sem eles não bloqueia: o modo CPU instala e o fim diz o que falta.
   const versao = a.ler("/sys/module/nvidia/version")?.trim() ?? null;
@@ -77,69 +77,69 @@ export function conferirSistema(a: AmbienteSistema): ConferenciaSistema {
   let placa = true;
   if (!versao) {
     placa = false;
-    faltas.push({ oQue: "driver da NVIDIA ausente (sem placa, só o modo CPU)", comando: `Ubuntu: sudo ubuntu-drivers install (driver ≥ ${DRIVER_MINIMO}) e reiniciar; outras: o driver da NVIDIA da distribuição`, bloqueia: false });
+    faltas.push({ oQue: "no NVIDIA driver (no GPU: CPU mode only)", comando: `Ubuntu: sudo ubuntu-drivers install (driver ≥ ${DRIVER_MINIMO}) and reboot; other distributions: their NVIDIA driver package`, bloqueia: false });
   } else if (maior < DRIVER_MINIMO) {
     placa = false;
-    faltas.push({ oQue: `driver da NVIDIA ${versao} (precisa de ≥ ${DRIVER_MINIMO}; só o modo CPU até lá)`, comando: `sudo apt-get install -y nvidia-driver-${DRIVER_MINIMO}-open (ou mais novo) e reiniciar`, bloqueia: false });
+    faltas.push({ oQue: `NVIDIA driver ${versao} (needs ≥ ${DRIVER_MINIMO}; CPU mode only until then)`, comando: `sudo apt-get install -y nvidia-driver-${DRIVER_MINIMO}-open (or newer) and reboot`, bloqueia: false });
   } else {
     if (!a.vendors().some(([, v]) => v.trim() === "0x10de")) {
       placa = false;
-      faltas.push({ oQue: "nenhum render node da NVIDIA em /sys/class/drm (placa escondida ou nvidia-drm sem carregar)", comando: "sudo modprobe nvidia-drm modeset=1", bloqueia: false });
+      faltas.push({ oQue: "no NVIDIA render node in /sys/class/drm (GPU hidden, or nvidia-drm not loaded)", comando: "sudo modprobe nvidia-drm modeset=1", bloqueia: false });
     }
     if (!a.existe("/dev/nvidiactl")) {
       placa = false;
-      faltas.push({ oQue: "sem /dev/nvidiactl (módulo nvidia sem carregar)", comando: "sudo modprobe nvidia", bloqueia: false });
+      faltas.push({ oQue: "no /dev/nvidiactl (nvidia module not loaded)", comando: "sudo modprobe nvidia", bloqueia: false });
     }
     if (!ICD_VULKAN_NVIDIA.some(a.existe)) {
       placa = false;
-      faltas.push({ oQue: `sem o ICD do Vulkan da NVIDIA (${ICD_VULKAN_NVIDIA.join(" nem ")})`, comando: `reinstalar o driver: sudo apt-get install --reinstall libnvidia-gl-${maior}`, bloqueia: false });
+      faltas.push({ oQue: `no NVIDIA Vulkan ICD (${ICD_VULKAN_NVIDIA.join(" or ")})`, comando: `reinstall the driver: sudo apt-get install --reinstall libnvidia-gl-${maior}`, bloqueia: false });
     }
   }
 
-  for (const [c, p] of COMANDOS) if (!a.comando(c)) pacote(`${c} fora do PATH`, [p]);
+  for (const [c, p] of COMANDOS) if (!a.comando(c)) pacote(`${c} not in PATH`, [p]);
   // O modo CPU esconde a placa com o bwrap (cli/regras.ts, esconderPlaca); com o namespace de usuário barrado (AppArmor
   // do Ubuntu 24.04+), roda sem esconder. Só importa com placa: sem ela, não há o que esconder e não avisa. No Ubuntu
   // 24.04 o apparmor-profiles põe o perfil em extra-profiles, sem carregar: instalar o pacote não basta (provado numa
   // VM limpa em 2026-11-02); é preciso copiá-lo para /etc/apparmor.d e carregá-lo.
   if (placa && a.comando("bwrap") && a.saida("bwrap", ["--dev-bind", "/", "/", "true"]) === null) {
-    faltas.push({ oQue: "o bwrap não cria namespace de usuário (o modo CPU roda com a placa visível ao Chromium)", bloqueia: false,
-      comando: "Ubuntu 24.04+: sudo apt-get install -y apparmor-profiles && sudo cp /usr/share/apparmor/extra-profiles/bwrap-userns-restrict /etc/apparmor.d/ && sudo apparmor_parser -r /etc/apparmor.d/bwrap-userns-restrict (ou sudo sysctl kernel.apparmor_restrict_unprivileged_userns=0); em contêiner: docker run --cap-add SYS_ADMIN --security-opt seccomp=unconfined --security-opt apparmor=unconfined" });
+    faltas.push({ oQue: "bwrap cannot create a user namespace (CPU mode runs with the GPU visible to Chromium)", bloqueia: false,
+      comando: "Ubuntu 24.04+: sudo apt-get install -y apparmor-profiles && sudo cp /usr/share/apparmor/extra-profiles/bwrap-userns-restrict /etc/apparmor.d/ && sudo apparmor_parser -r /etc/apparmor.d/bwrap-userns-restrict (or sudo sysctl kernel.apparmor_restrict_unprivileged_userns=0); in a container: docker run --cap-add SYS_ADMIN --security-opt seccomp=unconfined --security-opt apparmor=unconfined" });
   }
   if (a.comando("fc-list")) {
     const fontes = a.saida("fc-list", []);
-    if (!fontes || !fontes.trim()) pacote("nenhuma fonte no sistema (o Chromium não desenha texto)", ["fonts-dejavu-core"]);
+    if (!fontes || !fontes.trim()) pacote("no fonts on the system (Chromium cannot draw text)", ["fonts-dejavu-core"]);
   }
-  for (const [so, cands] of BIBLIOTECAS_ELECTRON) if (!a.biblioteca(so)) pacote(`${so} (o Electron carrega)`, cands);
+  for (const [so, cands] of BIBLIOTECAS_ELECTRON) if (!a.biblioteca(so)) pacote(`${so} (loaded by Electron)`, cands);
 
   // O host do CEF (Rust, compilado aqui, com e sem placa: P14) e, só com placa, o nativo e o que ele liga.
   const nvenc: string[] = [];
-  if (!a.comando("cc")) pacote("cc fora do PATH (o Rust liga com ele)", ["build-essential"]);
+  if (!a.comando("cc")) pacote("cc not in PATH (Rust links with it)", ["build-essential"]);
   // O cef-dll-sys monta o libcef_dll_wrapper (C++) com o cmake e o gerador Ninja.
-  if (!a.comando("cmake")) pacote("cmake fora do PATH (o host do CEF compila o libcef_dll_wrapper com ele)", ["cmake"]);
-  if (!a.comando("ninja")) pacote("ninja fora do PATH (o gerador do cmake no host do CEF)", ["ninja-build"]);
-  if (!a.existe("/etc/ssl/certs/ca-certificates.crt")) pacote("sem os certificados do sistema (o cargo e o curl baixam por HTTPS)", ["ca-certificates"]);
-  if (placa && !a.biblioteca("libvulkan.so.1")) pacote("libvulkan.so.1 (o nativo abre o Vulkan)", ["libvulkan1"]);
+  if (!a.comando("cmake")) pacote("cmake not in PATH (the CEF host builds libcef_dll_wrapper with it)", ["cmake"]);
+  if (!a.comando("ninja")) pacote("ninja not in PATH (the cmake generator for the CEF host)", ["ninja-build"]);
+  if (!a.existe("/etc/ssl/certs/ca-certificates.crt")) pacote("no system CA certificates (cargo and curl download over HTTPS)", ["ca-certificates"]);
+  if (placa && !a.biblioteca("libvulkan.so.1")) pacote("libvulkan.so.1 (the native module opens Vulkan)", ["libvulkan1"]);
   // Só as do driver (.so.1): o nativo e o host do CEF ligam nelas por links próprios (etapas.ts), sem o pacote de
   // desenvolvimento. Achadas também com a placa fora agora (P14: o host continua montado com a placa); pedidas só com ela.
   const doDriver = [["libnvidia-encode.so.1", `libnvidia-encode-${maior}`], ["libnvcuvid.so.1", `libnvidia-decode-${maior}`]];
   const achadas = doDriver.map(([so]) => a.biblioteca(so));
   if (achadas.every(Boolean)) nvenc.push(...(achadas as string[]));
-  else if (placa) doDriver.forEach(([so, p], i) => { if (achadas[i]) nvenc.push(achadas[i]!); else pacote(`${so} (do driver; o nativo liga nela)`, [p]); });
+  else if (placa) doDriver.forEach(([so, p], i) => { if (achadas[i]) nvenc.push(achadas[i]!); else pacote(`${so} (from the driver; the native module links to it)`, [p]); });
   const noCasa = join(a.casa, ".cargo", "bin", "cargo");
   const cargo = a.comando("cargo") ?? (a.existe(noCasa) ? noCasa : null);
   if (!cargo) {
-    if (!a.comando("curl")) pacote("curl fora do PATH (para o rustup)", ["curl"]);
-    faltas.push({ oQue: "Rust (cargo) ausente: o host do CEF (e, com placa, o módulo nativo) é compilado nesta máquina", comando: RUSTUP, bloqueia: true });
+    if (!a.comando("curl")) pacote("curl not in PATH (for rustup)", ["curl"]);
+    faltas.push({ oQue: "Rust (cargo) not found: the Chromium (CEF) host, and with a GPU the native module, are compiled on this machine", comando: RUSTUP, bloqueia: true });
   } else {
     const v = /cargo (\d+)\.(\d+)/.exec(a.saida(cargo, ["--version"]) ?? "");
     const [ma, mi] = v ? [Number(v[1]), Number(v[2])] : [0, 0];
     if (ma < RUST_MINIMO[0] || (ma === RUST_MINIMO[0] && mi < RUST_MINIMO[1])) {
-      faltas.push({ oQue: `Rust ${v ? `${ma}.${mi}` : "?"} (precisa de ≥ ${RUST_MINIMO.join(".")}, edição 2024)`, comando: "rustup update stable", bloqueia: true });
+      faltas.push({ oQue: `Rust ${v ? `${ma}.${mi}` : "?"} (needs ≥ ${RUST_MINIMO.join(".")}, edition 2024)`, comando: "rustup update stable", bloqueia: true });
     }
   }
 
   const livre = a.livreBytes(a.casa);
-  if (livre < DISCO_MINIMO) faltas.push({ oQue: `pouco espaço em disco: ${(livre / 1e9).toFixed(1)} GB livres (precisa de ~${DISCO_MINIMO / 1e9} GB)`, bloqueia: true });
+  if (livre < DISCO_MINIMO) faltas.push({ oQue: `low disk space: ${(livre / 1e9).toFixed(1)} GB free (needs ~${DISCO_MINIMO / 1e9} GB)`, bloqueia: true });
   return { faltas, pacotes, placa, cargo, nvenc };
 }
 

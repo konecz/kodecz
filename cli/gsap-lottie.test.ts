@@ -69,7 +69,7 @@ async function render(c: Caso, nome: string, modo: string, quadros = TODOS, args
   const r = await rodar([pastaDo(c), c.id, saida, modo, ...args, "--gravar", quadros.join(","), "--gravar-pasta", gravados], env);
   assert.equal(r.codigo, 0, r.erro);
   assert.equal(r.json.quadros, quadros.length);
-  assert.doesNotMatch(r.erro, /aviso/, "nenhum aviso");
+  assert.doesNotMatch(r.erro, /warning/, "nenhum aviso");
   const hashes = new Map<number, string>();
   for (const n of quadros) {
     const p = readFileSync(join(gravados, `motor-${n}.bgra`));

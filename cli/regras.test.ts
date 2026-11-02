@@ -46,12 +46,12 @@ test("mínimo: composição, id e saída; modo automático, com áudio", () => {
 // A entrada do Remotion saiu (2026-10-31): pacote, projeto e arquivo de entrada são recusados com o motivo e o que fazer.
 test("entrada do Remotion: pacote, projeto e arquivo recusados, com o motivo e o caminho da linha do tempo", () => {
   for (const entrada of [pacote, projeto, join(projeto, "src", "index.ts")]) {
-    falha(/entrada do Remotion saiu do motor.*adr\.md, seção 16.*docs\/formatos\/linha-do-tempo\.md/s, entrada, "X", join(pasta, "a.mp4"));
+    falha(/Remotion projects are no longer accepted.*adr\.md, section 16.*docs\/formatos\/linha-do-tempo\.md/s, entrada, "X", join(pasta, "a.mp4"));
   }
   // As opções que eram só dela também dizem por quê.
-  falha(/--props era da entrada do Remotion.*linha-do-tempo\.md/s, linha, "Linha", "s.mp4", "--props", "{}");
-  falha(/--public era da entrada do Remotion.*linha-do-tempo\.md/s, linha, "Linha", "s.mp4", "--public", pasta);
-  falha(/--captura saiu.*CEF/s, linha, "Linha", "s.mp4", "--captura", "electron");
+  falha(/--props was for Remotion input.*linha-do-tempo\.md/s, linha, "Linha", "s.mp4", "--props", "{}");
+  falha(/--public was for Remotion input.*linha-do-tempo\.md/s, linha, "Linha", "s.mp4", "--public", pasta);
+  falha(/--captura was removed.*CEF/s, linha, "Linha", "s.mp4", "--captura", "electron");
 });
 
 test("linha do tempo: o bloco motor-video faz a entrada, com a declaração lida", () => {
@@ -68,24 +68,24 @@ test("linha do tempo: só o bloco de verdade conta (atributo id, fora de coment�
   const html = (corpo: string) => { const p = mkdtempSync(join(pasta, "bloco-")); writeFileSync(join(p, "index.html"), corpo); return p; };
   const d = '{"id":"L","largura":960,"altura":540,"qps":30,"quadros":60}';
   // Sem o bloco de verdade, não é linha do tempo: a pasta é recusada (como o pacote do Remotion).
-  falha(/entrada do Remotion saiu do motor/, html(`<script type="application/json" data-id="motor-video">${d}</script>`), "L", "s.mp4");
-  falha(/entrada do Remotion saiu do motor/, html(`<!-- <script type="application/json" id="motor-video">${d}</script> -->`), "L", "s.mp4");
+  falha(/Remotion projects are no longer accepted/, html(`<script type="application/json" data-id="motor-video">${d}</script>`), "L", "s.mp4");
+  falha(/Remotion projects are no longer accepted/, html(`<!-- <script type="application/json" id="motor-video">${d}</script> -->`), "L", "s.mp4");
   assert.equal(ler(html(`<script type=application/json id=motor-video>${d}</script>`), "L", "s.mp4").entrada.tipo, "linha");
   falha(/type="application\/json"/, html(`<script id="motor-video">${d}</script>`), "L", "s.mp4");
 });
 
 test("linha do tempo: id e trecho conferidos contra a declaração", () => {
-  falha(/composição «Outra» não existe.*Linha/, linha, "Outra", "s.mp4");
-  falha(/--de 60 fora da composição \(60 quadros\)/, linha, "Linha", "s.mp4", "--de", "60");
-  falha(/--de 10 --quadros 51 passa do fim \(60 quadros\)/, linha, "Linha", "s.mp4", "--de", "10", "--quadros", "51");
+  falha(/composition «Outra» not found.*Linha/, linha, "Outra", "s.mp4");
+  falha(/--from 60 is past the end of the composition \(60 frames\)/, linha, "Linha", "s.mp4", "--de", "60");
+  falha(/--from 10 --frames 51 goes past the end \(60 frames\)/, linha, "Linha", "s.mp4", "--de", "10", "--quadros", "51");
 });
 
 test("linha do tempo: declaração inválida diz o campo", () => {
   const casos: [unknown, RegExp][] = [
-    ["{", /motor-video"> não é JSON válido/],
+    ["{", /motor-video"> block is not valid JSON/],
     [{ largura: 960, altura: 540, qps: 30, quadros: 60 }, /«id»/],
     [{ id: "L", largura: 640, altura: 540, qps: 30, quadros: 60 }, /«largura».*≥ 800/],
-    [{ id: "L", largura: 961, altura: 540, qps: 30, quadros: 60 }, /«largura».*par/],
+    [{ id: "L", largura: 961, altura: 540, qps: 30, quadros: 60 }, /«largura».*even/],
     [{ id: "L", largura: 960, altura: 15, qps: 30, quadros: 60 }, /«altura»/],
     [{ id: "L", largura: 8194, altura: 540, qps: 30, quadros: 60 }, /«largura».*≤ 8192/],
     [{ id: "L", largura: 960, altura: 540, qps: 0, quadros: 60 }, /«qps»/],
@@ -107,19 +107,19 @@ test("--placa, --cpu, trecho e quadros gravados", () => {
 });
 
 test("argumentos inválidos dão erro de uso com a correção", () => {
-  falha(/faltam argumentos.*<entrada> <composição> <saída.mp4>/s);
-  falha(/faltam argumentos/, linha, "Linha");
-  falha(/--gpu \(--placa\) e --cpu juntos/, linha, "Linha", "s.mp4", "--placa", "--cpu");
-  falha(/a saída tem de terminar em \.mp4/, linha, "Linha", "s.mov");
-  falha(/entrada não existe/, join(pasta, "nada"), "X", "s.mp4");
-  falha(/não é uma composição da linha do tempo.*falta index\.html.*linha-do-tempo\.md/s, pasta, "X", "s.mp4");
-  falha(/--quadros tem de ser inteiro ≥ 1/, linha, "Linha", "s.mp4", "--quadros", "0");
-  falha(/--de tem de ser inteiro ≥ 0/, linha, "Linha", "s.mp4", "--de=-3");
-  falha(/--de tem de ser inteiro ≥ 0/, linha, "Linha", "s.mp4", "--de", "1.5");
-  falha(/opção desconhecida.*--gpus/s, linha, "Linha", "s.mp4", "--gpus");
-  falha(/argumento a mais/, linha, "Linha", "s.mp4", "sobra");
-  falha(/--gravar pede --gravar-pasta/, linha, "Linha", "s.mp4", "--gravar", "1");
-  falha(/--gravar: lista de quadros/, linha, "Linha", "s.mp4", "--gravar", "1,a", "--gravar-pasta", pasta);
+  falha(/missing arguments.*<folder> <composition> <out.mp4>/s);
+  falha(/missing arguments/, linha, "Linha");
+  falha(/--gpu and --cpu together/, linha, "Linha", "s.mp4", "--placa", "--cpu");
+  falha(/the output must end in \.mp4/, linha, "Linha", "s.mov");
+  falha(/folder not found/, join(pasta, "nada"), "X", "s.mp4");
+  falha(/is not a composition: it needs an index\.html.*linha-do-tempo\.md/s, pasta, "X", "s.mp4");
+  falha(/--frames must be an integer ≥ 1/, linha, "Linha", "s.mp4", "--quadros", "0");
+  falha(/--from must be an integer ≥ 0/, linha, "Linha", "s.mp4", "--de=-3");
+  falha(/--from must be an integer ≥ 0/, linha, "Linha", "s.mp4", "--de", "1.5");
+  falha(/unknown option.*--gpus/s, linha, "Linha", "s.mp4", "--gpus");
+  falha(/unexpected argument/, linha, "Linha", "s.mp4", "sobra");
+  falha(/--save-frames needs --save-frames-dir/, linha, "Linha", "s.mp4", "--gravar", "1");
+  falha(/--save-frames: a comma-separated list of frames/, linha, "Linha", "s.mp4", "--gravar", "1,a", "--gravar-pasta", pasta);
 });
 
 test("--alfa: só na placa, saída .hevc e sem áudio (camada do M05)", () => {
@@ -127,8 +127,8 @@ test("--alfa: só na placa, saída .hevc e sem áudio (camada do M05)", () => {
   assert.deepEqual([a.alfa, a.audio, a.modo, a.codec], [true, false, "placa", "hevc"]);
   // --hevc junto não muda nada: a camada já é HEVC.
   assert.equal(ler(linha, "Linha", "camada.hevc", "--alfa", "--hevc").codec, "hevc");
-  falha(/--alfa só existe no modo placa/, linha, "Linha", "camada.hevc", "--alfa", "--cpu");
-  falha(/com --alfa a saída é \.hevc/, linha, "Linha", "camada.mp4", "--alfa");
+  falha(/--alpha is GPU only/, linha, "Linha", "camada.hevc", "--alfa", "--cpu");
+  falha(/with --alpha the output is \.hevc/, linha, "Linha", "camada.mp4", "--alfa");
 });
 
 test("--hevc (P01): HEVC em MP4, só na placa e com áudio; sem ele, H.264 nos dois modos", () => {
@@ -137,8 +137,8 @@ test("--hevc (P01): HEVC em MP4, só na placa e com áudio; sem ele, H.264 nos d
   assert.equal(ler(linha, "Linha", "s.mp4", "--hevc", "--placa").codec, "hevc");
   assert.equal(ler(linha, "Linha", "s.mp4", "--placa").codec, "h264");
   assert.equal(ler(linha, "Linha", "s.mp4", "--cpu").codec, "h264");
-  falha(/--hevc só existe no modo placa.*sem --hevc/s, linha, "Linha", "s.mp4", "--hevc", "--cpu");
-  falha(/opção desconhecida.*--codec/s, linha, "Linha", "s.mp4", "--codec", "hevc");
+  falha(/--hevc is GPU only.*without --hevc/s, linha, "Linha", "s.mp4", "--hevc", "--cpu");
+  falha(/unknown option.*--codec/s, linha, "Linha", "s.mp4", "--codec", "hevc");
 });
 
 // Ambiente falso da sonda: tudo presente, com cada peça removível.
@@ -161,7 +161,7 @@ test("sonda: sem placa NVIDIA (ausente) × placa presente que não serve agora",
   // Ausente: não há placa NVIDIA (ou driver) nesta máquina; só aqui o automático cai para a CPU.
   for (const [a, re] of [
     [ambiente({ env: { MOTOR_SEM_PLACA: "1" } }), /MOTOR_SEM_PLACA=1/],
-    [ambiente({ vendors: () => [["renderD128", "0x1002"]] }), /nenhum render node da NVIDIA/],
+    [ambiente({ vendors: () => [["renderD128", "0x1002"]] }), /no NVIDIA render node/],
     [ambiente({ existe: (p) => !p.startsWith("/dev/nvidia") }), /\/dev\/nvidiactl/],
   ] as [Ambiente, RegExp][]) {
     const r = falha(a)!;
@@ -171,7 +171,7 @@ test("sonda: sem placa NVIDIA (ausente) × placa presente que não serve agora",
   // Presente, mas não serve: falta peça do motor, NVENC sem sessão, VRAM cheia, a camada de alfa não abre.
   for (const [a, re, alfa] of [
     [ambiente({ noPath: (b) => b !== "weston" }), /weston/, false],
-    [ambiente({ existe: (p) => !p.endsWith("motor-captura") }), /host do CEF.*captura\/cef\/montar\.sh/, false],
+    [ambiente({ existe: (p) => !p.endsWith("motor-captura") }), /CEF host is missing.*instalar\.sh/, false],
     [ambiente({ existe: (p) => !p.endsWith("nativo.node") }), /nativo\.node/, false],
     [ambiente({ sondarNvenc: () => "iniciar NVENC: NV_ENC_ERR_OUT_OF_MEMORY (sem sessão livre)" }), /NVENC.*sem sessão livre/, false],
     [ambiente({ sondarNvenc: () => "vkAllocateMemory: ERROR_OUT_OF_DEVICE_MEMORY" }), /OUT_OF_DEVICE_MEMORY/, false],
@@ -191,7 +191,7 @@ test("sonda: o NVENC é aberto no codec do render (H.264 por padrão; HEVC, e co
   sondarPlaca(a);
   assert.deepEqual(pedidos, ["hevc+alfa", "hevc", "h264"]);
   const r = sondarPlaca(ambiente({ sondarNvenc: (_n, c) => (c.codec === "h264" ? "sem H.264" : null) }));
-  assert.ok(!r.ok && /Vulkan\/NVENC em H\.264 não abriu: sem H\.264/.test(r.motivo), JSON.stringify(r));
+  assert.ok(!r.ok && /Vulkan\/NVENC for H\.264 did not open: sem H\.264/.test(r.motivo), JSON.stringify(r));
 });
 
 // P04: a sonda do nativo.node (existe, carrega, expõe o que o motor usa), antes do NVENC.
@@ -205,8 +205,8 @@ const nativoFalso = (sem: string[] = []) => {
 
 test("sonda do nativo: com tudo dá null; sem uma função ou um método, diz o que falta e como compilar", () => {
   assert.equal(conferirNativo(() => nativoFalso()), null);
-  for (const [sem, re] of [[["versao"], /não tem versao/], [["lerMarca"], /não tem lerMarca/], [["Motor.repetir"], /não tem Motor\.repetir/],
-    [["Motor"], /não tem Motor, Motor\.quadro/]] as [string[], RegExp][]) {
+  for (const [sem, re] of [[["versao"], /lacks versao/], [["lerMarca"], /lacks lerMarca/], [["Motor.repetir"], /lacks Motor\.repetir/],
+    [["Motor"], /lacks Motor, Motor\.quadro/]] as [string[], RegExp][]) {
     const m = conferirNativo(() => nativoFalso(sem));
     assert.match(m ?? "", re);
     assert.match(m ?? "", /cargo build --release/);
@@ -216,10 +216,10 @@ test("sonda do nativo: com tudo dá null; sem uma função ou um método, diz o 
 test("sonda do nativo: arquivo faltando ou quebrado não carrega, com a instrução de compilar", () => {
   const exigir = createRequire(import.meta.url);
   const falta = conferirNativo(() => exigir(join(pasta, "nao-existe.node")));
-  assert.match(falta ?? "", /não carrega.*cargo build --release/s);
+  assert.match(falta ?? "", /does not load.*cargo build --release/s);
   const quebrado = join(pasta, "quebrado.node");
   writeFileSync(quebrado, "isto não é uma biblioteca");
-  assert.match(conferirNativo(() => exigir(quebrado)) ?? "", /não carrega \(.*\); compile com: .*cargo build --release/);
+  assert.match(conferirNativo(() => exigir(quebrado)) ?? "", /does not load \(.*\); build it with: .*cargo build --release/);
 });
 
 test("sonda do nativo: o nativo.node compilado de nativo/ serve (o de verdade, sem placa)", { skip: !existsSync(CAMINHOS.nativo) && `falta ${CAMINHOS.nativo}` }, () => {
@@ -228,8 +228,8 @@ test("sonda do nativo: o nativo.node compilado de nativo/ serve (o de verdade, s
 
 test("sonda da placa: nativo.node que não serve para antes do NVENC, sem cair para a CPU", () => {
   let nvenc = 0;
-  const r = sondarPlaca(ambiente({ sondarNativo: () => "o nativo.node não tem versao", sondarNvenc: () => { nvenc++; return null; } }));
-  assert.ok(!r.ok && !r.ausente && /não tem versao/.test(r.motivo), JSON.stringify(r));
+  const r = sondarPlaca(ambiente({ sondarNativo: () => "nativo.node lacks versao", sondarNvenc: () => { nvenc++; return null; } }));
+  assert.ok(!r.ok && !r.ausente && /lacks versao/.test(r.motivo), JSON.stringify(r));
   assert.equal(nvenc, 0);
 });
 
@@ -244,19 +244,19 @@ test("escolha: automático usa a placa; cai para CPU avisando só sem placa NVID
     { modo: "placa", renderNode: "/dev/dri/renderD129", aviso: null });
   const r = escolherModo("auto", () => ({ ok: false, ausente: true, motivo: "nenhum render node da NVIDIA" }));
   assert.equal(r.modo, "cpu");
-  assert.match(r.aviso ?? "", /sem placa \(nenhum render node da NVIDIA\).*CPU/);
+  assert.match(r.aviso ?? "", /no GPU \(nenhum render node da NVIDIA\).*CPU/);
 });
 
 test("escolha: automático com a placa presente e ocupada sai com 3, sem cair para a CPU", () => {
   assert.throws(() => escolherModo("auto", () => ({ ok: false, ausente: false, motivo: "Vulkan/NVENC não abriu: sem sessão livre" })),
     (e: unknown) => e instanceof ErroDeUso && e.codigo === 3
-      && /placa NVIDIA está aqui, mas não serve agora: Vulkan\/NVENC não abriu: sem sessão livre.*esperar.*--cpu/s.test(e.message));
+      && /NVIDIA GPU here, but it is not usable right now: Vulkan\/NVENC não abriu: sem sessão livre.*wait.*--cpu/s.test(e.message));
 });
 
 test("escolha: --placa sem placa falha (não cai sozinho); --cpu nem sonda", () => {
   for (const ausente of [true, false]) {
     assert.throws(() => escolherModo("placa", () => ({ ok: false, ausente, motivo: "weston fora do PATH" })),
-      (e: unknown) => e instanceof ErroDeUso && e.codigo === 3 && /--placa.*weston fora do PATH.*--cpu/s.test(e.message));
+      (e: unknown) => e instanceof ErroDeUso && e.codigo === 3 && /--gpu.*weston fora do PATH.*--cpu/s.test(e.message));
   }
   let sondou = false;
   assert.deepEqual(escolherModo("cpu", () => { sondou = true; return { ok: true, renderNode: "x" }; }),
@@ -268,11 +268,11 @@ test("arquivo final: quadros iguais ao render e áudio com a duração do vídeo
   const ok = { quadros: 150, video: "h264", audio: "aac", duracaoVideo: 4.999956, duracaoAudio: 5 };
   assert.equal(conferirArquivo(ok, { quadros: 150, fps: 30, audio: true }), null);
   assert.equal(conferirArquivo({ ...ok, audio: null, duracaoAudio: null }, { quadros: 150, fps: 30, audio: false }), null);
-  assert.match(conferirArquivo({ ...ok, quadros: 149 }, { quadros: 150, fps: 30, audio: true }) ?? "", /149 quadros de vídeo; o render mandou 150/);
-  assert.match(conferirArquivo({ ...ok, quadros: null }, { quadros: 150, fps: 30, audio: true }) ?? "", /sem faixa de vídeo legível/);
-  assert.match(conferirArquivo({ ...ok, audio: null, duracaoAudio: null }, { quadros: 150, fps: 30, audio: true }) ?? "", /sem a faixa de áudio/);
+  assert.match(conferirArquivo({ ...ok, quadros: 149 }, { quadros: 150, fps: 30, audio: true }) ?? "", /149 video frames; the render sent 150/);
+  assert.match(conferirArquivo({ ...ok, quadros: null }, { quadros: 150, fps: 30, audio: true }) ?? "", /no readable video stream/);
+  assert.match(conferirArquivo({ ...ok, audio: null, duracaoAudio: null }, { quadros: 150, fps: 30, audio: true }) ?? "", /no audio stream/);
   // Mais de um quadro (1/30 s) de diferença entre áudio e vídeo.
-  assert.match(conferirArquivo({ ...ok, duracaoAudio: 4.5 }, { quadros: 150, fps: 30, audio: true }) ?? "", /áudio dura 4\.500 s; o vídeo, 5\.000 s/);
+  assert.match(conferirArquivo({ ...ok, duracaoAudio: 4.5 }, { quadros: 150, fps: 30, audio: true }) ?? "", /audio lasts 4\.500 s and the video 5\.000 s/);
   assert.equal(conferirArquivo({ ...ok, duracaoAudio: 5.02 }, { quadros: 150, fps: 30, audio: true }), null);
 });
 
@@ -288,7 +288,7 @@ test("tempo-limite: proporcional aos quadros, mais folgado na CPU; sem a duraç�
 test("sonda: pede o host do CEF montado, não o Electron", () => {
   assert.deepEqual(sondarPlaca(ambiente({ existe: (p) => !p.includes("electron") })), { ok: true, renderNode: "/dev/dri/renderD129" });
   const r = sondarPlaca(ambiente({ existe: (p) => !p.endsWith("motor-captura") }));
-  assert.ok(!r.ok && !r.ausente && /host do CEF.*captura\/cef\/montar\.sh/.test(r.motivo), JSON.stringify(r));
+  assert.ok(!r.ok && !r.ausente && /CEF host is missing.*instalar\.sh/.test(r.motivo), JSON.stringify(r));
 });
 
 test("modo CPU: o bwrap esconde a placa só quando funciona; barrado (AppArmor do Ubuntu 24.04+) ou ausente, roda sem ele", () => {
@@ -302,10 +302,10 @@ test("modo CPU: o bwrap esconde a placa só quando funciona; barrado (AppArmor d
   assert.deepEqual(rodou.at(-1), [...PREFIXO_SEM_PLACA, "true"]);
   const barrado = esconderPlaca(maquina(true, false), true);
   assert.deepEqual(barrado.prefixo, []);
-  assert.match(barrado.aviso!, /namespace de usuário/);
+  assert.match(barrado.aviso!, /user namespace/);
   const ausente = esconderPlaca(maquina(false, false), true);
   assert.deepEqual(ausente.prefixo, []);
-  assert.match(ausente.aviso!, /bwrap ausente/);
+  assert.match(ausente.aviso!, /bwrap not found/);
   // Sem placa não há o que esconder: nenhum aviso.
   assert.deepEqual(esconderPlaca(maquina(true, false), false), { prefixo: [], aviso: null });
   assert.deepEqual(esconderPlaca(maquina(false, false), false), { prefixo: [], aviso: null });

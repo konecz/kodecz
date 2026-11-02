@@ -11,7 +11,7 @@ na calibração do S04) e fica aberto a outras regras que leiam a série (a conf
   na thread do NVENC). Medida do custo no registro do S08, seção 9.
 - `MOTOR_BRILHO=0` desliga a medida (para medir o custo; sem a série, sem o arquivo e sem o aviso).
 - É medida auxiliar: se o núcleo não carregar ou uma medida falhar, o render segue sem a série (`brilho: null`), com o
-  motivo no stderr (`motor: aviso: o brilho por quadro não foi medido (…)`).
+  motivo no stderr (`kodecz: warning: per-frame brightness was not measured (…)`).
 
 ## Escala
 
@@ -77,5 +77,5 @@ O resumo vai no campo `brilho` (null fora da placa):
 ```
 
 `maiorPico` é o maior pico isolado de qualquer tamanho (null se nenhum), para calibrar. Cada piscada também sai no
-stderr: `motor: aviso: piscada no quadro 12 (pico isolado de 190.2 no brilho: 44.8 → 235 → 44.8; limite 60)`. O
+stderr: `kodecz: warning: flash at frame 12 (isolated brightness spike of 190.2: 44.8 → 235 → 44.8; limit 60)`. O
 render não falha por piscada: é aviso, para quem confere decidir.

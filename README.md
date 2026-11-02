@@ -103,9 +103,9 @@ kodecz render my-video/ MyVideo out.mp4    # GPU when there is one, CPU when not
 
 `./instalar.sh --verificar` only says what is missing and installs nothing; `./instalar.sh` without `--sistema`
 does everything that needs no `sudo` and prints the `apt` line for the rest. If Node 24 or Rust is missing, it stops
-and prints the command to install it; run it and then `./instalar.sh` again. The installer's messages are still in
-Portuguese: `✓` is done, `✗` is missing (with the command after `→`), and the last line is `pronto` (ready). Details
-in [`instalar/LEIAME.md`](instalar/LEIAME.md).
+and prints the command to install it; run it and then `./instalar.sh` again. Each line starts with `✓` (done), `✗`
+(missing, with the command after `→`) or `!` (a warning that does not block), and the last line is `ready`. Details
+(in Portuguese) in [`instalar/LEIAME.md`](instalar/LEIAME.md).
 
 | Option | What it does |
 |---|---|
@@ -236,6 +236,26 @@ cannot see. Timers and the wall clock are not allowed in a composition.
 
 MP4 with H.264 (default) or HEVC (GPU only), a transparent layer as raw HEVC with alpha (`--alpha`, GPU only, no
 audio), and AAC audio mixed from every `<audio>` and `<video>` on the page.
+
+### Why Node 24 and Rust, and why does the installer suggest `curl | sh`?
+
+Node 24 runs the TypeScript sources directly (type stripping), so there is no build step and nothing to transpile.
+Rust compiles the Chromium host that captures the frames (CEF 156, on every machine) and, with an NVIDIA GPU, the
+native module that talks to Vulkan and NVENC; they are built on your machine because a prebuilt binary would have to
+match your glibc and driver. The `curl … | bash` (nvm) and `curl … | sh` (rustup) lines the installer prints are
+only suggestions, because both install without `sudo`. Install Node 24 and Rust 1.85+ any way you like (your
+distribution's packages, asdf, mise, a tarball): the installer only checks that `node` and `cargo` are there.
+
+### Why does Chromium run with `--no-sandbox`?
+
+Chromium's sandbox on Linux needs a `chrome-sandbox` helper owned by root with the SUID bit (or unprivileged user
+namespaces, which Ubuntu 24.04+ restricts with AppArmor), and the install does nothing as root unless you pass
+`--sistema`. So today both the render host and the Electron used by `kodecz check` start Chromium with
+`--no-sandbox`. What it loads is your own composition, served from your folder over `127.0.0.1`; every other
+request is blocked, except Google Fonts downloads for fonts missing from the local cache. Do not point Kodecz at
+pages you do not trust. The installer prints a warning with the first step, making `chrome-sandbox` root-owned with
+SUID (`sudo chown root:root …/chrome-sandbox && sudo chmod 4755 …/chrome-sandbox`); running with the sandbox on by
+default is still on our list.
 
 ## Patents
 

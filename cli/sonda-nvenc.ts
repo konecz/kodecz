@@ -8,7 +8,7 @@ import { createRequire } from 'node:module';
 try {
   const { Motor } = createRequire(import.meta.url)(process.argv[2]);
   const pedido = process.argv[3] ?? 'h264';
-  if (!['h264', 'hevc', 'hevc-alfa'].includes(pedido)) throw new Error(`codec da sonda: h264, hevc ou hevc-alfa, não ${pedido}`);
+  if (!['h264', 'hevc', 'hevc-alfa'].includes(pedido)) throw new Error(`probe codec: h264, hevc or hevc-alfa, not ${pedido}`);
   const motor = new Motor({ largura: 256, altura: 256, marca: 16, saida: '/dev/null', codec: pedido === 'h264' ? 'h264' : 'hevc',
     alfa: pedido === 'hevc-alfa' });
   motor.fechar();

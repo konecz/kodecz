@@ -36,7 +36,7 @@ import { conferirModelo, Detector } from "../conferencia/rosto.ts";
 const COLETAR = new URL("../conferencia/coletar.ts", import.meta.url).pathname;
 const LARGURA_LIMPO = 640;
 const MAX_FOTOS = 30;
-const avisar = (texto: string) => process.stderr.write(`conferência: ${texto}\n`);
+const avisar = (texto: string) => process.stderr.write(`kodecz check: ${texto}\n`);
 
 export const USO = `usage: kodecz check <folder> <composition> [<folder> <composition> …] [options]
        (same as: node cli/conferir.ts <folder> <composition> … [options])
@@ -82,24 +82,24 @@ export function lerArgumentosConferir(argv: string[]): ArgumentosConferir {
   const o = r.values;
   if (o.ajuda) throw new ErroDeUso(USO, 0);
   const p = r.positionals;
-  if (!p.length || p.length % 2) throw new ErroDeUso(`passe pares <entrada> <composição>\n${USO}`);
+  if (!p.length || p.length % 2) throw new ErroDeUso(`pass pairs of <folder> <composition>\n${USO}`);
   const pares = [];
   for (let i = 0; i < p.length; i += 2) {
     const pasta = resolve(p[i]), id = p[i + 1];
     const html = join(pasta, "index.html");
-    if (!existsSync(html)) throw new ErroDeUso(`${pasta}: falta index.html (a conferência abre a composição em linha do tempo declarada, docs/formatos/linha-do-tempo.md)`);
+    if (!existsSync(html)) throw new ErroDeUso(`${pasta}: no index.html (a composition is a folder with index.html and the <script id="kodecz"> block, docs/formatos/linha-do-tempo.md)`);
     const declaracao = lerDeclaracao(readFileSync(html, "utf8"));
-    if (!declaracao) throw new ErroDeUso(`${pasta}: o index.html não tem o bloco <script id="kodecz">; se é um pacote do Remotion, ${SEM_REMOTION}`);
-    if (declaracao.id !== id) throw new ErroDeUso(`${pasta}: a composição é «${declaracao.id}», não «${id}»`);
+    if (!declaracao) throw new ErroDeUso(`${pasta}: index.html has no <script id="kodecz"> block; if it is a Remotion bundle: ${SEM_REMOTION}`);
+    if (declaracao.id !== id) throw new ErroDeUso(`${pasta}: the composition is «${declaracao.id}», not «${id}»`);
     pares.push({ pasta, declaracao });
   }
   let falas: string | null = null;
   if (o.falas !== undefined) {
     falas = resolve(o.falas);
-    if (!existsSync(falas)) throw new ErroDeUso(`--falas: arquivo não existe: ${falas}`);
+    if (!existsSync(falas)) throw new ErroDeUso(`--speech: file not found: ${falas}`);
   }
   const amostra = o.amostra === undefined ? LIMITES.amostraRosto : Number(o.amostra);
-  if (!Number.isInteger(amostra) || amostra < 1) throw new ErroDeUso(`--amostra tem de ser inteiro ≥ 1: ${o.amostra}`);
+  if (!Number.isInteger(amostra) || amostra < 1) throw new ErroDeUso(`--sample must be an integer ≥ 1: ${o.amostra}`);
   return { pares, falas, saida: resolve(o.saida ?? join("tmp", "conferencia")), amostra, manter: o.manter === true, dados: o.dados === true, contencao: !o["sem-contencao"] };
 }
 
@@ -119,7 +119,7 @@ export class Coleta {
       "--enable-unsafe-swiftshader"];
     let prefixo = esconderPlaca(rodarSemSaida, false).prefixo;
     if (a.contencao) prefixo = [...prefixoContencao(), ...prefixo];
-    if (!existsSync(CAMINHOS.electronCpu)) throw new Error(`falta o Electron (${CAMINHOS.electronCpu}): npm ci em captura/`);
+    if (!existsSync(CAMINHOS.electronCpu)) throw new Error(`Electron is missing (${CAMINHOS.electronCpu}): run ./instalar.sh`);
     const comando = [...prefixo, CAMINHOS.electronCpu, COLETAR, "--no-sandbox", ...flags];
     this.p = r.iniciar(comando[0], comando.slice(1), { env, stdio: ["pipe", "pipe", "pipe"] });
     createInterface({ input: this.p.stdout! }).on("line", (l) => {
@@ -141,7 +141,7 @@ export class Coleta {
   /** A próxima resposta (a primeira é o «pronto»). */
   esperar(limiteMs = 120000): Promise<any> {
     return new Promise((ok, falha) => {
-      const relogio = setTimeout(() => falha(new Error(`o Electron da conferência não respondeu em ${limiteMs / 1000} s`)), limiteMs);
+      const relogio = setTimeout(() => falha(new Error(`the check browser (Electron) did not answer within ${limiteMs / 1000} s`)), limiteMs);
       this.respostas.push((r) => { clearTimeout(relogio); if (r.erro) falha(new Error(r.erro)); else ok(r); });
     });
   }
@@ -165,7 +165,7 @@ async function conferirUma(a: ArgumentosConferir, par: ArgumentosConferir["pares
   try {
     const pronto = await coleta.esperar();
     if (pronto.tamanho?.[0] !== d.largura || pronto.tamanho?.[1] !== d.altura) {
-      throw new Error(`a janela da conferência ficou ${pronto.tamanho?.join("×")}, não ${d.largura}×${d.altura}`);
+      throw new Error(`the check window came out ${pronto.tamanho?.join("×")}, not ${d.largura}×${d.altura}`);
     }
     marcar("abrir");
     let falas, origemFalas: string | null = null;
@@ -254,7 +254,7 @@ async function principal() {
   let a: ArgumentosConferir;
   try { a = lerArgumentosConferir(process.argv.slice(2)); } catch (erro) {
     if (erro instanceof ErroDeUso) {
-      (erro.codigo === 0 ? process.stdout : process.stderr).write(`${erro.codigo === 0 ? "" : "erro: "}${erro.message}\n`);
+      (erro.codigo === 0 ? process.stdout : process.stderr).write(`${erro.codigo === 0 ? "" : "error: "}${erro.message}\n`);
       process.exit(erro.codigo);
     }
     throw erro;
@@ -267,11 +267,11 @@ async function principal() {
     if (modelo) throw new Error(modelo);
     mkdirSync(a.saida, { recursive: true });
     const tmp = r.pasta("motor-conferencia-");
-    if (a.manter) avisar(`temporária ${tmp}`);
+    if (a.manter) avisar(`temporary folder ${tmp}`);
     const detector = await Detector.abrir();
     const composicoes = [];
     for (const par of a.pares) {
-      avisar(`conferindo «${par.declaracao.id}» (${par.declaracao.largura}×${par.declaracao.altura}, ${par.declaracao.quadros} quadros)`);
+      avisar(`checking «${par.declaracao.id}» (${par.declaracao.largura}×${par.declaracao.altura}, ${par.declaracao.quadros} frames)`);
       composicoes.push(await conferirUma(a, par, r, detector, tmp));
     }
     await detector.fechar();
@@ -284,8 +284,8 @@ async function principal() {
     const relatorio = { versao: 2, ok, limites: LIMITES, composicoes, parede: Number(((performance.now() - t0) / 1000).toFixed(2)) };
     writeFileSync(join(a.saida, "conferencia.json"), `${JSON.stringify(relatorio, null, 2)}\n`);
     for (const c of composicoes) {
-      for (const f of c.falhas) avisar(`${c.id}: falha ${f.regra}, quadros ${f.de}–${f.ate} (pior ${f.pior})${f.texto ? `, «${f.texto}»` : ""}: ${f.motivo}`);
-      for (const v of c.avisos) avisar(`${c.id}: aviso ${v.regra}: ${v.motivo}`);
+      for (const f of c.falhas) avisar(`${c.id}: fail ${f.regra}, frames ${f.de}–${f.ate} (worst ${f.pior})${f.texto ? `, «${f.texto}»` : ""}: ${f.motivo}`);
+      for (const v of c.avisos) avisar(`${c.id}: warning ${v.regra}: ${v.motivo}`);
     }
     await r.liberar();
     process.stdout.write(`${JSON.stringify({ ok, falhas, avisos: composicoes.reduce((s, c) => s + c.avisos.length, 0), pasta: a.saida,
@@ -293,7 +293,7 @@ async function principal() {
     process.exitCode = ok ? 0 : 4;
   } catch (erro) {
     await r.liberar();
-    process.stderr.write(`erro: ${(erro as Error).message}\n`);
+    process.stderr.write(`error: ${(erro as Error).message}\n`);
     process.exitCode = 1;
   }
 }

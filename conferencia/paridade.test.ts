@@ -116,15 +116,15 @@ test("G19 sem destino não acusa; com destino Reels ou anúncio acusa como falha
   const sem = conferir(d);
   assert.deepEqual(sem.falhas.filter((x) => x.regra === "G19"), []);
   // Só o aviso de cobertura: vertical sem destino, a zona não foi conferida.
-  assert.deepEqual(sem.avisos.filter((x) => x.regra === "G19").map((a) => a.motivo), ["vídeo vertical sem data-destino no <html>: G19 (zona segura do Reels e do anúncio) não conferida"]);
-  assert.match(conferir({ ...d, destino: "site" }).avisos.map((a) => a.motivo).join("\n"), /data-destino «site» desconhecido/);
+  assert.deepEqual(sem.avisos.filter((x) => x.regra === "G19").map((a) => a.motivo), ["vertical video without data-destino on <html>: G19 (Reels and ad safe area) not checked"]);
+  assert.match(conferir({ ...d, destino: "site" }).avisos.map((a) => a.motivo).join("\n"), /unknown data-destino «site»/);
   assert.deepEqual(conferir({ ...d, destino: "youtube" }).falhas.filter((f) => f.regra === "G19"), []);
   for (const destino of ["reels", "anuncio"]) {
     const r = conferir({ ...d, destino });
     const g19 = r.falhas.filter((f) => f.regra === "G19");
     assert.equal(g19.length, 1, destino);
     assert.deepEqual([g19[0].de, g19[0].ate], [0, 5]);
-    assert.match(g19[0].motivo, /6 textos \(como «\(»\) fora da zona segura/);
+    assert.match(g19[0].motivo, /6 texts \(like «\(»\) outside the safe area/);
     assert.doesNotMatch(g19[0].motivo, /Entrando/);
   }
   // 16:9 num anúncio: o quadro vai no meio da tela do celular; só o texto na borda de baixo cai na zona da interface.
@@ -199,7 +199,7 @@ test("situação vem da especificação: aviso vira aviso; desligada não roda",
   const comAviso = { ...regras, "K-DES-08": { ...regras["K-DES-08"], aviso: "teste" } };
   const r = conferir(d, { regras: comAviso });
   assert.deepEqual(r.falhas.filter((f) => f.regra === "G15"), []);
-  const av = r.avisos.filter((a) => a.regra === "G15" && /texto sobre o rosto/.test(a.motivo));
+  const av = r.avisos.filter((a) => a.regra === "G15" && /text over the presenter's face/.test(a.motivo));
   assert.equal(av.length, 1);
   assert.deepEqual([av[0].de, av[0].ate], [1, 2]);
   const desligada = { ...regras, "K-DES-08": { ...regras["K-DES-08"], desligada: "teste" } };
