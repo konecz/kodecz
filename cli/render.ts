@@ -22,9 +22,9 @@ import { spawn, spawnSync, type ChildProcess } from "node:child_process";
 import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { basename, dirname, join } from "node:path";
-import { CAMINHOS, conferirArquivo, conferirNativo, ICD_VULKAN_NVIDIA, ErroDeUso, tempoLimite, escolherModo, lerArgumentos, sondarPlaca, type Ambiente,
+import { CAMINHOS, conferirArquivo, conferirNativo, esconderPlaca, ICD_VULKAN_NVIDIA, ErroDeUso, tempoLimite, escolherModo, lerArgumentos, sondarPlaca, type Ambiente,
   type Argumentos, type ArquivoSondado, type Escolha } from "./regras.ts";
-import { Recursos } from "./processos.ts";
+import { Recursos, rodarSemSaida } from "./processos.ts";
 import { esperarJob, type Aberto } from "./abertura.ts";
 // @ts-ignore: módulo .mjs sem tipos
 import { prefixoContencao } from "../ferramentas/contencao.mjs";
@@ -150,9 +150,9 @@ async function renderizar(a: Argumentos, e: Escolha, r: Recursos, tmp: string, a
     env.CUDA_VISIBLE_DEVICES = "";
     flags = ["--ozone-platform=headless", "--ozone-override-screen-size=4096,4096", "--disable-gpu", "--disable-gpu-compositing",
       "--enable-unsafe-swiftshader"];
-    if (spawnSync("sh", ["-c", "command -v bwrap"], { stdio: "ignore" }).status === 0) {
-      prefixo = ["bwrap", "--dev-bind", "/", "/", "--dev", "/dev", "--bind", "/dev/shm", "/dev/shm", "--"];
-    } else avisar("bwrap ausente: a placa fica visível ao Chromium no modo CPU (o desenho continua por software)");
+    const sem = esconderPlaca(rodarSemSaida, existsSync("/dev/nvidiactl"));
+    prefixo = sem.prefixo;
+    if (sem.aviso) avisar(sem.aviso);
   } else {
     Object.assign(env, PLACA_ENV, { WAYLAND_DISPLAY: aberto?.wayland ?? await subirWeston(r, tmp) });
     flags = flagsPlaca(e);

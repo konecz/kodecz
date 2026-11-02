@@ -77,7 +77,7 @@ export function conferirSistema(a: AmbienteSistema): ConferenciaSistema {
   let placa = true;
   if (!versao) {
     placa = false;
-    faltas.push({ oQue: "driver da NVIDIA ausente (sem placa, só o modo CPU)", comando: `sudo ubuntu-drivers install (driver ≥ ${DRIVER_MINIMO}) e reiniciar`, bloqueia: false });
+    faltas.push({ oQue: "driver da NVIDIA ausente (sem placa, só o modo CPU)", comando: `Ubuntu: sudo ubuntu-drivers install (driver ≥ ${DRIVER_MINIMO}) e reiniciar; outras: o driver da NVIDIA da distribuição`, bloqueia: false });
   } else if (maior < DRIVER_MINIMO) {
     placa = false;
     faltas.push({ oQue: `driver da NVIDIA ${versao} (precisa de ≥ ${DRIVER_MINIMO}; só o modo CPU até lá)`, comando: `sudo apt-get install -y nvidia-driver-${DRIVER_MINIMO}-open (ou mais novo) e reiniciar`, bloqueia: false });
@@ -97,10 +97,13 @@ export function conferirSistema(a: AmbienteSistema): ConferenciaSistema {
   }
 
   for (const [c, p] of COMANDOS) if (!a.comando(c)) pacote(`${c} fora do PATH`, [p]);
-  // O modo CPU esconde a placa com o bwrap (render.ts); com o namespace de usuário barrado, o render na CPU falha.
-  if (a.comando("bwrap") && a.saida("bwrap", ["--dev-bind", "/", "/", "true"]) === null) {
-    faltas.push({ oQue: "o bwrap não cria namespace de usuário (o render na CPU falha)", bloqueia: false,
-      comando: "Ubuntu 24.04+: sudo apt-get install -y apparmor-profiles (perfil bwrap-userns-restrict) ou sudo sysctl kernel.apparmor_restrict_unprivileged_userns=0; em contêiner: docker run --cap-add SYS_ADMIN --security-opt seccomp=unconfined --security-opt apparmor=unconfined" });
+  // O modo CPU esconde a placa com o bwrap (cli/regras.ts, esconderPlaca); com o namespace de usuário barrado (AppArmor
+  // do Ubuntu 24.04+), roda sem esconder. Só importa com placa: sem ela, não há o que esconder e não avisa. No Ubuntu
+  // 24.04 o apparmor-profiles põe o perfil em extra-profiles, sem carregar: instalar o pacote não basta (provado numa
+  // VM limpa em 2026-11-02); é preciso copiá-lo para /etc/apparmor.d e carregá-lo.
+  if (placa && a.comando("bwrap") && a.saida("bwrap", ["--dev-bind", "/", "/", "true"]) === null) {
+    faltas.push({ oQue: "o bwrap não cria namespace de usuário (o modo CPU roda com a placa visível ao Chromium)", bloqueia: false,
+      comando: "Ubuntu 24.04+: sudo apt-get install -y apparmor-profiles && sudo cp /usr/share/apparmor/extra-profiles/bwrap-userns-restrict /etc/apparmor.d/ && sudo apparmor_parser -r /etc/apparmor.d/bwrap-userns-restrict (ou sudo sysctl kernel.apparmor_restrict_unprivileged_userns=0); em contêiner: docker run --cap-add SYS_ADMIN --security-opt seccomp=unconfined --security-opt apparmor=unconfined" });
   }
   if (a.comando("fc-list")) {
     const fontes = a.saida("fc-list", []);

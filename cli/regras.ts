@@ -289,6 +289,27 @@ export function conferirArquivo(s: ArquivoSondado, esperado: { quadros: number; 
   return null;
 }
 
+/** O bwrap que esconde a placa no modo CPU (render e conferência): sem /dev/dri nem /dev/nvidia*. */
+export const PREFIXO_SEM_PLACA = ["bwrap", "--dev-bind", "/", "/", "--dev", "/dev", "--bind", "/dev/shm", "/dev/shm", "--"];
+
+/**
+ * Modo CPU: o prefixo que esconde a placa do Chromium, e o aviso quando não dá. O bwrap é testado de verdade (o mesmo
+ * prefixo com `true`): no Ubuntu 24.04+ ele existe, mas o AppArmor barra o namespace de usuário («setting up uid map:
+ * Permission denied») e o render inteiro caía. Sem bwrap que funcione, roda sem esconder: o desenho continua por
+ * software (--disable-gpu, CUDA_VISIBLE_DEVICES vazio). O aviso só sai quando há placa para esconder.
+ * `rodar` executa o comando e diz se saiu com 0; `placa`: há /dev/nvidiactl.
+ */
+export function esconderPlaca(rodar: (comando: string[]) => boolean, placa: boolean): { prefixo: string[]; aviso: string | null } {
+  if (!rodar(["sh", "-c", "command -v bwrap"])) {
+    return { prefixo: [], aviso: placa ? "bwrap ausente: a placa fica visível ao Chromium no modo CPU (o desenho continua por software)" : null };
+  }
+  if (!rodar([...PREFIXO_SEM_PLACA, "true"])) {
+    return { prefixo: [], aviso: placa ? "o bwrap não cria namespace de usuário (AppArmor do Ubuntu 24.04+?): a placa fica visível ao " +
+      "Chromium no modo CPU (o desenho continua por software); ./instalar.sh --verificar diz como liberar" : null };
+  }
+  return { prefixo: PREFIXO_SEM_PLACA, aviso: null };
+}
+
 /**
  * Tempo-limite da captura, em ms: 180 s de folga (subida, fontes) mais 0,4 s por quadro na placa e 0,6 s na
  * CPU. Sem o número de quadros (--quadros ausente, antes de a composição abrir), conta 3000.

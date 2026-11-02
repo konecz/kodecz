@@ -113,9 +113,14 @@ test("placa sem o ICD do Vulkan da NVIDIA em nenhum dos dois lugares: placa fora
 });
 
 test("bwrap que não cria namespace (userns barrado): aviso com o motivo, sem bloquear a instalação", () => {
-  const c = conferirSistema(maquina({ saida: (cmd) => (cmd === "bwrap" ? null : cmd.endsWith("cargo") ? "cargo 1.91.0" : "f.ttf: X") }));
+  const saida = (cmd: string) => (cmd === "bwrap" ? null : cmd.endsWith("cargo") ? "cargo 1.91.0" : "f.ttf: X");
+  const c = conferirSistema(maquina({ saida }));
   const f = c.faltas.find((x) => /bwrap/.test(x.oQue));
-  assert.ok(f && !f.bloqueia && /apparmor_restrict_unprivileged_userns|bwrap-userns-restrict/.test(f.comando ?? ""));
+  // No Ubuntu 24.04 o perfil do apparmor-profiles fica em extra-profiles: o comando o copia e carrega.
+  assert.ok(f && !f.bloqueia && /apparmor_parser -r \/etc\/apparmor\.d\/bwrap-userns-restrict/.test(f.comando ?? ""), JSON.stringify(f));
+  // Sem placa não há o que esconder: o modo CPU roda sem o bwrap e não há aviso.
+  const semPlaca = conferirSistema(maquina({ saida, ler: () => null }));
+  assert.ok(!semPlaca.faltas.some((x) => /bwrap/.test(x.oQue)), JSON.stringify(semPlaca.faltas));
 });
 
 test("Node abaixo do 24, sem fonte nenhuma e disco curto: bloqueiam com o que fazer", () => {

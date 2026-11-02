@@ -2,10 +2,15 @@
 // processos, e o grupo inteiro morre no fim, no erro e no sinal, com os netos (os processos do Chromium, o ffmpeg
 // que a captura abre). As pastas temporárias e a saída pela metade são apagadas (ARCHITECTURE.md, invariante «nenhum
 // processo filho sobrevive ao render»).
-import { spawn, type ChildProcess, type SpawnOptions } from "node:child_process";
+import { spawn, spawnSync, type ChildProcess, type SpawnOptions } from "node:child_process";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+
+/** Roda o comando sem saída e diz se terminou com 0 em até 10 s (o teste do bwrap do modo CPU, regras.ts). */
+export function rodarSemSaida(comando: string[]): boolean {
+  return spawnSync(comando[0], comando.slice(1), { stdio: "ignore", timeout: 10000 }).status === 0;
+}
 
 /** O grupo `pgid` ainda tem processo vivo. */
 export function grupoVivo(pgid: number): boolean {

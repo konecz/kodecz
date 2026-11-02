@@ -23,10 +23,15 @@ nativo e o `nativo.node`) e confere antes. Os logs longos (npm, cargo) ficam em 
   e o `chrome-sandbox` com SUID (aviso: o render ainda usa `--no-sandbox`; `docs/adr.md`, seção 3). O
   instalador só diz o comando.
 - O namespace de usuário do bwrap (o modo CPU esconde a placa com ele): no Ubuntu 24.04+ vem do perfil
-  `bwrap-userns-restrict` do AppArmor; em contêiner, de `--cap-add SYS_ADMIN --security-opt seccomp=unconfined
+  `bwrap-userns-restrict` do AppArmor, que o pacote `apparmor-profiles` do 24.04 só põe em
+  `/usr/share/apparmor/extra-profiles/` (copiar para `/etc/apparmor.d/` e carregar com `apparmor_parser -r`; o 26.04
+  já traz carregado); em contêiner, de `--cap-add SYS_ADMIN --security-opt seccomp=unconfined
   --security-opt apparmor=unconfined` (com `kernel.apparmor_restrict_unprivileged_userns=1` no hospedeiro, o namespace de
-  usuário falha mesmo sem o seccomp; com o `CAP_SYS_ADMIN`, o bwrap do root cria só o de montagem). O instalador testa o
-  bwrap e avisa com o comando.
+  usuário falha mesmo sem o seccomp; com o `CAP_SYS_ADMIN`, o bwrap do root cria só o de montagem). Sem ele o modo CPU
+  não cai: cada render testa o bwrap e, barrado, roda sem esconder a placa (o desenho continua por software). O
+  instalador só avisa, com o comando, quando há placa para esconder.
+- Fora do Debian/Ubuntu (sem `apt-get`): o instalador diz o que falta com os nomes dos pacotes do Debian e o
+  `--sistema` recusa; instalar os equivalentes da distribuição à mão.
 
 ## O que faz sem sudo
 
