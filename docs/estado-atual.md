@@ -2,7 +2,7 @@
 
 > Checkpoint de continuidade entre sessões. Curto: sobrescrever, nunca acumular.
 
-**Atualizado em:** 2026-11-02, interface em inglês (branch `feature/interface-em-ingles`).
+**Atualizado em:** 2026-11-02, interface em inglês e distribuição para agentes.
 
 ## Onde estamos
 
@@ -16,6 +16,10 @@
 - **Interface em inglês:** `kodecz render|preview|check` (`cli/kodecz.ts`, `bin` do `package.json`; `npm link` no
   clone), `--gpu`, `--alpha`, `--from`, `--frames`, bloco `id="kodecz"` com `width`, `height`, `fps`, `frames`,
   `window.kodecz_frame` e `--fps` nos blocos. Os nomes antigos seguem aceitos (mapa em `cli/nomes.ts`).
+- **Distribuição para agentes**: skills `kodecz`, `remotion-to-kodecz` e
+  `hyperframes-to-kodecz` (`skills/`, formato Agent Skills), plugin e marketplace do Claude Code (`.claude-plugin/`),
+  servidor MCP sem dependência (`mcp/`) e `server.json` do registro. Escritos já com os nomes em inglês. Envios
+  externos prontos e não enviados em `docs/distribuicao.md`.
 - **Render:** `kodecz render <pasta> <composição> <saída.mp4> --gpu` (H.264; `--hevc`, `--alpha`, `--cpu`,
   `--from N`). Instalar: `./instalar.sh`.
 
@@ -48,6 +52,9 @@ Nenhum em andamento: o responsável escolhe da lista abaixo.
 
 ## Pendências (só do responsável)
 
+- Envios da distribuição (`docs/distribuicao.md`), depois da interface em inglês na `main`: `npm publish` do
+  `kodecz-mcp`, registro do MCP, listas (awesome-claude-code a partir de 2026-11-14) e, se quiser, o diretório da
+  Anthropic.
 - Sandbox do Chromium e `chrome-sandbox` (pede `sudo`; aviso do `./instalar.sh`).
 - Teste da demonstração dos blocos: falha intermitente do Chromium (rasterização que depende do relógio); manter
   estrito é o recomendado.

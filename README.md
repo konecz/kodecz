@@ -176,6 +176,20 @@ shell commands, HTML and CSS, and JSON.
   the agent can fix it before a human looks. It needs a one-time `node conferencia/preparar.ts`.
 - **Previews in one to two seconds** (`kodecz preview`), so the agent sees what it wrote instead of guessing.
 
+### Install the Kodecz skills
+
+Three skills teach an agent the method: `kodecz` (make a video: write, preview, check, fix, render),
+`remotion-to-kodecz` and `hyperframes-to-kodecz` (port a project, with the API mapped one to one). They need Kodecz
+installed on the machine (quick start above).
+
+| Agent | Install |
+|---|---|
+| Claude Code | `/plugin install kodecz --marketplace konecz/kodecz` (skills and the MCP server; before 2.1.275: `/plugin marketplace add konecz/kodecz`, then `/plugin install kodecz@kodecz`) |
+| Codex, Cursor, Gemini CLI, Copilot and [others](https://skills.sh) | `npx skills add konecz/kodecz` |
+| Any MCP client | the [`kodecz-mcp`](mcp/) server: `render`, `preview` (frames come back as images) and `check` |
+
+The skills are plain Markdown in [`skills/`](skills/), in the open [Agent Skills](https://agentskills.io) format.
+
 <a id="faq"></a>
 
 ## FAQ

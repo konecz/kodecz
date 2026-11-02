@@ -16,6 +16,10 @@ Key facts:
 
 - [README](README.md): what Kodecz is, quick start, writing a video, how it works, numbers and FAQ
 - [AGENTS.md](AGENTS.md): how an AI agent writes, previews, checks and renders a Kodecz video
+- [Skill: kodecz](skills/kodecz/SKILL.md): make a video with Kodecz (Agent Skills format; `npx skills add konecz/kodecz`, or the Claude Code plugin `/plugin install kodecz --marketplace konecz/kodecz`)
+- [Skill: remotion-to-kodecz](skills/remotion-to-kodecz/SKILL.md): port a Remotion project, every API mapped (useCurrentFrame, interpolate, spring, Sequence, Composition, OffthreadVideo)
+- [Skill: hyperframes-to-kodecz](skills/hyperframes-to-kodecz/SKILL.md): port a HyperFrames project (data-start, data-duration, clips, window.__timelines)
+- [MCP server](mcp/README.md): `render`, `preview` and `check` as MCP tools (npm `kodecz-mcp`, registry name `io.github.konecz/kodecz`)
 - [Timeline format](docs/formatos/linha-do-tempo.md): the `index.html` block, animation rules, video and audio
 - [Blocks index](blocos/INDICE.md): editing techniques as Kodecz blocks (Portuguese)
 - [Measurements](docs/medidas.md): method and raw numbers behind every published figure

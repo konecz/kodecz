@@ -1,0 +1,14 @@
+{
+  "name": "kodecz",
+  "description": "Kodecz, the open-source engine that renders a web page into an MP4 on an NVIDIA GPU or any CPU, for AI agents",
+  "owner": { "name": "Konecz", "url": "https://konecz.com" },
+  "plugins": [
+    {
+      "name": "kodecz",
+      "source": "./",
+      "description": "Make videos as web pages with Kodecz: write, preview, check and render, plus ports from Remotion and HyperFrames",
+      "category": "media",
+      "homepage": "https://github.com/konecz/kodecz"
+    }
+  ]
+}

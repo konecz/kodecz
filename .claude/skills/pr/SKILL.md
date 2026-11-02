@@ -1,6 +1,8 @@
 ---
 name: pr
 description: Fecha uma tarefa do kodecz com Pull Request e faz o merge aprovado. Use ao concluir uma tarefa (antes de commitar, enviar a branch ou abrir o PR), ao decidir se uma alteração merece PR próprio e quando o responsável humano aprovar o merge de um PR.
+metadata:
+  internal: true
 ---
 
 # Pull Request e merge — kodecz
