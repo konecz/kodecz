@@ -7,16 +7,16 @@ import type { Fala } from "./regras.ts";
 /** Confere e devolve as falas; sem falas (undefined ou null), lista vazia. Lança com a palavra e o campo errados. */
 export function lerFalas(valor: unknown): Fala[] {
   if (valor === undefined || valor === null) return [];
-  if (!Array.isArray(valor)) throw new Error("motor_falas tem de ser uma lista de { t, ini, fim, bloco }");
+  if (!Array.isArray(valor)) throw new Error("motor_falas must be a list of { t, ini, fim, bloco }");
   let anterior = -Infinity;
   return valor.map((p: any, i: number) => {
-    const erro = (m: string) => new Error(`motor_falas, palavra ${i} (${JSON.stringify(p).slice(0, 60)}): ${m}`);
-    if (p === null || typeof p !== "object") throw erro("tem de ser um objeto { t, ini, fim, bloco }");
-    if (typeof p.t !== "string" || !p.t.trim()) throw erro("«t» vazio ou não é texto");
-    for (const c of ["ini", "fim"]) if (typeof p[c] !== "number" || !Number.isFinite(p[c]) || p[c] < 0) throw erro(`«${c}» tem de ser número ≥ 0 (segundos do vídeo)`);
-    if (p.fim < p.ini) throw erro("fim antes do início");
-    if (typeof p.bloco !== "number" && typeof p.bloco !== "string") throw erro("«bloco» tem de ser número ou texto");
-    if (p.ini < anterior) throw erro("fora de ordem (cada palavra começa depois do início da anterior)");
+    const erro = (m: string) => new Error(`motor_falas, word ${i} (${JSON.stringify(p).slice(0, 60)}): ${m}`);
+    if (p === null || typeof p !== "object") throw erro("must be an object { t, ini, fim, bloco }");
+    if (typeof p.t !== "string" || !p.t.trim()) throw erro("«t» is empty or not a string");
+    for (const c of ["ini", "fim"]) if (typeof p[c] !== "number" || !Number.isFinite(p[c]) || p[c] < 0) throw erro(`«${c}» must be a number ≥ 0 (seconds into the video)`);
+    if (p.fim < p.ini) throw erro("«fim» is before «ini»");
+    if (typeof p.bloco !== "number" && typeof p.bloco !== "string") throw erro("«bloco» must be a number or a string");
+    if (p.ini < anterior) throw erro("out of order (each word must start after the previous one starts)");
     anterior = p.ini;
     return { t: p.t, ini: p.ini, fim: p.fim, bloco: p.bloco };
   });

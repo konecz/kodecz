@@ -41,8 +41,8 @@ test("bloco: o mesmo campo com os dois nomes e valores diferentes é recusado", 
 });
 
 test("bloco: o erro diz o nome que a página usou (e o novo quando falta)", () => {
-  falha(() => lerDeclaracao(bloco("kodecz", { id: "L", width: 961, height: 540, fps: 30, frames: 60 })), /«width».*par/);
-  falha(() => lerDeclaracao(bloco("kodecz", { id: "L", largura: 961, altura: 540, qps: 30, quadros: 60 })), /«largura».*par/);
+  falha(() => lerDeclaracao(bloco("kodecz", { id: "L", width: 961, height: 540, fps: 30, frames: 60 })), /«width».*even/);
+  falha(() => lerDeclaracao(bloco("kodecz", { id: "L", largura: 961, altura: 540, qps: 30, quadros: 60 })), /«largura».*even/);
   falha(() => lerDeclaracao(bloco("kodecz", { id: "L", width: 960, height: 540, frames: 60 })), /«fps»/);
   falha(() => lerDeclaracao(`<script id="kodecz">{}</script>`), /<script id="kodecz">.*application\/json/);
 });

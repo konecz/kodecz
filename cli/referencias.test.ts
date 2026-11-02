@@ -119,7 +119,7 @@ test("uso: sem subcomando, subcomando errado e referência ausente saem com 2, s
   writeFileSync(join(pacote, "index.html"), "<!doctype html>");
   const remotion = rodar(["aprovar", pacote, "Sintetica"]);
   assert.equal(remotion.codigo, 2);
-  assert.match(remotion.erro, /a entrada do Remotion saiu do motor.*linha-do-tempo\.md/);
+  assert.match(remotion.erro, /Remotion projects are no longer accepted.*linha-do-tempo\.md/);
   assert.match(rodar(["aprovar", FIXTURE, "--props", "{}"]).erro, /props/);
 });
 

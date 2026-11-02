@@ -24,11 +24,11 @@ test("job: só a linha do tempo na placa, sem --alfa, --gravar nem --manter; lin
   for (const [linha, re] of [
     ["{", /JSON/],
     [JSON.stringify({ argumentos: "x" }), /argumentos/],
-    [job(["--cpu", SINTETICA, "LinhaSintetica", "/tmp/x.mp4"]), /modo placa/],
-    [job(["--placa", "--gravar", "1", "--gravar-pasta", "/tmp/g", SINTETICA, "LinhaSintetica", "/tmp/x.mp4"]), /--gravar/],
-    [job(["--placa", "--manter", SINTETICA, "LinhaSintetica", "/tmp/x.mp4"]), /--manter/],
+    [job(["--cpu", SINTETICA, "LinhaSintetica", "/tmp/x.mp4"]), /GPU mode/],
+    [job(["--placa", "--gravar", "1", "--gravar-pasta", "/tmp/g", SINTETICA, "LinhaSintetica", "/tmp/x.mp4"]), /--save-frames/],
+    [job(["--placa", "--manter", SINTETICA, "LinhaSintetica", "/tmp/x.mp4"]), /--keep/],
     // A entrada do Remotion saiu do motor (2026-10-31): a pasta sem o bloco motor-video é recusada com o motivo.
-    [job(["--placa", FIXTURES, "Sintetica", "/tmp/x.mp4"]), /linha do tempo/],
+    [job(["--placa", FIXTURES, "Sintetica", "/tmp/x.mp4"]), /is not a composition/],
   ] as const) {
     assert.throws(() => lerJob(linha), (e: unknown) => e instanceof ErroDeUso && re.test(e.message), linha);
   }
@@ -44,7 +44,7 @@ test("job na reserva: --captura é recusado, com o motivo", () => {
   const args = ["--placa", "--", SINTETICA, "LinhaSintetica", "/tmp/x.mp4"];
   assert.equal(lerJob(job(args)).entrada.tipo, "linha");
   for (const extra of [["--captura", "electron"], ["--captura=cef"]]) {
-    assert.throws(() => lerJob(job([...extra, ...args])), (e: unknown) => e instanceof ErroDeUso && /--captura saiu.*CEF/s.test(e.message));
+    assert.throws(() => lerJob(job([...extra, ...args])), (e: unknown) => e instanceof ErroDeUso && /--captura was removed.*CEF/s.test(e.message));
   }
 });
 
@@ -116,7 +116,7 @@ test("quente sem job (stdin fechado) e job inválido: sai sem deixar processo ne
   assert.deepEqual(marcados(marca), []);
   const invalido = await quente(["--cpu", SINTETICA, "LinhaSintetica", "/tmp/x.mp4"], marca, env);
   assert.equal(invalido.codigo, 2);
-  assert.match(invalido.erro, /modo placa/);
+  assert.match(invalido.erro, /GPU mode/);
   assert.deepEqual(marcados(marca), []);
   const depois = readdirSync(tmp).filter((d) => d.startsWith("motor-render-"));
   rmSync(tmp, { recursive: true, force: true });

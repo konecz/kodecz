@@ -9,9 +9,10 @@ Numa máquina Linux com placa NVIDIA (ou sem placa, só o modo CPU), na raiz do 
 ./instalar.sh --sem-render # instala sem o render de verificação
 ```
 
-Saída 0 é «pronto»; 1 traz a lista do que falta, cada item com o comando exato. Rodar de novo não refaz o que está
-certo: cada etapa grava o hash do que fez (`package-lock.json`, o CEF achatado e o host, binário do Electron, fontes do
-nativo e o `nativo.node`) e confere antes. Os logs longos (npm, cargo) ficam em `tmp/logs/instalar/`.
+As mensagens são em inglês (desde 2026-11-02). Saída 0 termina em `ready`; 1 traz a lista do que falta (`missing:`),
+cada item com o comando exato. Rodar de novo não refaz o que está certo: cada etapa grava o hash do que fez
+(`package-lock.json`, o CEF achatado e o host, binário do Electron, fontes do nativo e o `nativo.node`) e confere antes.
+Os logs longos (npm, cargo) ficam em `tmp/logs/instalar/`.
 
 ## O que pede sudo (só com `--sistema`, ou à mão)
 
@@ -60,7 +61,7 @@ nativo e o `nativo.node`) e confere antes. Os logs longos (npm, cargo) ficam em 
 
 `instalar/sem-nvidia.sh` repete a instalação num contêiner limpo (`node:24-trixie-slim`, sem CDI, sem `/dev/nvidia*`,
 sem as `.so` do driver, com o `/sys/module/nvidia` e os render nodes do hospedeiro cobertos): `./instalar.sh --sistema`, o
-rustup que ele pede, `./instalar.sh` até «pronto», o render da linha sintética com `--cpu`, conferindo N nas três
+rustup que ele pede, `./instalar.sh` até `ready`, o render da linha sintética com `--cpu`, conferindo N nas três
 tarjas de cada um dos 60 quadros, a recusa do `--placa` (saída 3) e os testes do protocolo do host sem a feature `placa`.
 Precisa do docker e da rede; leva de 5 a 15 min. O contêiner roda com `--cap-add SYS_ADMIN` e o seccomp e o AppArmor
 soltos (o bwrap do modo CPU): servem para esta prova local, não como padrão.

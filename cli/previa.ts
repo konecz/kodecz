@@ -31,7 +31,7 @@ import { paraPng } from "./quadros.ts";
 const RENDER = new URL("./render.ts", import.meta.url).pathname;
 /** Rajada de eventos do fs.watch (o editor grava em vários passos) vira um render só. */
 const RAJADA_MS = 120;
-const avisar = (texto: string) => process.stderr.write(`prévia: ${texto}\n`);
+const avisar = (texto: string) => process.stderr.write(`kodecz preview: ${texto}\n`);
 
 export const USO = `usage: kodecz preview <folder> <composition> [options]
        (same as: node cli/previa.ts <folder> <composition> [options])
@@ -67,39 +67,39 @@ export function lerOpcoesPrevia(argv: string[]): OpcoesPrevia {
       ajuda: { type: "boolean", short: "h" },
     } });
   } catch (e) {
-    throw new ErroDeUso(`opção desconhecida ou sem valor: ${(e as Error).message}\n\n${USO}`);
+    throw new ErroDeUso(`unknown option or missing value: ${(e as Error).message}\n\n${USO}`);
   }
   const { values: o, positionals: p } = r;
   if (o.ajuda) throw new ErroDeUso(USO, 0);
-  if (p.length !== 2) throw new ErroDeUso(`esperados 2 argumentos (<pasta> <composição>), recebi ${p.length}\n\n${USO}`);
-  if (o.placa && o.cpu) throw new ErroDeUso("--placa e --cpu juntos: escolha um, ou nenhum");
-  if (o.servir && !o.observar) throw new ErroDeUso("--servir só com --observar");
-  if (o.porta !== undefined && !o.servir) throw new ErroDeUso("--porta só com --servir");
+  if (p.length !== 2) throw new ErroDeUso(`expected 2 arguments (<folder> <composition>), got ${p.length}\n\n${USO}`);
+  if (o.placa && o.cpu) throw new ErroDeUso("--gpu and --cpu together: pick one, or neither");
+  if (o.servir && !o.observar) throw new ErroDeUso("--serve needs --watch");
+  if (o.porta !== undefined && !o.servir) throw new ErroDeUso("--port needs --serve");
   const pasta = resolve(p[0]), composicao = p[1];
   const html = join(pasta, "index.html");
-  if (!existsSync(html) || !statSync(pasta).isDirectory()) throw new ErroDeUso(`${pasta}: falta o index.html da composição em linha do tempo`);
+  if (!existsSync(html) || !statSync(pasta).isDirectory()) throw new ErroDeUso(`${pasta}: no index.html (a composition is a folder with index.html and the <script id="kodecz"> block)`);
   const declaracao = lerDeclaracao(readFileSync(html, "utf8"));
-  if (!declaracao) throw new ErroDeUso(`${html} não tem o bloco <script id="kodecz">: a prévia só atende a linha do tempo declarada (docs/formatos/linha-do-tempo.md)`);
-  if (declaracao.id !== composicao) throw new ErroDeUso(`composição «${composicao}» não existe em ${pasta}; a declarada é ${declaracao.id}`);
+  if (!declaracao) throw new ErroDeUso(`${html} has no <script id="kodecz"> block (docs/formatos/linha-do-tempo.md)`);
+  if (declaracao.id !== composicao) throw new ErroDeUso(`composition «${composicao}» not found in ${pasta}; the declared one is ${declaracao.id}`);
   let quadros: number[];
   if (o.quadro === undefined) {
-    if (!o.observar) throw new ErroDeUso("falta --quadro <N> (ou --observar)");
+    if (!o.observar) throw new ErroDeUso("missing --frame <N> (or --watch)");
     quadros = [0, Math.floor(declaracao.quadros / 2), declaracao.quadros - 1];
   } else {
-    if (!/^\d+(,\d+)*$/.test(o.quadro)) throw new ErroDeUso(`--quadro: um número ou lista separada por vírgula, como 0,45,120: ${o.quadro}`);
+    if (!/^\d+(,\d+)*$/.test(o.quadro)) throw new ErroDeUso(`--frame: a number or a comma-separated list, like 0,45,120: ${o.quadro}`);
     quadros = o.quadro.split(",").map(Number);
   }
   quadros = [...new Set(quadros)].sort((a, b) => a - b);
   const fora = quadros.filter((n) => n >= declaracao.quadros);
-  if (fora.length) throw new ErroDeUso(`--quadro ${fora.join(",")} fora da composição (${declaracao.quadros} quadros: 0 a ${declaracao.quadros - 1})`);
+  if (fora.length) throw new ErroDeUso(`--frame ${fora.join(",")} is outside the composition (${declaracao.quadros} frames: 0 to ${declaracao.quadros - 1})`);
   const arquivoUnico = !o.observar && quadros.length === 1 && (o.saida ?? "").endsWith(".png");
-  if (o.saida?.endsWith(".png") && !arquivoUnico) throw new ErroDeUso("--saida x.png só com um quadro e sem --observar; para vários, uma pasta");
+  if (o.saida?.endsWith(".png") && !arquivoUnico) throw new ErroDeUso("--out x.png only works with one frame and without --watch; for several, give a folder");
   const saida = o.saida ? resolve(o.saida) : join(CAMINHOS.raiz, "tmp", "previa", composicao);
-  if (o.observar && saida === pasta) throw new ErroDeUso("--saida não pode ser a própria pasta observada (cada PNG gravado dispararia outro render): use uma subpasta ou outra pasta");
+  if (o.observar && saida === pasta) throw new ErroDeUso("--out cannot be the watched folder itself (each PNG written would trigger another render): use a subfolder or another folder");
   let porta = 0;
   if (o.porta !== undefined) {
     porta = Number(o.porta);
-    if (!/^\d+$/.test(o.porta) || porta < 1 || porta > 65535) throw new ErroDeUso(`--porta tem de ser de 1 a 65535: ${o.porta}`);
+    if (!/^\d+$/.test(o.porta) || porta < 1 || porta > 65535) throw new ErroDeUso(`--port must be from 1 to 65535: ${o.porta}`);
   }
   return { pasta, composicao, declaracao, quadros, saida, arquivoUnico, observar: o.observar === true, servir: o.servir === true, porta,
     modo: o.placa ? "placa" : o.cpu ? "cpu" : null, contencao: !o["sem-contencao"] };
@@ -135,7 +135,7 @@ function colher(p: ChildProcess): Promise<Rodada> {
     let json: any = null, erro = "";
     linhas(p.stdout!, (l) => { try { const j = JSON.parse(l); if (j && !j.evento) json = j; } catch {} });
     p.stderr!.on("data", (d) => { erro += d; if (process.env.MOTOR_DEPURAR === "1") process.stderr.write(d); });
-    p.on("error", (e) => { erro += `não abriu: ${e.message}\n`; });
+    p.on("error", (e) => { erro += `did not start: ${e.message}\n`; });
     p.on("close", (codigo) => ok({ codigo, json, erro }));
   });
 }
@@ -176,7 +176,7 @@ class Reserva {
       const morreu = (c: number | null, s: string | null) => {
         fim();
         this.codigo = c;
-        this.motivo = `${erro.trim().split("\n").filter((l) => l.startsWith("erro:")).pop() ?? `saiu com ${c ?? s}`}`;
+        this.motivo = `${erro.trim().split("\n").filter((l) => l.startsWith("error:")).pop() ?? `exited with ${c ?? s}`}`;
         ok(false);
       };
       const fim = () => { this.p.stdout!.off("data", ler); this.p.off("close", morreu); this.p.stderr!.off("data", ouvirErro);
@@ -227,14 +227,14 @@ export class Previa {
   /** Renderiza `quadros` e grava os PNG em `pasta` (ou no arquivo da --saida). Lança com o motivo e o código do render. */
   async fazer(quadros: number[], pasta: string): Promise<Feito> {
     // Parando: o render que estava na fila não sobe mais nada (o liberar já passou pelos grupos vivos).
-    const parando = () => { if (this.r.liberado) throw Object.assign(new Error("a prévia está parando"), { codigo: 130 }); };
+    const parando = () => { if (this.r.liberado) throw Object.assign(new Error("the preview is stopping"), { codigo: 130 }); };
     parando();
     const t0 = performance.now();
     const tmp = this.r.pasta("motor-previa-");
     // Cada render (frio ou a reserva) tem o TMPDIR dentro de uma temporária da prévia: o que a árvore dele deixar ao
     // ser parada no meio (a pasta do host do CEF, a do Chromium) some com ela.
     let usada: Reserva | null = null;
-    if (process.env.MOTOR_DEPURAR === "1") avisar(`temporária ${tmp}`);
+    if (process.env.MOTOR_DEPURAR === "1") avisar(`temporary folder ${tmp}`);
     try {
       const { argv, ordem } = argumentosDoRender(this.o, quadros, join(tmp, "previa.mp4"), join(tmp, "quadros"));
       let rodada: Rodada | null = null, quente = false;
@@ -248,15 +248,15 @@ export class Previa {
         rodada = await reserva.usar(argv, ordem);
         quente = true;
       } else if (reserva && pronta) {
-        avisar("a reserva quente saiu antes do job: este render abre frio");
+        avisar("the warm browser exited before the job: this render starts cold");
       } else if (reserva) {
         // Não abriu. Placa que não serve (3) desliga o quente; outra falha (placa ocupada por um instante, abertura
         // lenta) tenta de novo no próximo, até 3 seguidas.
         this.falhas++;
         if (reserva.codigo === 3 || this.falhas >= 3) {
-          this.semQuente = reserva.motivo || "a reserva não abriu";
-          avisar(`sem o navegador quente (${this.semQuente}): cada render abre frio`);
-        } else avisar(`a reserva quente não abriu (${reserva.motivo}): este render abre frio`);
+          this.semQuente = reserva.motivo || "the warm browser did not start";
+          avisar(`no warm browser (${this.semQuente}): every render starts cold`);
+        } else avisar(`the warm browser did not start (${reserva.motivo}): this render starts cold`);
       }
       if (!rodada) {
         const filhos = join(tmp, "tmp");
@@ -266,8 +266,8 @@ export class Previa {
         rodada = await colher(this.r.iniciar(process.execPath, [RENDER, ...argv], { env, stdio: ["ignore", "pipe", "pipe"] }));
       }
       if (rodada.codigo !== 0 || !rodada.json?.ok) {
-        const motivo = rodada.erro.trim().split("\n").filter((l) => !l.startsWith("motor: ") || /erro|aviso/.test(l)).slice(-12).join("\n");
-        throw Object.assign(new Error(`o render não saiu (cli/render.ts saiu com ${rodada.codigo}):\n${motivo}`), { codigo: rodada.codigo });
+        const motivo = rodada.erro.trim().split("\n").filter((l) => !l.startsWith("kodecz: ") || /error|warning/.test(l)).slice(-12).join("\n");
+        throw Object.assign(new Error(`the render failed (cli/render.ts exited with ${rodada.codigo}):\n${motivo}`), { codigo: rodada.codigo });
       }
       const c = rodada.json.composicao ?? {};
       const largura = c.largura ?? this.o.declaracao.largura, altura = c.altura ?? this.o.declaracao.altura;
@@ -301,8 +301,8 @@ class Fila {
 }
 
 const PAGINA = (o: OpcoesPrevia) => `<!doctype html>
-<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Prévia ${o.composicao}</title>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preview ${o.composicao}</title>
 <style>
   :root { color-scheme: dark; --fundo: #111; --texto: #ddd; --fraco: #888; --borda: #333; --erro: #f77; }
   body { margin: 0; padding: 16px; background: var(--fundo); color: var(--texto); font: 14px/1.4 system-ui, sans-serif; }
@@ -317,23 +317,23 @@ const PAGINA = (o: OpcoesPrevia) => `<!doctype html>
   input[type=number] { width: 6em; }
 </style></head>
 <body>
-<header><h1>${o.composicao}</h1><span id="estado">abrindo…</span></header>
+<header><h1>${o.composicao}</h1><span id="estado">starting…</span></header>
 <div class="grade" id="lista"></div>
-<div class="controle"><label for="n">Quadro</label>
+<div class="controle"><label for="n">Frame</label>
   <input type="range" id="faixa" min="0" max="${o.declaracao.quadros - 1}" value="0">
   <input type="number" id="n" min="0" max="${o.declaracao.quadros - 1}" value="0"></div>
-<figure><img id="solto" alt="quadro escolhido"><figcaption id="legenda"></figcaption></figure>
+<figure><img id="solto" alt="chosen frame"><figcaption id="legenda"></figcaption></figure>
 <script>
 const qps = ${o.declaracao.qps}, lista = ${JSON.stringify(o.quadros)};
 let versao = 0;
 const seg = (n) => (n / qps).toFixed(2) + ' s';
 const grade = document.getElementById('lista');
-for (const n of lista) grade.insertAdjacentHTML('beforeend', '<figure><img data-n="' + n + '" alt="quadro ' + n + '"><figcaption>quadro ' + n + ' · ' + seg(n) + '</figcaption></figure>');
+for (const n of lista) grade.insertAdjacentHTML('beforeend', '<figure><img data-n="' + n + '" alt="frame ' + n + '"><figcaption>frame ' + n + ' · ' + seg(n) + '</figcaption></figure>');
 const faixa = document.getElementById('faixa'), campo = document.getElementById('n'), solto = document.getElementById('solto');
 function mostrarSolto() {
   const n = Number(campo.value);
   solto.src = '/quadro/' + n + '.png?v=' + versao;
-  document.getElementById('legenda').textContent = 'quadro ' + n + ' · ' + seg(n);
+  document.getElementById('legenda').textContent = 'frame ' + n + ' · ' + seg(n);
 }
 faixa.addEventListener('change', () => { campo.value = faixa.value; mostrarSolto(); });
 campo.addEventListener('change', () => { faixa.value = campo.value; mostrarSolto(); });
@@ -343,9 +343,9 @@ eventos.onmessage = (m) => {
   const e = JSON.parse(m.data);
   if (e.evento === 'erro') { estado.className = 'erro'; estado.textContent = e.mensagem; return; }
   estado.className = '';
-  if (e.evento === 'refazendo') { estado.textContent = 'refazendo…'; return; }
+  if (e.evento === 'refazendo') { estado.textContent = 'rendering…'; return; }
   versao = e.versao;
-  estado.textContent = 'versão ' + e.versao + ' · ' + e.ms + ' ms' + (e.quente ? ' (quente)' : ' (frio)') + ' · ' + e.modo;
+  estado.textContent = 'version ' + e.versao + ' · ' + e.ms + ' ms' + (e.quente ? ' (warm)' : ' (cold)') + ' · ' + (e.modo === 'placa' ? 'GPU' : 'CPU');
   for (const img of grade.querySelectorAll('img')) img.src = '/quadro/' + img.dataset.n + '.png?v=' + versao;
   mostrarSolto();
 };
@@ -381,11 +381,11 @@ export async function observar(o: OpcoesPrevia, r: Recursos): Promise<void> {
         versao = v;
         ultimo = { evento: "quadros", versao: v, quadros: f.quadros, ms: f.ms, quente: f.quente, modo: f.modo };
         publicar(ultimo);
-        avisar(`versão ${v}: ${o.quadros.length} quadro(s) em ${f.ms} ms (${f.quente ? "quente" : "frio"}, ${f.modo})`);
+        avisar(`version ${v}: ${o.quadros.length} frame(s) in ${f.ms} ms (${f.quente ? "warm" : "cold"}, ${f.modo === "placa" ? "GPU" : "CPU"})`);
       } catch (e) {
         ultimo = { evento: "erro", versao: v, mensagem: (e as Error).message };
         publicar(ultimo);
-        avisar(`versão ${v}: ${(e as Error).message}`);
+        avisar(`version ${v}: ${(e as Error).message}`);
       }
       previa.abrirReserva();
     });
@@ -404,7 +404,7 @@ export async function observar(o: OpcoesPrevia, r: Recursos): Promise<void> {
       try {
         const f = await previa.fazer([n], pastaAvulsos);
         avulsos.set(n, { versao: v, arquivo: f.quadros[n] });
-        avisar(`quadro ${n} (versão ${v}) em ${f.ms} ms (${f.quente ? "quente" : "frio"})`);
+        avisar(`frame ${n} (version ${v}) in ${f.ms} ms (${f.quente ? "warm" : "cold"})`);
         return f.quadros[n];
       } finally { previa.abrirReserva(); }
     });
@@ -434,10 +434,10 @@ export async function observar(o: OpcoesPrevia, r: Recursos): Promise<void> {
     // MOTOR_PREVIA_CONSULTAR=1 força a consulta (para testar o caminho sem inotify).
     if (process.env.MOTOR_PREVIA_CONSULTAR === "1") throw new Error("MOTOR_PREVIA_CONSULTAR=1");
     const w = watch(o.pasta, { recursive: true }, (_tipo, nome) => { if (!(nome && dentro(String(nome)))) mudou(); });
-    w.on("error", (e) => { avisar(`fs.watch falhou (${e.message}): olhando a pasta a cada 300 ms`); w.close(); observador = consultar(); });
+    w.on("error", (e) => { avisar(`fs.watch failed (${e.message}): polling the folder every 300 ms`); w.close(); observador = consultar(); });
     observador = w;
   } catch (e) {
-    avisar(`fs.watch indisponível (${(e as Error).message}): olhando a pasta a cada 300 ms`);
+    avisar(`fs.watch unavailable (${(e as Error).message}): polling the folder every 300 ms`);
     observador = consultar();
   }
 
@@ -473,17 +473,17 @@ export async function observar(o: OpcoesPrevia, r: Recursos): Promise<void> {
     await new Promise<void>((ok, falha) => { servidor!.once("error", falha); servidor!.listen(o.porta, "127.0.0.1", ok); });
     const url = `http://127.0.0.1:${(servidor.address() as { port: number }).port}/`;
     process.stdout.write(`${JSON.stringify({ evento: "pagina", url })}\n`);
-    avisar(`página em ${url}`);
+    avisar(`page at ${url}`);
   }
 
-  avisar(`observando ${o.pasta} (quadros ${o.quadros.join(", ")}; saída ${o.saida}); Ctrl+C para parar`);
+  avisar(`watching ${o.pasta} (frames ${o.quadros.join(", ")}; output ${o.saida}); Ctrl+C to stop`);
   refazerLista();
 
   await new Promise<void>((ok) => {
     const parar = (sinal: string) => {
-      if (parando) { avisar(`${sinal} ignorado: ainda parando`); return; }
+      if (parando) { avisar(`${sinal} ignored: still stopping`); return; }
       parando = true;
-      avisar(`${sinal}: parando`);
+      avisar(`${sinal}: stopping`);
       clearTimeout(rajada);
       observador.close();
       for (const c of clientes) c.end();
@@ -500,13 +500,13 @@ async function principal() {
   let o: OpcoesPrevia;
   try { o = lerOpcoesPrevia(process.argv.slice(2)); } catch (erro) {
     if (erro instanceof ErroDeUso) {
-      (erro.codigo === 0 ? process.stdout : process.stderr).write(`${erro.codigo === 0 ? "" : "erro: "}${erro.message}\n`);
+      (erro.codigo === 0 ? process.stdout : process.stderr).write(`${erro.codigo === 0 ? "" : "error: "}${erro.message}\n`);
       process.exit(erro.codigo);
     }
     throw erro;
   }
   // A espera maior que a do render: o render filho, no SIGTERM, ainda fecha os processos dele e apaga a temporária.
-  const r = new Recursos({ espera: 5000, aoIniciar: process.env.MOTOR_DEPURAR === "1" ? (pid, c) => avisar(`grupo ${pid}: ${basename(c)}`) : null });
+  const r = new Recursos({ espera: 5000, aoIniciar: process.env.MOTOR_DEPURAR === "1" ? (pid, c) => avisar(`group ${pid}: ${basename(c)}`) : null });
   if (o.observar) {
     await observar(o, r);
     await r.liberar();
@@ -517,10 +517,10 @@ async function principal() {
     const f = await new Previa(o, r).fazer(o.quadros, o.saida);
     await r.liberar();
     process.stdout.write(`${JSON.stringify({ ok: true, ...f })}\n`);
-    avisar(`${Object.values(f.quadros).join(", ")} em ${f.ms} ms (${f.modo})`);
+    avisar(`${Object.values(f.quadros).join(", ")} in ${f.ms} ms (${f.modo === "placa" ? "GPU" : "CPU"})`);
   } catch (erro) {
     await r.liberar();
-    process.stderr.write(`erro: ${(erro as Error).message}\n`);
+    process.stderr.write(`error: ${(erro as Error).message}\n`);
     const c = (erro as { codigo?: number }).codigo;
     process.exitCode = c === 2 || c === 3 ? c : 1;
   }

@@ -13,8 +13,8 @@ export const INSTALACAO = {
   raiz: CAMINHOS.raiz,
   /** Pastas com package-lock.json que recebem `npm ci --ignore-scripts`. */
   pacotesNpm: [
-    { nome: "Electron da conferência", pasta: CAMINHOS.captura },
-    { nome: "conferência (onnxruntime)", pasta: CONFERENCIA },
+    { nome: "captura/ (Electron for `kodecz check`)", pasta: CAMINHOS.captura },
+    { nome: "conferencia/ (onnxruntime face detector)", pasta: CONFERENCIA },
   ],
   electron: {
     pasta: join(CAMINHOS.captura, "node_modules", "electron"),

@@ -30,15 +30,15 @@ test("argumentos: pares de entrada e composição, opções e recusas", () => {
   assert.equal(a.dados, false);
   assert.match(a.saida, /tmp\/conferencia$/);
   assert.equal(lerArgumentosConferir([join(FIX, "passa"), "ConfPassa", "--dados"]).dados, true);
-  falha(/pares/, join(FIX, "passa"));
-  falha(/é «ConfPassa», não «Outra»/, join(FIX, "passa"), "Outra");
-  falha(/falta index\.html/, pasta, "X");
-  falha(/--amostra/, join(FIX, "passa"), "ConfPassa", "--amostra", "0");
-  falha(/--falas: arquivo não existe/, join(FIX, "passa"), "ConfPassa", "--falas", join(pasta, "nada.json"));
+  falha(/pairs/, join(FIX, "passa"));
+  falha(/is «ConfPassa», not «Outra»/, join(FIX, "passa"), "Outra");
+  falha(/no index\.html/, pasta, "X");
+  falha(/--sample/, join(FIX, "passa"), "ConfPassa", "--amostra", "0");
+  falha(/--speech: file not found/, join(FIX, "passa"), "ConfPassa", "--falas", join(pasta, "nada.json"));
   const pacote = join(pasta, "pacote");
   spawnSync("mkdir", [pacote]);
   writeFileSync(join(pacote, "index.html"), "<!doctype html>");
-  falha(/a entrada do Remotion saiu do motor/, pacote, "X");
+  falha(/Remotion projects are no longer accepted/, pacote, "X");
   assert.throws(() => lerArgumentosConferir(["--ajuda"]), (e: unknown) => e instanceof ErroDeUso && e.codigo === 0);
 });
 
@@ -90,13 +90,13 @@ test("integração: uma que passa e uma por regra que falha, cada uma só pela r
   assert.ok(existsSync(join(saida, g15[0].imagem)));
 
   // G17: a legenda quebra em duas linhas enquanto está na tela (quadros 20 a 69).
-  assert.deepEqual(c.ConfDuasLinhas.falhas.map((f: any) => [f.regra, f.de, f.ate, f.motivo]), [["G17", 20, 69, "legenda em 2 linhas"]]);
+  assert.deepEqual(c.ConfDuasLinhas.falhas.map((f: any) => [f.regra, f.de, f.ate, f.motivo]), [["G17", 20, 69, "caption on 2 lines"]]);
 
   // G21: o zoom volta por duração fixa, 567 ms antes do fim da frase.
   const g21 = c.ConfZoomCedo.falhas;
   assert.equal(g21.length, 1);
   assert.equal(g21[0].regra, "G21");
-  assert.match(g21[0].motivo, /zoom volta 567 ms antes do fim da frase «Isto muda tudo, de verdade\.»/);
+  assert.match(g21[0].motivo, /zoom returns 567 ms before the end of the sentence «Isto muda tudo, de verdade\.»/);
 
   // Nada sobra: nem pasta temporária, nem processo (o grupo do Electron morre na liberação).
   assert.deepEqual(temporarias().filter((n) => !antes.includes(n)), []);
@@ -132,5 +132,5 @@ test("integração: só a que passa sai com 0; --falas por cima da página muda 
   writeFileSync(falas, JSON.stringify([{ t: "", ini: 0, fim: 1, bloco: 1 }]));
   const ruim = rodar(join(FIX, "zoom-cedo"), "ConfZoomCedo", "--falas", falas, "--saida", join(pasta, "ruim"));
   assert.equal(ruim.codigo, 1);
-  assert.match(ruim.stderr, /palavra 0.*«t» vazio/);
+  assert.match(ruim.stderr, /word 0.*«t» is empty/);
 });

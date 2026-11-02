@@ -32,7 +32,7 @@ export type Dependencias = {
 };
 
 const sair = (codigo: number, texto?: string): never => {
-  if (texto) process.stderr.write(`erro: ${texto}\n`);
+  if (texto) process.stderr.write(`error: ${texto}\n`);
   process.exit(codigo);
 };
 
@@ -55,18 +55,18 @@ function linhaDoStdin(): Promise<string | null> {
  */
 export function lerJob(linha: string, { previa = false } = {}): Argumentos & { ordem: string | null } {
   let j: unknown;
-  try { j = JSON.parse(linha); } catch { throw new ErroDeUso("job: linha JSON inválida"); }
+  try { j = JSON.parse(linha); } catch { throw new ErroDeUso("job: invalid JSON line"); }
   const argv = (j as { argumentos?: unknown })?.argumentos;
-  if (!Array.isArray(argv) || !argv.every((x) => typeof x === "string")) throw new ErroDeUso('job: falta «argumentos», lista de textos');
+  if (!Array.isArray(argv) || !argv.every((x) => typeof x === "string")) throw new ErroDeUso('job: missing «argumentos», a list of strings');
   const a = lerArgumentos(argv);
-  if (a.modo === "cpu" || a.alfa) throw new ErroDeUso("--esperar só atende o modo placa sem --alfa");
-  if (a.manter || (a.gravar.length && !previa)) throw new ErroDeUso("--esperar não atende --gravar nem --manter");
+  if (a.modo === "cpu" || a.alfa) throw new ErroDeUso("--esperar only serves GPU mode without --alpha");
+  if (a.manter || (a.gravar.length && !previa)) throw new ErroDeUso("--esperar does not take --save-frames or --keep");
   const ordem = (j as { ordem?: unknown }).ordem ?? null;
   if (ordem !== null) {
-    if (!previa) throw new ErroDeUso("job: «ordem» só na prévia (--esperar --previa)");
+    if (!previa) throw new ErroDeUso("job: «ordem» only in preview (--esperar --previa)");
     const total = a.entrada.declaracao.quadros;
     if (typeof ordem !== "string" || !/^\d+(,\d+)*$/.test(ordem) || ordem.split(",").some((n) => Number(n) >= total)) {
-      throw new ErroDeUso(`job: «ordem» é a lista de quadros separados por vírgula, de 0 a ${total - 1}: ${JSON.stringify(ordem)}`);
+      throw new ErroDeUso(`job: «ordem» is a comma-separated list of frames, from 0 to ${total - 1}: ${JSON.stringify(ordem)}`);
     }
   }
   return { ...a, ordem };
@@ -101,7 +101,7 @@ export async function esperarJob(d: Dependencias, { previa = false } = {}): Prom
     await new Promise<void>((ok, falha) => {
       const log: string[] = [];
       let resto = "";
-      const relogio = setTimeout(() => falha(new Error(`o navegador não abriu em ${LIMITE_ABERTURA_MS / 1000} s:\n${log.slice(-8).join("\n")}`)), LIMITE_ABERTURA_MS);
+      const relogio = setTimeout(() => falha(new Error(`the browser did not start within ${LIMITE_ABERTURA_MS / 1000} s:\n${log.slice(-8).join("\n")}`)), LIMITE_ABERTURA_MS);
       const fim = () => { clearTimeout(relogio); p.stdout!.off("data", ler); p.stderr!.off("data", guardar); p.off("close", morreu);
         // Parados até o render ligar os ouvintes dele: nada do que o navegador disser depois se perde.
         p.stdout!.pause(); p.stderr!.pause(); };
@@ -110,7 +110,7 @@ export async function esperarJob(d: Dependencias, { previa = false } = {}): Prom
         for (const l of partes) { log.push(l); if (l === "espera: pronto") { fim(); ok(); return; } }
       };
       const guardar = (x: Buffer) => { log.push(...String(x).split("\n").filter(Boolean)); };
-      const morreu = (c: number | null, s: string | null) => { fim(); falha(new Error(`o navegador saiu (${c ?? s}) antes de abrir:\n${log.slice(-8).join("\n")}`)); };
+      const morreu = (c: number | null, s: string | null) => { fim(); falha(new Error(`the browser exited (${c ?? s}) before starting:\n${log.slice(-8).join("\n")}`)); };
       p.stdout!.on("data", ler); p.stderr!.on("data", guardar); p.on("close", morreu);
     });
     marcar("navegador");

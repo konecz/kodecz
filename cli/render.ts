@@ -38,7 +38,7 @@ const PLACA_ENV = {
   GBM_BACKEND: "nvidia-drm",
 };
 const MARCA = 16;
-const avisar = (texto: string) => process.stderr.write(`motor: ${texto}\n`);
+const avisar = (texto: string) => process.stderr.write(`kodecz: ${texto}\n`);
 
 /** O ambiente de verdade da sonda (cli/regras.ts, sondarPlaca). */
 export function ambienteReal(): Ambiente {
@@ -58,8 +58,8 @@ export function ambienteReal(): Ambiente {
       if (process.env.MOTOR_SONDA_NVENC === "0") return null;
       const r = spawnSync(process.execPath, [SONDA, CAMINHOS.nativo, alfa ? "hevc-alfa" : codec], { encoding: "utf8", timeout: 20000, killSignal: "SIGKILL",
         env: { ...process.env, ...PLACA_ENV } });
-      if (r.error) return `sonda: ${r.error.message}`;
-      return r.status === 0 ? null : (r.stderr.trim().split("\n").pop() || `sonda saiu com ${r.status}`);
+      if (r.error) return `probe: ${r.error.message}`;
+      return r.status === 0 ? null : (r.stderr.trim().split("\n").pop() || `probe exited with ${r.status}`);
     },
     sondarNativo: () => conferirNativo(() => createRequire(import.meta.url)(CAMINHOS.nativo)),
   };
@@ -75,13 +75,13 @@ function vigiar(p: ChildProcess, limiteMs: number, nome: string): { fim: Promise
     clearTimeout(relogio);
     relogio = setTimeout(() => {
       estourou = true;
-      avisar(`${nome} passou do tempo-limite de ${Math.round(ms / 1000)} s`);
+      avisar(`${nome} hit the ${Math.round(ms / 1000)} s timeout`);
       try { process.kill(-p.pid!, "SIGKILL"); } catch {}
     }, Math.max(0, ms - (performance.now() - inicio)));
   };
   armar(limiteMs);
   const fim = new Promise<Fim>((ok) => {
-    p.on("error", (e) => { acabou = true; clearTimeout(relogio); avisar(`${nome} não abriu: ${e.message}`); ok({ codigo: -1, sinal: null, estourou }); });
+    p.on("error", (e) => { acabou = true; clearTimeout(relogio); avisar(`${nome} did not start: ${e.message}`); ok({ codigo: -1, sinal: null, estourou }); });
     p.on("close", (codigo, sinal) => { acabou = true; clearTimeout(relogio); ok({ codigo, sinal, estourou }); });
   });
   return { fim, refazer: (ms) => { if (!acabou) armar(ms); } };
@@ -101,7 +101,7 @@ function mover(de: string, para: string) {
 async function subirWeston(r: Recursos, tmp: string): Promise<string> {
   const socket = `motor-render-${process.pid}`;
   const dir = process.env.XDG_RUNTIME_DIR;
-  if (!dir) throw new Error("XDG_RUNTIME_DIR vazio: o weston precisa dele para o socket (sessão de usuário do systemd)");
+  if (!dir) throw new Error("XDG_RUNTIME_DIR is empty: weston needs it for its socket (run in a systemd user session)");
   const log = join(tmp, "weston.log");
   const p = r.iniciar("weston", ["--backend=headless", "--renderer=gl", `--socket=${socket}`, "--width=1920", "--height=1096",
     "--idle-time=0", `--log=${log}`], { env: { ...process.env, ...PLACA_ENV } });
@@ -113,7 +113,7 @@ async function subirWeston(r: Recursos, tmp: string): Promise<string> {
     await new Promise((ok) => setTimeout(ok, 50));
   }
   const fim = existsSync(log) ? readFileSync(log, "utf8").trim().split("\n").slice(-5).join("\n") : "";
-  throw new Error(`o weston não subiu em 5 s${morreu ? " (saiu)" : ""}:\n${fim}`);
+  throw new Error(`weston did not start within 5 s${morreu ? " (it exited)" : ""}:\n${fim}`);
 }
 
 type Resumo = Record<string, any>;
@@ -124,7 +124,7 @@ const flagsPlaca = (e: Escolha) => ["--ozone-platform=wayland", `--render-node-o
 async function renderizar(a: Argumentos, e: Escolha, r: Recursos, tmp: string, aberto: Aberto | null = null) {
   const cpu = e.modo === "cpu";
   // P02: o captura/main.ts roda no Node com o `electron` e o `nativo.node` trocados pelo host do CEF (captura/cef/).
-  if (!existsSync(CAMINHOS.hostCef)) throw new Error(`falta o host do CEF (${CAMINHOS.hostCef}): captura/cef/montar.sh`);
+  if (!existsSync(CAMINHOS.hostCef)) throw new Error(`the CEF host is missing (${CAMINHOS.hostCef}): run ./instalar.sh`);
   const env: Record<string, string> = {
     ...process.env as Record<string, string>,
     M04_MODO: e.modo, M04_PACOTE: a.entrada.pasta, M04_COMPOSICAO: a.composicao, M04_INICIO: String(a.de),
@@ -165,11 +165,11 @@ async function renderizar(a: Argumentos, e: Escolha, r: Recursos, tmp: string, a
   if (!env.NODE_COMPILE_CACHE && process.env.HOME) env.NODE_COMPILE_CACHE = join(process.env.HOME, ".cache", "motor-video", "node-compilado");
   const comando = [...prefixo, ...navegador, "--no-sandbox", ...flags];
   const limite = tempoLimite(a.quadros, e.modo);
-  avisar(`renderizando «${a.composicao}» no modo ${e.modo}${a.quadros ? `, ${a.quadros} quadros a partir do ${a.de}` : ""}`);
+  avisar(`rendering «${a.composicao}» on the ${cpu ? "CPU" : "GPU"}${a.quadros ? `, ${a.quadros} frames from frame ${a.de}` : ""}`);
   const t0 = performance.now();
   // Quente (--esperar): o navegador já está de pé e recebe as variáveis do job; daqui em diante, igual ao frio.
   const p = aberto ? aberto.entregar(env) : r.iniciar(comando[0], comando.slice(1), { env, stdio: ["ignore", "pipe", "pipe"] });
-  const vigia = vigiar(p, limite, "a captura");
+  const vigia = vigiar(p, limite, "the capture");
   const log: string[] = [];
   const falhas: string[] = [];
   let resumo: Resumo | null = null, composicao: Resumo | null = null;
@@ -181,12 +181,12 @@ async function renderizar(a: Argumentos, e: Escolha, r: Recursos, tmp: string, a
       try {
         const c = JSON.parse(l.slice(11));
         composicao = c;
-        avisar(`composição ${l.slice(11)}`);
+        avisar(`composition ${l.slice(11)}`);
         // A duração real chegou: o limite passa a contar os quadros de verdade, não o padrão de 3000.
         if (a.quadros === null && Number.isInteger(c.duracao)) {
           const q = Math.max(1, c.duracao - a.de), ms = tempoLimite(q, e.modo);
           vigia.refazer(ms);
-          if (process.env.MOTOR_DEPURAR === "1") avisar(`tempo-limite refeito: ${Math.round(ms / 1000)} s (${q} quadros)`);
+          if (process.env.MOTOR_DEPURAR === "1") avisar(`timeout reset: ${Math.round(ms / 1000)} s (${q} frames)`);
         }
       } catch {}
     }
@@ -203,7 +203,7 @@ async function renderizar(a: Argumentos, e: Escolha, r: Recursos, tmp: string, a
   const res: Resumo = resumo ?? {};
   if (fim.codigo !== 0 || res.motivo !== "ok") {
     const motivo = falhas.length ? falhas.slice(0, 6).join("\n") : log.slice(-12).join("\n");
-    throw new Error(`o render falhou (a captura saiu com ${fim.codigo ?? fim.sinal}${fim.estourou ? ", tempo-limite" : ""}):\n${motivo}`);
+    throw new Error(`the render failed (the capture exited with ${fim.codigo ?? fim.sinal}${fim.estourou ? ", timeout" : ""}):\n${motivo}`);
   }
   return { resumo: res, composicao: composicao as Resumo | null, parede };
 }
@@ -214,7 +214,7 @@ async function ffmpeg(r: Recursos, args: string[], nome: string) {
   let erro = "";
   p.stderr!.on("data", (d) => { erro += d; });
   const fim = await esperar(p, 120000, nome);
-  if (fim.codigo !== 0) throw new Error(`${nome} falhou: ${erro.trim().slice(-400)}`);
+  if (fim.codigo !== 0) throw new Error(`${nome} failed: ${erro.trim().slice(-400)}`);
 }
 
 /**
@@ -234,18 +234,18 @@ async function finalizar(a: Argumentos, e: Escolha, r: Recursos, tmp: string, fp
   else {
     const v = entradaDoVideo(bruto, fps);
     await ffmpeg(r, [...v.entrada, "-c:v", "copy", ...v.filtro, "-video_track_timescale", "90000",
-      "-movflags", "+faststart", "-f", "mp4", parcial], "o ffmpeg que monta o MP4");
+      "-movflags", "+faststart", "-f", "mp4", parcial], "ffmpeg (MP4 assembly)");
   }
   // Só para o teste da conferência: tira o último quadro do parcial (cli/render.test.ts).
   if (process.env.MOTOR_TESTE_DIVERGIR === "quadro" && !a.alfa) {
     const copia = `${parcial}.copia.mp4`;
     r.parcial(copia);
-    await ffmpeg(r, ["-i", parcial, "-map", "0", "-c", "copy", "-frames:v", String(quadros - 1), copia], "o ffmpeg da divergência");
+    await ffmpeg(r, ["-i", parcial, "-map", "0", "-c", "copy", "-frames:v", String(quadros - 1), copia], "ffmpeg (divergence test)");
     renameSync(copia, parcial);
   }
   const sonda = sondarSaida(parcial);
   const erro = conferirArquivo(sonda, { quadros, fps, audio: comAudio });
-  if (erro) throw new Error(`o arquivo final não confere: ${erro}; ${basename(a.saida)} não foi gravado`);
+  if (erro) throw new Error(`the final file does not check out: ${erro}; ${basename(a.saida)} was not written`);
   renameSync(parcial, a.saida);
   r.soltar(parcial);
   return sonda;
@@ -278,14 +278,14 @@ async function principal() {
     e = escolherModo(a.modo, () => sondarPlaca(ambienteReal(), { codec: a.codec, alfa: a.alfa }));
   } catch (erro) {
     if (erro instanceof ErroDeUso) {
-      (erro.codigo === 0 ? process.stdout : process.stderr).write(`${erro.codigo === 0 ? "" : "erro: "}${erro.message}\n`);
+      (erro.codigo === 0 ? process.stdout : process.stderr).write(`${erro.codigo === 0 ? "" : "error: "}${erro.message}\n`);
       process.exit(erro.codigo);
     }
     throw erro;
   }
-  if (e.aviso) avisar(`aviso: ${e.aviso}`);
+  if (e.aviso) avisar(`warning: ${e.aviso}`);
   const depurar = process.env.MOTOR_DEPURAR === "1";
-  const r = new Recursos({ manter: a.manter, aoIniciar: depurar ? (pid, c) => avisar(`grupo ${pid}: ${basename(c)}`) : null });
+  const r = new Recursos({ manter: a.manter, aoIniciar: depurar ? (pid, c) => avisar(`group ${pid}: ${basename(c)}`) : null });
   r.aoSinal();
   return executar(a, e, r, null, null);
 }
@@ -294,23 +294,23 @@ async function executar(a: Argumentos, e: Escolha, r: Recursos, temporaria: stri
   const t0 = performance.now();
   try {
     const tmp = temporaria ?? r.pasta("motor-render-");
-    if (process.env.MOTOR_DEPURAR === "1") avisar(`temporária ${tmp}`);
+    if (process.env.MOTOR_DEPURAR === "1") avisar(`temporary folder ${tmp}`);
     const { resumo, composicao, parede } = await renderizar(a, e, r, tmp, aberto);
     if (a.gravar.length) {
       mkdirSync(a.gravarPasta!, { recursive: true });
       for (const n of a.gravar) {
         const de = join(tmp, `render-${n}.bgra`);
-        if (!existsSync(de)) throw new Error(`--gravar: o quadro ${n} não foi gravado (fora do trecho ${a.de}…${a.de + resumo.quadros - 1}?)`);
+        if (!existsSync(de)) throw new Error(`--save-frames: frame ${n} was not saved (outside ${a.de}…${a.de + resumo.quadros - 1}?)`);
         mover(de, join(a.gravarPasta!, `motor-${n}.bgra`));
       }
     }
     const comAudio = (resumo.audio?.trilhas ?? 0) > 0;
     const saida = await finalizar(a, e, r, tmp, composicao?.fps ?? 30, resumo.quadros, comAudio);
-    if (a.audio && !comAudio) avisar("a composição não tem áudio: o MP4 saiu só com vídeo");
+    if (a.audio && !comAudio) avisar("the composition has no audio: the MP4 is video only");
     // Brilho por quadro medido na placa (só na placa): a série ao lado da saída e a piscada (cli/brilho.ts).
     const brilho = resumo.brilho?.length ? gravarBrilho(a.saida, resumo.brilho, resumo.mudanca ?? [], { qps: composicao?.fps ?? 30, de: a.de, msBrilho: resumo.msBrilho ?? null, alfa: a.alfa }) : null;
-    if (resumo.brilhoErro) avisar(`aviso: o brilho por quadro não foi medido (${resumo.brilhoErro})`);
-    for (const p of brilho?.piscadas ?? []) avisar(`aviso: piscada no quadro ${p.quadro} (pico isolado de ${p.pico} no brilho: ${p.antes} → ${p.brilho} → ${p.depois}; limite ${brilho!.limitePiscada})`);
+    if (resumo.brilhoErro) avisar(`warning: per-frame brightness was not measured (${resumo.brilhoErro})`);
+    for (const p of brilho?.piscadas ?? []) avisar(`warning: flash at frame ${p.quadro} (isolated brightness spike of ${p.pico}: ${p.antes} → ${p.brilho} → ${p.depois}; limit ${brilho!.limitePiscada})`);
     const resultado = {
       ok: true, saida: a.saida, modo: e.modo, caiuParaCpu: e.aviso !== null, composicao: composicao ?? { id: a.composicao },
       // codec: o do vídeo do arquivo (h264 ou hevc). O «video» abaixo é o resumo do vídeo embutido (P10.5), null sem vídeo.
@@ -344,13 +344,13 @@ async function executar(a: Argumentos, e: Escolha, r: Recursos, temporaria: stri
         ...(resumo.batidasLaco !== undefined ? { batidasLaco: resumo.batidasLaco, paints: resumo.paints } : {}),
     };
     // P10: animação fora da document.timeline não anda com N (docs/formatos/linha-do-tempo.md).
-    if (resultado.animacoesSoltas) avisar(`aviso: ${resultado.animacoesSoltas} animação(ões) fora da linha do tempo do documento ficaram paradas (rolagem ou outra DocumentTimeline)`);
+    if (resultado.animacoesSoltas) avisar(`warning: ${resultado.animacoesSoltas} animation(s) outside the document timeline stayed frozen (scroll-driven or another DocumentTimeline)`);
     await r.liberar();
     process.stdout.write(`${JSON.stringify(resultado)}\n`);
-    avisar(`pronto: ${a.saida} (${resumo.quadros} quadros, ${saida.video}${saida.audio ? ` + ${saida.audio}` : ""}, ${resultado.parede} s)`);
+    avisar(`done: ${a.saida} (${resumo.quadros} frames, ${saida.video}${saida.audio ? ` + ${saida.audio}` : ""}, ${resultado.parede} s)`);
   } catch (erro) {
     await r.liberar();
-    process.stderr.write(`erro: ${(erro as Error).message}\n`);
+    process.stderr.write(`error: ${(erro as Error).message}\n`);
     process.exitCode = 1;
   }
 }

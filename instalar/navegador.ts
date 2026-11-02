@@ -15,11 +15,11 @@ export function etapaElectron(c: CaminhosElectron, x: Executar): Etapa {
   };
   const versaoBaixada = () => { try { return readFileSync(join(c.pasta, "dist", "version"), "utf8").trim(); } catch { return null; } };
   return {
-    nome: "Electron da conferência (sem remendo)",
+    nome: "Electron for `kodecz check` (unpatched)",
     conferir: () => {
       const pedida = versaoPedida();
-      if (!pedida) return "falta o pacote electron no node_modules";
-      return versaoBaixada() !== pedida || !existsSync(c.original) ? `o Electron ${pedida} não foi baixado` : null;
+      if (!pedida) return "the electron package is missing from node_modules";
+      return versaoBaixada() !== pedida || !existsSync(c.original) ? `Electron ${pedida} was not downloaded` : null;
     },
     fazer: () => { x(process.execPath, [c.instalador], { cwd: c.pasta }); },
   };
@@ -53,26 +53,26 @@ export function etapaCef(c: CaminhosCef, { cargo, placa: placaAgora, nvenc }: { 
   const fontes = () => `${hashFontes(c.fonte)}:${hashFontes(c.nucleo)}`;
   const cefConfere = () => {
     const a = lerMarca(join(achatado, "archive.json"));
-    if (!a) return "falta o CEF 156.0.14 (baixar e achatar)";
-    return a.sha1 === c.sha1 ? null : "o CEF achatado não confere com o SHA-1 publicado";
+    if (!a) return "CEF 156.0.14 is missing (download and flatten)";
+    return a.sha1 === c.sha1 ? null : "the flattened CEF does not match the published SHA-1";
   };
   return {
-    nome: `navegador da captura (CEF 156.0.14 e o host${placa ? "" : ", sem a placa: só o modo CPU"})`,
+    nome: `capture browser (CEF 156.0.14 and its host${placa ? "" : ", without GPU: CPU mode only"})`,
     conferir: () => {
       const cef = cefConfere();
       if (cef) return cef;
-      if (!existsSync(c.host)) return "falta o host do CEF (motor-captura)";
+      if (!existsSync(c.host)) return "the CEF host (motor-captura) is missing";
       const m = lerMarca(marca);
-      if (!m) return "host sem registro de compilação";
-      if (m.fontes !== fontes()) return "as fontes do host (ou do núcleo do nativo) mudaram";
+      if (!m) return "the host has no build record";
+      if (m.fontes !== fontes()) return "the host sources (or the native core) changed";
       // Registro de antes do P14 (sem o campo): era sempre com a placa.
       if ((m.placa ?? "1") !== (placa ? "1" : "0")) {
-        return placa ? "o host foi montado sem a placa e esta máquina tem placa" : "o host foi montado com a placa e esta máquina não tem o driver";
+        return placa ? "the host was built without GPU support and this machine has a GPU" : "the host was built with GPU support and this machine has no driver";
       }
-      return m.host === sha256(c.host) ? null : "o host não confere com o compilado";
+      return m.host === sha256(c.host) ? null : "the host does not match the build";
     },
     fazer: () => {
-      if (!cargo) throw new Error("sem cargo");
+      if (!cargo) throw new Error("cargo not found");
       const env: NodeJS.ProcessEnv = { ...process.env, CEF_RAIZ: c.raiz, CEF_PATH: achatado, CARGO: cargo,
         PATH: `${dirname(cargo)}:${process.env.PATH ?? ""}` };
       if (cefConfere()) x(c.preparar, [], { cwd: c.fonte, env });
@@ -103,5 +103,6 @@ export function avisoSandbox(original: string): string | null {
   if (!existsSync(sandbox)) return null;
   const s = statSync(sandbox);
   if (s.uid === 0 && (s.mode & 0o4000) !== 0) return null;
-  return `chrome-sandbox sem dono root e SUID (o render usa --no-sandbox hoje; para sair dele: sudo chown root:root ${sandbox} && sudo chmod 4755 ${sandbox})`;
+  return "Chromium runs without its sandbox (--no-sandbox); it only loads your own local pages, with the network blocked. " +
+    `A root-owned SUID chrome-sandbox is the first step to turning it on (README, FAQ): sudo chown root:root ${sandbox} && sudo chmod 4755 ${sandbox}`;
 }

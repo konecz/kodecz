@@ -204,7 +204,7 @@ export function conferirZoom(z: Zoom, falas: Fala[], faixasPorQuadro: (string | 
   const base = { de: z.entrada, ate: z.saida, zoom: z };
   const naFala = palavras.some((p) => q(p.fim) > z.entrada + eps && q(p.ini) < z.saida - eps);
   if (!naFala) {
-    avisos.push(`G21: zoom dos quadros ${z.entrada}–${z.saida} sem fala (nenhuma palavra no intervalo)`);
+    avisos.push(`G21: zoom on frames ${z.entrada}–${z.saida} without speech (no word in the interval)`);
   } else {
     let i = palavras.findLastIndex((p) => q(p.ini) <= z.entrada + eps);
     if (i === -1) i = 0;
@@ -220,12 +220,12 @@ export function conferirZoom(z: Zoom, falas: Fala[], faixasPorQuadro: (string | 
     const ms = (quadros: number) => Math.round((quadros * 1000) / qps);
     if (z.saida < fimFrase - tol - eps) {
       falhas.push({ regra: "G21", ...base, pior: z.saida, frase: recorte(frase),
-        motivo: `zoom volta ${ms(fimFrase - z.saida)} ms antes do fim da frase «${recorte(frase)}»` });
+        motivo: `zoom returns ${ms(fimFrase - z.saida)} ms before the end of the sentence «${recorte(frase)}»` });
     } else if (z.saida > proxIni + tol + eps) {
       falhas.push({ regra: "G21", ...base, pior: z.saida, frase: recorte(frase),
-        motivo: `zoom volta já na frase seguinte, ${ms(z.saida - proxIni)} ms depois do início de «${proxima?.t ?? ""}» (a frase «${recorte(frase)}» acaba antes)` });
+        motivo: `zoom returns during the next sentence, ${ms(z.saida - proxIni)} ms after «${proxima?.t ?? ""}» starts (the sentence «${recorte(frase)}» ends earlier)` });
     }
-    if (proxIni - fimFrase < 1 - eps) avisos.push(`G21: a frase «${recorte(frase)}» acaba sem pausa antes da seguinte (zoom dos quadros ${z.entrada}–${z.saida})`);
+    if (proxIni - fimFrase < 1 - eps) avisos.push(`G21: the sentence «${recorte(frase)}» ends with no pause before the next one (zoom on frames ${z.entrada}–${z.saida})`);
   }
   // Faixa: as que estão na tela no último quadro do zoom têm de começar a sair até faixaQuadros depois do início da
   // saída (sumir, apagar ou andar; faixaSaindo).
@@ -239,11 +239,11 @@ export function conferirZoom(z: Zoom, falas: Fala[], faixasPorQuadro: (string | 
     const depois = sai - z.saida;
     if (depois <= lim.faixaQuadros && some - z.saida > lim.faixaSome) {
       falhas.push({ regra: "G21", ...base, pior: z.saida + lim.faixaSome + 1 < total ? z.saida + lim.faixaSome + 1 : z.saida,
-        texto: ref.chave, motivo: `faixa ainda na tela ${some - z.saida} quadros depois do início da saída do zoom (limite ${lim.faixaSome})` });
+        texto: ref.chave, motivo: `lower third still on screen ${some - z.saida} frames after the zoom starts returning (limit ${lim.faixaSome})` });
     }
     if (depois > lim.faixaQuadros) {
       falhas.push({ regra: "G21", ...base, pior: z.saida + lim.faixaQuadros + 1 < total ? z.saida + lim.faixaQuadros + 1 : z.saida,
-        texto: ref.chave, motivo: `faixa só começa a sair ${depois} quadros depois do início da saída do zoom (limite ${lim.faixaQuadros})` });
+        texto: ref.chave, motivo: `lower third only starts leaving ${depois} frames after the zoom starts returning (limit ${lim.faixaQuadros})` });
     }
   }
   return { falhas, avisos };
@@ -343,8 +343,8 @@ export function textosTremendo(geometrias: Geometria[], qps: number, lim = LIMIT
     if (g && c.de <= g.ate) { g.ate = Math.max(g.ate, c.ate); if (!g.textos.includes(c.texto)) g.textos.push(c.texto); } else grupos.push({ de: c.de, ate: c.ate, textos: [c.texto] });
   }
   return grupos.map((g) => ({ regra: "tremor", de: g.de, ate: g.ate,
-    motivo: `${g.textos.length === 1 ? `texto «${recorte(g.textos[0])}»` : `${g.textos.length} textos (como «${recorte(g.textos[0])}»)`} `
-      + `andando devagar sem parar (menos de ${String(t.pxMax).replace(".", ",")} px por quadro) por ${((g.ate - g.de + 1) / qps).toFixed(1)} s: treme; texto só anda na entrada e na saída` }));
+    motivo: `${g.textos.length === 1 ? `text «${recorte(g.textos[0])}»` : `${g.textos.length} texts (like «${recorte(g.textos[0])}»)`} `
+      + `drifting slowly without stopping (under ${t.pxMax} px per frame) for ${((g.ate - g.de + 1) / qps).toFixed(1)} s: it shakes; text should only move on entry and exit` }));
 }
 
 /** A conferência inteira de uma composição: falhas (G15, G17, G21) e avisos. */
@@ -373,7 +373,7 @@ export function conferir({ comp, geometrias, rostos, falas }: { comp: Composicao
   for (const t of trechos(g15)) {
     const { texto, caixa, rosto } = t.item;
     falhas.push({ regra: "G15", de: t.de, ate: t.ate, pior: t.pior, texto: recorte(texto.texto), papel: texto.papel, caixa, rosto,
-      motivo: `texto sobre o rosto do apresentador (com a margem), ${Math.round(t.item.valor)} px² no pior quadro` });
+      motivo: `text over the presenter's face (with the margin), ${Math.round(t.item.valor)} px² in the worst frame` });
   }
 
   // G17: legenda numa linha só e dentro do quadro.
@@ -383,10 +383,10 @@ export function conferir({ comp, geometrias, rostos, falas }: { comp: Composicao
     const uniao = l.caixas.reduce<Caixa | null>((u, c) => (u ? [Math.min(u[0], c[0]), Math.min(u[1], c[1]),
       Math.max(u[0] + u[2], c[0] + c[2]) - Math.min(u[0], c[0]), Math.max(u[1] + u[3], c[1] + c[3]) - Math.min(u[1], c[1])] : c), null);
     if (!uniao) continue;
-    if (n > 1) g17.push({ n: g.n, chave: `linhas\u0000${l.texto}`, valor: n, motivo: `legenda em ${n} linhas`, texto: l.texto, caixa: uniao });
+    if (n > 1) g17.push({ n: g.n, chave: `linhas\u0000${l.texto}`, valor: n, motivo: `caption on ${n} lines`, texto: l.texto, caixa: uniao });
     const fora = l.caixas.some(([x, , w]) => x < -0.5 || x + w > L + 0.5);
     if (fora || l.estouro) g17.push({ n: g.n, chave: `cortada\u0000${l.texto}`, valor: 1, texto: l.texto, caixa: uniao,
-      motivo: `legenda cortada (${fora ? "sai do quadro" : "estoura a caixa dela"})` });
+      motivo: `caption cut off (${fora ? "leaves the frame" : "overflows its box"})` });
   }
   for (const t of trechos(g17)) {
     falhas.push({ regra: "G17", de: t.de, ate: t.ate, pior: t.pior, texto: recorte(t.item.texto), papel: "legenda", caixa: t.item.caixa,
@@ -402,21 +402,21 @@ export function conferir({ comp, geometrias, rostos, falas }: { comp: Composicao
     for (const f of r.falhas) falhas.push(f.texto !== undefined ? { ...f, texto: recorte(nomeFaixa.get(f.texto) ?? f.texto), papel: "faixa" } : f);
     for (const a of r.avisos) avisos.push({ regra: "G21", motivo: a, de: z.entrada, ate: z.saida });
   }
-  if (zs.length && !falas.length) avisos.push({ regra: "G21", motivo: "há zoom, mas a composição não publicou window.motor_falas (nem veio --falas): G21 não conferida" });
+  if (zs.length && !falas.length) avisos.push({ regra: "G21", motivo: "there is a zoom, but the composition did not publish window.motor_falas (and no --speech was given): G21 not checked" });
 
   // Avisos: rosto não achado com o apresentador na tela (falha de detecção não vira aprovação).
   for (const t of trechos(rostos.filter((r) => !r.rel && geometrias[r.n]?.apresentador).map((r) => ({ n: r.n, chave: "", valor: 0 })))) {
-    avisos.push({ regra: "G15", de: t.de, ate: t.ate, motivo: `apresentador na tela sem rosto encontrado (quadro ${t.de}${t.ate !== t.de ? ` a ${t.ate}` : ""} da amostra): G15 conferida pelas amostras vizinhas` });
+    avisos.push({ regra: "G15", de: t.de, ate: t.ate, motivo: `presenter on screen but no face found (sampled frame ${t.de}${t.ate !== t.de ? ` to ${t.ate}` : ""}): G15 checked from the neighboring samples` });
   }
   if (!rostos.some((r) => r.rel) && geometrias.some((g) => g.apresentador)) {
-    avisos.push({ regra: "G15", motivo: "nenhum rosto encontrado no apresentador: G15 não conferida" });
+    avisos.push({ regra: "G15", motivo: "no face found on the presenter: G15 not checked" });
   }
   const comTexto = geometrias.some((g) => g.textos.length);
   if (comTexto && !geometrias.some((g) => g.textos.some((t) => t.papel === "legenda"))) {
-    avisos.push({ regra: "G41", motivo: 'texto na tela, mas nenhum elemento com data-papel="legenda": G17 não conferida' });
+    avisos.push({ regra: "G41", motivo: 'text on screen, but no element with data-papel="legenda": G17 not checked' });
   }
   if (!geometrias.some((g) => g.apresentador)) {
-    avisos.push({ regra: "G41", motivo: 'nenhum elemento com data-papel="apresentador" visível: G15 e G21 não conferidas' });
+    avisos.push({ regra: "G41", motivo: 'no visible element with data-papel="apresentador": G15 and G21 not checked' });
   }
   // G19 no 9:16 (todo vídeo vertical): texto e rosto dentro da zona segura. Aviso.
   if (A > L) {
@@ -437,7 +437,7 @@ export function conferir({ comp, geometrias, rostos, falas }: { comp: Composicao
     const zonaTxt = `${pct(z.cima)} % em cima, ${pct(z.baixo)} % embaixo, ${pct(z.lados)} % nos lados`;
     for (const t of trechos(fora)) {
       const nomes = [...new Set(fora.filter((f) => f.chave === t.chave && f.n >= t.de && f.n <= t.ate).flatMap((f) => f.textos))];
-      const quem = t.chave === "rosto" ? "rosto" : nomes.length === 1 ? `texto «${recorte(nomes[0])}»` : `${nomes.length} textos (como «${recorte(nomes[0])}»)`;
+      const quem = t.chave === "rosto" ? "rosto" : nomes.length === 1 ? `text «${recorte(nomes[0])}»` : `${nomes.length} texts (like «${recorte(nomes[0])}»)`;
       avisos.push({ regra: "G19", de: t.de, ate: t.ate, motivo: `${quem} fora da zona segura do 9:16 (${zonaTxt})` });
     }
   }
@@ -445,7 +445,7 @@ export function conferir({ comp, geometrias, rostos, falas }: { comp: Composicao
   for (const a of textosTremendo(geometrias, comp.qps, lim)) avisos.push(a);
   // Texto fora do DOM não é visto: canvas e imagem sobre o apresentador ficam como não conferidos.
   for (const t of trechos(geometrias.flatMap((g) => g.naoConferidos.map((c) => ({ n: g.n, chave: c.tipo, valor: 0 }))))) {
-    avisos.push({ regra: "G15", de: t.de, ate: t.ate, motivo: `<${t.chave}> sobre o apresentador: texto desenhado nele não é conferido` });
+    avisos.push({ regra: "G15", de: t.de, ate: t.ate, motivo: `<${t.chave}> over the presenter: text drawn inside it is not checked` });
   }
   return { falhas: falhas.sort((a, b) => a.de - b.de || a.regra.localeCompare(b.regra)), avisos, zooms: zs };
 }

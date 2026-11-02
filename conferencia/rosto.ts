@@ -25,9 +25,9 @@ export const sha256 = (arquivo: string) => createHash("sha256").update(readFileS
 
 /** null se o modelo está no cache e confere; senão, o motivo com a correção. */
 export function conferirModelo(): string | null {
-  if (!existsSync(MODELO.arquivo)) return `falta o modelo de rosto (${MODELO.arquivo}): rode uma vez node conferencia/preparar.ts`;
+  if (!existsSync(MODELO.arquivo)) return `the face model is missing (${MODELO.arquivo}): run ./instalar.sh (or node conferencia/preparar.ts)`;
   const h = sha256(MODELO.arquivo);
-  if (h !== MODELO.sha256) return `o modelo de rosto em ${MODELO.arquivo} não confere (SHA-256 ${h}, esperado ${MODELO.sha256}): apague e rode node conferencia/preparar.ts`;
+  if (h !== MODELO.sha256) return `the face model at ${MODELO.arquivo} does not match (SHA-256 ${h}, expected ${MODELO.sha256}): delete it and run ./instalar.sh`;
   return null;
 }
 
