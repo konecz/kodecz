@@ -47,8 +47,8 @@ mais a imagem e mudam de altura a cada frase. Aqui o tamanho é o do `DESIGN.md`
    (do Whisper; G14: tempos vêm das palavras, nunca de número fixo). Não esticar o `--fim` da palavra até a seguinte:
    o `bloco.js` publica esses tempos como a fala, e a pausa depois da frase (onde o zoom volta, G21) sumiria.
 4. O texto vem do roteiro, não do Whisper (G07: número e sigla por extenso só na voz).
-5. `bloco.css` no `<head>` e `:root { --qps: … }` igual ao do bloco `motor-video`.
-6. Para a conferência do S04 (`node cli/conferir.ts`): cada frase leva `data-papel="legenda"` e o `bloco.js`, depois
+5. `bloco.css` no `<head>` e `:root { --fps: … }` igual ao do bloco `kodecz`.
+6. Para a conferência do S04 (`kodecz check`): cada frase leva `data-papel="legenda"` e o `bloco.js`, depois
    das legendas, publica a fala em `window.motor_falas` a partir das palavras (se a página ainda não publicou).
 
 ## Bloco

@@ -21,13 +21,16 @@ agente) e para quem lê o resultado (o agente, o portal).
 ## Comando
 
 ```
-node cli/conferir.ts <entrada> <composição> [<entrada> <composição> …] [--falas arquivo.json] [--saida pasta]
-                     [--amostra 10] [--manter] [--dados] [--sem-contencao]
-node cli/conferir.ts --ajuda
+kodecz check <entrada> <composição> [<entrada> <composição> …] [--speech arquivo.json] [--out pasta]
+             [--sample 10] [--keep] [--data] [--no-containment]
+kodecz check --help
 ```
 
+Os nomes antigos (`node cli/conferir.ts`, `--falas`, `--saida`, `--amostra`, `--manter`, `--dados`, `--sem-contencao`,
+`--ajuda`) continuam aceitos.
+
 - **Entrada:** a pasta da composição em linha do tempo declarada (`docs/formatos/linha-do-tempo.md`); a composição é
-  o `id` do bloco `motor-video`. Vários pares de uma vez: os dois formatos do mesmo vídeo (G04). O pacote e o projeto
+  o `id` do bloco `kodecz` (ou do antigo `motor-video`). Vários pares de uma vez: os dois formatos do mesmo vídeo (G04). O pacote e o projeto
   do Remotion são recusados: a entrada do Remotion saiu do motor em 2026-10-31 (`adr.md`, seção 16).
 - **Preparação, uma vez por máquina (com rede):** `npm ci --ignore-scripts` em `conferencia/` e
   `node conferencia/preparar.ts`, que baixa o modelo de rosto para `~/.cache/motor-video/modelos/` e confere o
@@ -126,7 +129,7 @@ acusa. Lido depois de a página ficar pronta (vale o que um script puser).
 ## Como cada regra é conferida
 
 O processo do Electron da conferência (`conferencia/coletar.ts`) abre a página, põe cada quadro N como o render põe
-(animações pausadas em N × 1000 / qps, o gancho `motor_quadro` antes) e lê o DOM (`conferencia/geometria.js`). Só lê:
+(animações pausadas em N × 1000 / qps, o gancho `kodecz_frame`, ou o antigo `motor_quadro`, antes) e lê o DOM (`conferencia/geometria.js`). Só lê:
 não muda nada no render (é outro processo, que não codifica nada).
 
 - **Caixa de texto:** cada nó de texto visível, uma caixa por linha (`Range.getClientRects()`, já com o `transform`),

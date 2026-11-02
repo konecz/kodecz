@@ -81,10 +81,9 @@ code; the CPU numbers are ours, in <a href="docs/medidas.md">docs/medidas.md</a>
 
 ## Quick start
 
-> **Status:** private preview. Commands, options and attributes still have their original Portuguese names
-> (`node cli/render.ts`, `--de`, `id="motor-video"`, `qps`...), and this page uses them as they are.
-> **Roadmap:** English names (`kodecz render`, `--from`, `id="kodecz"`, `fps`...) are coming, with the current
-> names still accepted for a while.
+> **Status:** early (0.1), Linux only, installed from a clone (not on npm yet). It is the engine we render our own
+> videos with. Parts of the code, the internal docs and some media attributes (`data-inicio`…) are still in
+> Portuguese.
 
 Requirements: Linux, Node 24, `ffmpeg`, `weston`, `bubblewrap`, and Rust 1.85+ with a C/C++ toolchain (`cmake`,
 `ninja`): the Chromium host is compiled on your machine, with or without a GPU. For the GPU path, an NVIDIA GPU with
@@ -93,8 +92,9 @@ layer need the GPU.
 
 ```bash
 git clone https://github.com/konecz/kodecz && cd kodecz
-./instalar.sh                                  # checks the system, installs and renders a test video
-node cli/render.ts my-video/ MyVideo out.mp4   # GPU when there is one, CPU when not
+./instalar.sh                              # checks the system, installs and renders a test video
+npm link                                   # puts `kodecz` on your PATH (or use: node cli/kodecz.ts)
+kodecz render my-video/ MyVideo out.mp4    # GPU when there is one, CPU when not
 ```
 
 `./instalar.sh --verificar` only says what is missing; `./instalar.sh --sistema` also installs the missing `apt`
@@ -103,31 +103,33 @@ packages (with `sudo`). Details in [`instalar/LEIAME.md`](instalar/LEIAME.md).
 | Option | What it does |
 |---|---|
 | `--hevc` | HEVC instead of H.264 (GPU only) |
-| `--alfa` | transparent layer: raw HEVC with alpha (`.hevc`, GPU only, no audio) |
-| `--de N --quadros M` | render *M* frames starting at frame *N* (the same frames as a full render) |
+| `--alpha` | transparent layer: raw HEVC with alpha (`.hevc`, GPU only, no audio) |
+| `--from N --frames M` | render *M* frames starting at frame *N* (the same frames as a full render) |
 | `--cpu` | render on the CPU even when there is a GPU |
-| `--placa` | GPU only: fails (exit code 3) when there is none |
-| `--sem-audio` | skip the audio |
-| `node cli/previa.ts my-video/ MyVideo --quadro 90` | one frame as PNG, in one to two seconds |
-| `node cli/previa.ts my-video/ MyVideo --observar` | re-renders the frames you are looking at on every save |
+| `--gpu` | GPU only: fails (exit code 3) when there is none |
+| `--no-audio` | skip the audio |
+| `kodecz preview my-video/ MyVideo --frame 90` | one frame as PNG, in one to two seconds |
+| `kodecz preview my-video/ MyVideo --watch` | re-renders the frames you are looking at on every save |
+| `kodecz check my-video/ MyVideo` | automatic checks of every frame, without rendering (JSON) |
 
-`node cli/render.ts --ajuda` lists every option. The render prints one JSON line with the result on stdout.
+`kodecz render --help` lists every option. The render prints one JSON line with the result on stdout. The original
+Portuguese names (`--placa`, `--alfa`, `--de`, `--quadros`, `id="motor-video"`, `qps`…) still work for now.
 
 ## Write a video
 
 A video is a folder. `index.html` declares the size, frame rate and length; everything else is a normal web page.
 
 ```html
-<script type="application/json" id="motor-video">
-{ "id": "MyVideo", "largura": 1920, "altura": 1080, "qps": 30, "quadros": 150 }
+<script type="application/json" id="kodecz">
+{ "id": "MyVideo", "width": 1920, "height": 1080, "fps": 30, "frames": 150 }
 </script>
 
 <style>
-  :root { --qps: 30 }
+  :root { --fps: 30 }
   h1 {
     font: 800 120px/1 "Schibsted Grotesk", sans-serif;
     animation: in 0.6s cubic-bezier(.3, 0, .2, 1) both;
-    animation-delay: calc(15 * 1s / var(--qps));    /* enters on frame 15 */
+    animation-delay: calc(15 * 1s / var(--fps));    /* enters on frame 15 */
   }
   @keyframes in { from { opacity: 0; transform: translateY(40px) } }
 </style>
@@ -137,12 +139,12 @@ A video is a folder. `index.html` declares the size, frame rate and length; ever
 <audio src="music.wav" data-inicio="30" data-volume="0.6"></audio>
 ```
 
-- **The block:** `largura` and `altura` are the size in pixels (even numbers, width at least 800, up to 8192), `qps`
-  the frames per second and `quadros` the length in frames. The `id` is the name you pass to the commands. The full
-  format is in [`docs/formatos/linha-do-tempo.md`](docs/formatos/linha-do-tempo.md) (Portuguese for now).
+- **The block:** `width` and `height` are the size in pixels (even numbers, width at least 800, up to 8192), `fps`
+  the frames per second and `frames` the length in frames. The `id` is the name you pass to the commands. The full
+  format is in [`docs/formatos/linha-do-tempo.md`](docs/formatos/linha-do-tempo.md).
 - **Animation:** CSS `@keyframes`, `element.animate()`, GSAP and Lottie (bring your own copy). Kodecz pauses the
-  page's timeline and puts every animation at `N / qps` seconds before drawing frame *N*.
-- **Canvas and WebGL:** define `window.motor_quadro(n, ms)`; it runs before each frame and must depend only on `n`.
+  page's timeline and puts every animation at `N / fps` seconds before drawing frame *N*.
+- **Canvas and WebGL:** define `window.kodecz_frame(n, ms)`; it runs before each frame and must depend only on `n`.
 - **Video and audio:** `<video>` and `<audio>` with `data-inicio` (first frame), `data-quadros` (length in frames),
   `data-recorte` (frames cut from the start of the file), `data-volume` and `data-velocidade` (speed). Kodecz
   decodes them itself and mixes the audio in a single pass. On the GPU path, H.264 and HEVC video is decoded with
@@ -168,11 +170,11 @@ shell commands, HTML and CSS, and JSON.
   avoids the face...) is a folder with a `KODECZ.md` in plain Markdown (what, when, parameters, where it came from),
   the CSS, a snippet to paste and a right and a wrong example. An index lists them all, so an agent can find the
   right one without reading everything.
-- **Automatic checks:** `node cli/conferir.ts my-video/ MyVideo` looks at every frame of the page without rendering the
+- **Automatic checks:** `kodecz check my-video/ MyVideo` looks at every frame of the page without rendering the
   video (text over a face, captions on one line, the safe area of a declared destination, contrast over the real
   background, a zoom that ends with the sentence) and answers with one JSON line plus a picture of each problem, so
   the agent can fix it before a human looks. It needs a one-time `node conferencia/preparar.ts`.
-- **Previews in one to two seconds** (`node cli/previa.ts`), so the agent sees what it wrote instead of guessing.
+- **Previews in one to two seconds** (`kodecz preview`), so the agent sees what it wrote instead of guessing.
 
 <a id="faq"></a>
 
@@ -202,7 +204,7 @@ cannot see. Timers and the wall clock are not allowed in a composition.
 
 ### Which formats does it export?
 
-MP4 with H.264 (default) or HEVC (GPU only), a transparent layer as raw HEVC with alpha (`--alfa`, GPU only, no
+MP4 with H.264 (default) or HEVC (GPU only), a transparent layer as raw HEVC with alpha (`--alpha`, GPU only, no
 audio), and AAC audio mixed from every `<audio>` and `<video>` on the page.
 
 ## Patents

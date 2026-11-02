@@ -109,7 +109,7 @@ test("argumento inválido: sai com 2 e diz o que corrigir, sem subir nada", asyn
   const r = await rodar([RASTRO, "LinhaRastro"]);
   assert.equal(r.codigo, 2);
   assert.match(r.erro, /^erro: faltam argumentos/);
-  assert.match(r.erro, /uso: node cli\/render.ts/);
+  assert.match(r.erro, /usage: kodecz render/);
   const s = await rodar([RASTRO, "LinhaRastro", join(saidas, "x.mov")]);
   assert.equal(s.codigo, 2);
   assert.match(s.erro, /a saída tem de terminar em \.mp4/);
@@ -321,8 +321,8 @@ async function renderLinha(nome: string, modo: string) {
   assert.equal(r.json.composicao.formato, "linha");
   // Uma transição (a do quadro 30), contada uma vez; nenhuma animação fora da linha do tempo.
   assert.deepEqual([r.json.transicoesAoFim, r.json.animacoesSoltas], [1, 0]);
-  // P10.3: com o gancho motor_quadro, o motor não sabe o que muda e desenha todos.
-  assert.equal(r.json.repetidos, 0);
+  // P10.3: com o gancho kodecz_frame (o nome em inglês do motor_quadro), o motor não sabe o que muda e desenha todos.
+  assert.deepEqual([r.json.repetidos, r.json.repetirNao], [0, modo === "--cpu" ? null : "kodecz_frame"]);
   const v = sondar(saida).streams.find((x: any) => x.codec_type === "video");
   assert.equal(Number(v.nb_read_packets), 60);
   semSobras(r.erro);

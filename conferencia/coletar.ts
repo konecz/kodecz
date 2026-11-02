@@ -88,7 +88,9 @@ const AUXILIAR = `
   });
   window.motor_irPara = async (n, comVideo) => {
     const ms = (n * 1000) / ${d.qps};
-    if (typeof window.motor_quadro === 'function') await window.motor_quadro(n, ms);
+    // O gancho do quadro: window.kodecz_frame, ou o nome antigo window.motor_quadro (cli/nomes.ts).
+    const gancho = typeof window.kodecz_frame === 'function' ? window.kodecz_frame : typeof window.motor_quadro === 'function' ? window.motor_quadro : null;
+    if (gancho) await gancho(n, ms);
     for (const a of document.getAnimations()) {
       if (transicao(a)) a.finish();
       else if (a.timeline === document.timeline) vistas.add(a);

@@ -1,4 +1,4 @@
-# Blocos Kodecz do motor-video
+# Blocos Kodecz
 
 > Técnicas de edição prontas para a composição em linha do tempo declarada (`docs/formatos/linha-do-tempo.md`), no
 > formato Kodecz (pesquisa P12, `docs/pesquisa/habilidades-de-edicao.md`). Cada bloco é uma pasta com `KODECZ.md` (o
@@ -27,9 +27,9 @@ H03 (`texto-fora-do-rosto`) está reservado: precisa da caixa do rosto, que vem 
 
 ## Como usar
 
-1. A composição é uma pasta com `index.html` e o bloco `<script id="motor-video">` (formato linha do tempo).
-2. `:root { --qps: N }` com o mesmo `qps` declarado: todo tempo de bloco é em **quadros** e o CSS converte
-   (`calc(q * 1s / var(--qps))`), com limites exatos no quadro.
+1. A composição é uma pasta com `index.html` e o bloco `<script id="kodecz">` (formato linha do tempo).
+2. `:root { --fps: N }` com o mesmo `fps` declarado (o antigo `--qps` ainda é lido pela conferência; os blocos usam `--fps`): todo tempo de bloco é em **quadros** e o CSS converte
+   (`calc(q * 1s / var(--fps))`), com limites exatos no quadro.
 3. Os tokens da marca entram como variáveis CSS: `node identidade/design-md.ts css <DESIGN.md> > marca.css` e
    `<link rel="stylesheet" href="marca.css">` (S03). Os blocos só leem `var(--…)`: cores `--color-ground`, `-ink`,
    `-accent`, `-accent-2`, `-muted`, `-surface`; fontes `--font-display`, `-title`, `-body`, `-caption`, `-label`;
@@ -39,10 +39,10 @@ H03 (`texto-fora-do-rosto`) está reservado: precisa da caixa do rosto, que vem 
    cole o trecho de `bloco.html`, trocando os `⟨…⟩`. Cada raiz de bloco leva `data-bloco="<nome>"`.
 5. `--inicio` e `--fim` em quadros na raiz do bloco; os blocos dentro de uma cena herdam os dela.
 6. Confira o DOM antes do render: `node blocos/conferir-dom.ts <pasta> index.html` (JSON com os achados; sai com 1
-   se há P0). Depois, `node cli/render.ts <pasta> <id> saida.mp4`.
+   se há P0). Depois, `kodecz render <pasta> <id> saida.mp4`.
 
 Demonstração com todos os blocos: `index.html` desta pasta (marca fictícia em `marca/`, apresentador sintético de
-`gerar-midia.sh`). `blocos/gerar-midia.sh && node cli/render.ts blocos Demonstracao saida.mp4`.
+`gerar-midia.sh`). `blocos/gerar-midia.sh && kodecz render blocos Demonstracao saida.mp4`.
 
 ## Regras de todos os blocos
 
@@ -50,7 +50,7 @@ Demonstração com todos os blocos: `index.html` desta pasta (marca fictícia em
   `setInterval`, `Date.now()`, `performance.now()`, sorteio, GSAP (licença incompatível com a Apache-2.0), SVG SMIL, GIF, APNG nem WebP.
   Script só para ler o DOM na carga: `grafico-linha/bloco.js` (geometria e a contagem por `element.animate()`) e
   `legenda-uma-linha/bloco.js` (publica `window.motor_falas` para o S04).
-- Sem `motor_quadro`: com ele o motor desenha todos os quadros. Ligar e desligar (cena, frase, palavra) é um par de
+- Sem `kodecz_frame`: com ele o motor desenha todos os quadros. Ligar e desligar (cena, frase, palavra) é um par de
   animações de duração zero com `forwards`, não uma animação que dura o trecho: o motor repete o quadro em que nenhuma
   animação está no meio do intervalo (P10.3).
 - Sem `box-shadow` borrada (pode variar até 2 níveis entre renders na placa, R03) e sem hex solto no `bloco.css`.
@@ -87,7 +87,7 @@ Recorte (`clip-path`) em visível e inteira: `inset()` pela conta; `circle()`, `
 de 32 × 32 pontos. `path()`, `shape()`, `url()`, valores com `calc()` e posição de quatro valores não são conferidos:
 contam como sem recorte e viram `pagina.recorte` (P1), um por elemento.
 
-Toda página com blocos também confere `pagina.qps` (P0), o `--qps` da raiz igual ao declarado, e `pagina.animacao`
+Toda página com blocos também confere `pagina.qps` (P0), o `--fps` da raiz igual ao declarado, e `pagina.animacao`
 (P0): elemento que um bloco anima e ficou sem animação, porque falta uma variável sem padrão da declaração (o bloco
 sem `--fim` fora de uma cena, por exemplo); a mensagem diz quais faltam. O executor é
 `conferir-dom.ts` (Electron sem remendo, o quadro N posto como no motor, só DOM); o S04 vai rodar as mesmas

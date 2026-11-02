@@ -28,10 +28,12 @@ A mesma pasta renderiza nos dois.
   um bloco Kodecz em Markdown, documentado e testável, e a conferência automática olha os quadros e devolve em JSON
   onde está o erro.
 
-A interface ainda usa os nomes em português: `./instalar.sh`, `node cli/render.ts <pasta> <id> saida.mp4` (com
-`--cpu`, `--placa`, `--hevc`, `--alfa`, `--de` e `--quadros`), `node cli/previa.ts`, `node cli/conferir.ts` e o bloco
-`<script type="application/json" id="motor-video">` com `largura`, `altura`, `qps` e `quadros`. Os nomes em inglês
-vêm depois.
+A interface tem os nomes em inglês: `./instalar.sh` e `npm link` (ou `node cli/kodecz.ts`), depois
+`kodecz render <pasta> <id> saida.mp4` (com `--cpu`, `--gpu`, `--hevc`, `--alpha`, `--from` e `--frames`),
+`kodecz preview`, `kodecz check` e o bloco `<script type="application/json" id="kodecz">` com `width`, `height`,
+`fps` e `frames`; o gancho do canvas é `window.kodecz_frame(n, ms)`. Os nomes antigos, em português (`node cli/render.ts`,
+`--placa`, `--alfa`, `--de`, `--quadros`, `id="motor-video"`, `largura`, `altura`, `qps`, `quadros`,
+`window.motor_quadro`), ainda funcionam.
 
 O README completo, com o passo a passo, está em inglês: [`README.md`](README.md).
 

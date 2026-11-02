@@ -9,7 +9,7 @@ import { readFileSync } from "node:fs";
 /** A assinatura de estilo de uma página (index.html). */
 export function assinatura(html: string): Set<string> {
   const s = new Set<string>();
-  const sem = html.replace(/<script type="application\/json" id="motor-video">[\s\S]*?<\/script>/, "").replace(/window\.motor_falas = .*;/, "");
+  const sem = html.replace(/<script type="application\/json" id="(?:kodecz|motor-video)">[\s\S]*?<\/script>/, "").replace(/window\.motor_falas = .*;/, "");
   const arred = (v: string) => v.replace(/-?\d+(\.\d+)?/g, (n) => String(Math.round(Number(n) / 8) * 8)).replace(/\s+/g, " ").trim();
   for (const m of sem.matchAll(/([a-z-]+)\s*:\s*([^;"'{}<>]+)[;"']/g)) {
     const p = m[1].toLowerCase();
