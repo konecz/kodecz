@@ -65,7 +65,13 @@ async function principal() {
   escrever("\nsistema");
   const ambiente = ambienteSistema(C.raiz);
   let s = conferirSistema(ambiente);
-  if (s.pacotes.length && o.sistema && !verificar) {
+  // Fora do Debian/Ubuntu (Fedora, Arch…): os nomes dos pacotes são os do Debian e o --sistema não tem como instalar.
+  const semApt = ambiente.comando("apt-get") === null;
+  const linhaPacotes = () => semApt
+    ? `sem apt-get nesta máquina: instale pelo gerenciador da sua distribuição os equivalentes destes pacotes do Debian:\n    → ${s.pacotes.join(" ")}`
+    : `pacotes do sistema que faltam (ou rode ./instalar.sh --sistema):\n    → ${comandoApt(s.pacotes, ambiente.uid).join(" ")}`;
+  if (s.pacotes.length && o.sistema && !verificar && semApt) escrever("✗ --sistema: sem apt-get, o instalador não sabe instalar os pacotes desta distribuição");
+  if (s.pacotes.length && o.sistema && !verificar && !semApt) {
     const apt = comandoApt(s.pacotes, ambiente.uid);
     escrever(`… instalando pacotes: ${apt.join(" ")}`);
     const sudo = ambiente.uid === 0 ? [] : ["sudo"];
@@ -75,13 +81,13 @@ async function principal() {
     s = conferirSistema(ambienteSistema(C.raiz)); // ambiente novo: o cache do ldconfig mudou com o apt
   }
   for (const f of s.faltas) escrever(`${f.bloqueia ? "✗" : "!"} ${f.oQue}${f.comando && !f.comando.startsWith("apt: ") ? `\n    → ${f.comando}` : ""}`);
-  if (s.pacotes.length) escrever(`  pacotes do sistema que faltam (ou rode ./instalar.sh --sistema):\n    → ${comandoApt(s.pacotes, ambiente.uid).join(" ")}`);
+  if (s.pacotes.length) escrever(`  ${linhaPacotes()}`);
   if (!s.faltas.length) escrever("✓ tudo no lugar");
   for (const f of s.faltas) {
     if (f.comando?.startsWith("apt: ")) continue;
     (f.bloqueia ? faltas : avisos).push(f.comando ? `${f.oQue} → ${f.comando}` : f.oQue);
   }
-  if (s.pacotes.length) faltas.unshift(`pacotes do sistema → ${comandoApt(s.pacotes, ambiente.uid).join(" ")}`);
+  if (s.pacotes.length) faltas.unshift(semApt ? `pacotes do sistema (nomes do Debian) → ${s.pacotes.join(" ")}` : `pacotes do sistema → ${comandoApt(s.pacotes, ambiente.uid).join(" ")}`);
   const bloqueado = s.faltas.some((f) => f.bloqueia);
   if (bloqueado && !verificar) {
     escrever("\nfalta o sistema: resolva o que está acima e rode de novo (nada foi instalado)");

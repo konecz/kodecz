@@ -84,20 +84,28 @@ code; the CPU numbers are ours, in <a href="docs/medidas.md">docs/medidas.md</a>
 > videos with. Parts of the code, the internal docs and some media attributes (`data-inicio`…) are still in
 > Portuguese.
 
-Requirements: Linux, Node 24, `ffmpeg`, `weston`, `bubblewrap`, and Rust 1.85+ with a C/C++ toolchain (`cmake`,
-`ninja`): the Chromium host is compiled on your machine, with or without a GPU. For the GPU path, an NVIDIA GPU with
-NVENC (tested on an RTX 5090, driver 570+). Without one, the installer sets up the CPU path; HEVC and the transparent
-layer need the GPU.
+Requirements: Linux x86-64 with `apt` (installed from scratch on Ubuntu 24.04, Ubuntu 22.04 and Debian 12), Node 24
+and about 5 GB of disk. You also need `ffmpeg`, `weston`, `bubblewrap`, a C/C++ toolchain (`build-essential`,
+`cmake`, `ninja`) and Rust 1.85+: the Chromium host is compiled on your machine, with or without a GPU. You do not
+have to install these by hand: the installer lists what is missing with the exact command for each, `--sistema`
+installs the `apt` packages, and Rust comes from `rustup` (no `sudo`). On a clean machine the whole install takes
+about 3 to 5 minutes with a fast connection (about 1 GB downloaded; compiling the host takes under a minute on 6
+cores). For the GPU path, an NVIDIA GPU with NVENC (tested on an RTX 5090, driver 570+). Without one, the installer
+sets up the CPU path; HEVC and the transparent layer need the GPU. Other distributions: the installer still says
+what is missing, but the package names it prints are Debian's.
 
 ```bash
 git clone https://github.com/konecz/kodecz && cd kodecz
-./instalar.sh                              # checks the system, installs and renders a test video
+./instalar.sh --sistema                    # checks the system, installs what is missing and renders a test video
 npm link                                   # puts `kodecz` on your PATH (or use: node cli/kodecz.ts)
-kodecz render my-video/ MyVideo out.mp4    # GPU when there is one, CPU when not
+kodecz render my-video/ MyVideo out.mp4    # GPU when there is one, CPU when not (my-video/: see below)
 ```
 
-`./instalar.sh --verificar` only says what is missing; `./instalar.sh --sistema` also installs the missing `apt`
-packages (with `sudo`). Details in [`instalar/LEIAME.md`](instalar/LEIAME.md).
+`./instalar.sh --verificar` only says what is missing and installs nothing; `./instalar.sh` without `--sistema`
+does everything that needs no `sudo` and prints the `apt` line for the rest. If Node 24 or Rust is missing, it stops
+and prints the command to install it; run it and then `./instalar.sh` again. The installer's messages are still in
+Portuguese: `✓` is done, `✗` is missing (with the command after `→`), and the last line is `pronto` (ready). Details
+in [`instalar/LEIAME.md`](instalar/LEIAME.md).
 
 | Option | What it does |
 |---|---|
@@ -123,8 +131,10 @@ A video is a folder. `index.html` declares the size, frame rate and length; ever
 { "id": "MyVideo", "width": 1920, "height": 1080, "fps": 30, "frames": 150 }
 </script>
 
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@800&display=block">
 <style>
   :root { --fps: 30 }
+  body { margin: 0; height: 100vh; display: grid; place-items: center; background: #0e0e10; color: #f4f4f5 }
   h1 {
     font: 800 120px/1 "Schibsted Grotesk", sans-serif;
     animation: in 0.6s cubic-bezier(.3, 0, .2, 1) both;
@@ -134,6 +144,13 @@ A video is a folder. `index.html` declares the size, frame rate and length; ever
 </style>
 
 <h1>Hello, frame 15.</h1>
+```
+
+Save it as `my-video/index.html` and it renders as is: `kodecz render my-video/ MyVideo out.mp4`. The page has no
+background of its own, so give `body` one (an empty page renders black). Google Fonts linked from the page are
+downloaded on the first render and cached. Your own video and audio files go next to `index.html`:
+
+```html
 <video src="presenter.mp4" data-inicio="0" data-quadros="150"></video>
 <audio src="music.wav" data-inicio="30" data-volume="0.6"></audio>
 ```

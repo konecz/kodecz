@@ -7,7 +7,7 @@ import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:
 import { createRequire } from "node:module";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { CAMINHOS, conferirArquivo, conferirNativo, ErroDeUso, tempoLimite, escolherModo, lerArgumentos, NATIVO_METODOS, sondarPlaca,
+import { CAMINHOS, conferirArquivo, conferirNativo, ErroDeUso, esconderPlaca, PREFIXO_SEM_PLACA, tempoLimite, escolherModo, lerArgumentos, NATIVO_METODOS, sondarPlaca,
   type Ambiente } from "./regras.ts";
 
 const pasta = mkdtempSync(join(tmpdir(), "m08-regras-"));
@@ -289,4 +289,24 @@ test("sonda: pede o host do CEF montado, não o Electron", () => {
   assert.deepEqual(sondarPlaca(ambiente({ existe: (p) => !p.includes("electron") })), { ok: true, renderNode: "/dev/dri/renderD129" });
   const r = sondarPlaca(ambiente({ existe: (p) => !p.endsWith("motor-captura") }));
   assert.ok(!r.ok && !r.ausente && /host do CEF.*captura\/cef\/montar\.sh/.test(r.motivo), JSON.stringify(r));
+});
+
+test("modo CPU: o bwrap esconde a placa só quando funciona; barrado (AppArmor do Ubuntu 24.04+) ou ausente, roda sem ele", () => {
+  const rodou: string[][] = [];
+  const maquina = (temBwrap: boolean, criaNamespace: boolean) => (c: string[]) => {
+    rodou.push(c);
+    return c[0] === "sh" ? temBwrap : criaNamespace;
+  };
+  assert.deepEqual(esconderPlaca(maquina(true, true), true), { prefixo: PREFIXO_SEM_PLACA, aviso: null });
+  // O teste é o mesmo prefixo do render, com `true`.
+  assert.deepEqual(rodou.at(-1), [...PREFIXO_SEM_PLACA, "true"]);
+  const barrado = esconderPlaca(maquina(true, false), true);
+  assert.deepEqual(barrado.prefixo, []);
+  assert.match(barrado.aviso!, /namespace de usuário/);
+  const ausente = esconderPlaca(maquina(false, false), true);
+  assert.deepEqual(ausente.prefixo, []);
+  assert.match(ausente.aviso!, /bwrap ausente/);
+  // Sem placa não há o que esconder: nenhum aviso.
+  assert.deepEqual(esconderPlaca(maquina(true, false), false), { prefixo: [], aviso: null });
+  assert.deepEqual(esconderPlaca(maquina(false, false), false), { prefixo: [], aviso: null });
 });

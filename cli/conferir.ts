@@ -19,11 +19,11 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { parseArgs } from "node:util";
-import { spawnSync, type ChildProcess } from "node:child_process";
+import { type ChildProcess } from "node:child_process";
 import { createInterface } from "node:readline";
-import { CAMINHOS, ErroDeUso, lerDeclaracao, SEM_REMOTION, type Declaracao } from "./regras.ts";
+import { CAMINHOS, ErroDeUso, esconderPlaca, lerDeclaracao, SEM_REMOTION, type Declaracao } from "./regras.ts";
 import { OPCOES_CONFERIR, traduzirOpcoes } from "./nomes.ts";
-import { Recursos } from "./processos.ts";
+import { Recursos, rodarSemSaida } from "./processos.ts";
 // @ts-ignore: módulo .mjs sem tipos
 import { prefixoContencao } from "../ferramentas/contencao.mjs";
 import { escalasDoApresentador, LIMITES, quadrosAmostrados, rostoRelativo, zooms, type Amostra, type Caixa, type Falha, type Fundo,
@@ -117,10 +117,7 @@ export class Coleta {
     // Como o modo CPU do render: a placa escondida (bwrap) e o desenho por software. A conferência não usa a placa.
     const flags = ["--ozone-platform=headless", "--ozone-override-screen-size=8192,8192", "--disable-gpu", "--disable-gpu-compositing",
       "--enable-unsafe-swiftshader"];
-    let prefixo: string[] = [];
-    if (spawnSync("sh", ["-c", "command -v bwrap"], { stdio: "ignore" }).status === 0) {
-      prefixo = ["bwrap", "--dev-bind", "/", "/", "--dev", "/dev", "--bind", "/dev/shm", "/dev/shm", "--"];
-    }
+    let prefixo = esconderPlaca(rodarSemSaida, false).prefixo;
     if (a.contencao) prefixo = [...prefixoContencao(), ...prefixo];
     if (!existsSync(CAMINHOS.electronCpu)) throw new Error(`falta o Electron (${CAMINHOS.electronCpu}): npm ci em captura/`);
     const comando = [...prefixo, CAMINHOS.electronCpu, COLETAR, "--no-sandbox", ...flags];

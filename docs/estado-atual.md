@@ -33,7 +33,11 @@ Nenhum em andamento: o responsável escolhe da lista abaixo.
   28,1 s; `docs/medidas.md`, 2026-11-02). Perfilar a pintura do vídeo no SwiftShader e a conversão de cor.
 - Resto da interface em inglês: atributos de mídia (`data-inicio`, `data-quadros`, `data-recorte`,
   `data-velocidade`) com apelido em inglês; mensagens de erro dos comandos (hoje em português; a ajuda já é em
-  inglês); `kodecz references` (`cli/referencias.ts`); o JSON de saída (`quadros`, `repetirNao`…); `window.motor_falas`.
+  inglês); `kodecz references` (`cli/referencias.ts`); o JSON de saída (`quadros`, `repetirNao`…); `window.motor_falas`;
+  as mensagens do `./instalar.sh` e o aviso `motor:` do render (o README avisa que ainda são em português).
+- Instalação fora do Debian/Ubuntu (Fedora, Arch): hoje o instalador só diz os nomes do Debian e o `--sistema` recusa.
+  E a instalação do zero com placa num contêiner (CDI) ou VM: a de 2026-11-02 foi só no modo CPU (Ubuntu 24.04 em VM,
+  Ubuntu 22.04 e Debian 12 em contêiner).
 - Texto em inglês dos `docs/formatos/` que faltam (só `linha-do-tempo.md` foi traduzido; os outros têm só os nomes
   novos) e dos blocos (`INDICE.md`, `KODECZ.md`, nomes das variáveis CSS como `--inicio`).
 - Gerador do bench (`bench-gerador/mundo.ts`, `bench/molde.ts`) e fixtures de teste ainda escrevem os nomes antigos
