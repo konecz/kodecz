@@ -16,7 +16,8 @@ Leia este índice inteiro; abra o `KODECZ.md` só do bloco que vai usar.
 - [H08 titulo-entrada](titulo-entrada/KODECZ.md): título e subtítulo que sobem aparecendo e saem juntos.
 - [H09 cartela](cartela/KODECZ.md): quadro cheio de cor com uma chamada curta (abertura, capítulo, fim).
 - [H10 terco-inferior](terco-inferior/KODECZ.md): nome e cargo de quem fala, no terço de baixo.
-- [H01 legenda-uma-linha](legenda-uma-linha/KODECZ.md): legenda palavra a palavra, sempre numa linha (G17).
+- [H01 legenda-uma-linha](legenda-uma-linha/KODECZ.md): legenda palavra a palavra, sempre numa linha (G17), só a
+  palavra falada em destaque; `montar.ts` monta as frases pela largura medida na fonte.
 - [H02 zoom-ate-o-fim-da-frase](zoom-ate-o-fim-da-frase/KODECZ.md): punch-in da palavra de ênfase até a pausa
   depois da frase (G21); o movimento de câmera dos blocos.
 - [H11 grafico-barras](grafico-barras/KODECZ.md): barras que crescem com o número contando.

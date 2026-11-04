@@ -1,0 +1,27 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>legenda-uma-linha · exemplo 9:16</title>
+<!-- H01 no padrão aprovado, em 9:16: o trecho entre os comentários «montar.ts» é a saída de montar.ts para a fala
+     sintética de legenda-uma-linha.test.ts (FALA_EXEMPLO, ITEM_EXEMPLO), que confere que os dois batem. Destaque
+     «falada» (só a palavra dita agora em accent, até o fim + 0,15 s ou até a seguinte começar), a frase entra subindo
+     10 px, a caixa no topo 1112 (logo abaixo do queixo) e a palavra longa encolhe a fonte da frase.
+     Servir a pasta blocos/ (o marca.css fica em ../marca). -->
+<script type="application/json" id="kodecz">
+{ "id": "ExemploLegenda9x16", "width": 1080, "height": 1920, "fps": 30, "frames": 240 }
+</script>
+<link rel="stylesheet" href="../marca/marca.css">
+<link rel="stylesheet" href="bloco.css">
+<style>
+  :root { --fps: 30; }
+  html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: var(--color-surface); }
+</style>
+<!-- montar.ts -->
+<!-- legenda-uma-linha: métricas de Inter-Bold.ttf -->
+<div class="kz-legendas" data-bloco="legenda-uma-linha" data-entrada="subir" data-ancora="topo" style="--font-caption: 'Inter'; --font-caption-weight: 700; --legenda-tamanho: 56px; --font-caption-line-height: 1.15; --legenda-largura: 952px; --legenda-respiro-x: 28px; --legenda-respiro-y: 16px; --legenda-topo: 1112px">
+  <p class="kz-legenda" data-papel="legenda" style="--inicio: 8; --fim: 56"><span class="kz-palavra" data-t="Ó," style="--inicio: 9; --fim: 15; --apaga: 17">Ó</span> <span class="kz-palavra" style="--inicio: 17; --fim: 27; --apaga: 28">repare</span> <span class="kz-palavra" style="--inicio: 28; --fim: 30; --apaga: 31">na</span> <span class="kz-palavra" style="--inicio: 31; --fim: 45">legenda.</span></p>
+  <p class="kz-legenda" data-papel="legenda" style="--inicio: 56; --fim: 107"><span class="kz-palavra" style="--inicio: 58; --fim: 63; --apaga: 64">Ela</span> <span class="kz-palavra" style="--inicio: 64; --fim: 75; --apaga: 76">acende</span> <span class="kz-palavra" style="--inicio: 76; --fim: 81; --apaga: 82">só</span> <span class="kz-palavra" style="--inicio: 82; --fim: 84; --apaga: 85">a</span> <span class="kz-palavra" style="--inicio: 85; --fim: 96; --apaga: 97">palavra</span> <span class="kz-palavra" style="--inicio: 97; --fim: 108; --apaga: 109">falada</span></p>
+  <p class="kz-legenda" data-papel="legenda" style="--inicio: 107; --fim: 167"><span class="kz-palavra" style="--inicio: 109; --fim: 111; --apaga: 112">e</span> <span class="kz-palavra" style="--inicio: 112; --fim: 120; --apaga: 121">nunca</span> <span class="kz-palavra" style="--inicio: 121; --fim: 132; --apaga: 133">quebra</span> <span class="kz-palavra" style="--inicio: 133; --fim: 135; --apaga: 136">em</span> <span class="kz-palavra" style="--inicio: 136; --fim: 144; --apaga: 145">duas</span> <span class="kz-palavra" data-t="linhas," style="--inicio: 145; --fim: 159">linhas</span></p>
+  <p class="kz-legenda" data-papel="legenda" style="--inicio: 167; --fim: 228; --legenda-tamanho: 35.9px"><span class="kz-palavra" style="--inicio: 168; --fim: 210">Pneumoultramicroscopicossilicovulcanoconiótico.</span></p>
+</div>
+<!-- /montar.ts -->
+<script src="bloco.js"></script>

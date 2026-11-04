@@ -1,31 +1,49 @@
-/* legenda-uma-linha (H01, G17): a fala em frases curtas, uma de cada vez, sempre numa linha. A frase inteira aparece
-   no --inicio dela (a largura não muda enquanto se fala); cada palavra fica em --color-accent do --inicio ao --fim
-   dela (a palavra dita agora) e em --color-ink depois; antes, em --color-muted.
-   Tudo liga e desliga com animações de duração zero (forwards; a de depois vence): o motor só desenha de novo os
+/* legenda-uma-linha (H01, G17): a fala em frases curtas, uma de cada vez, sempre numa linha, numa caixa da cor do
+   fundo da marca. A frase inteira aparece no --inicio dela (a largura não muda enquanto se fala).
+   Destaque «falada» (padrão): só a palavra dita agora fica em --color-accent, do --inicio dela ao --fim + a folga
+   (--legenda-folga, 0,15 s), ou até o --apaga, o --inicio da palavra seguinte, quando ela começa antes; o resto em
+   --color-ink. Destaque «progresso» (data-destaque="progresso", o modo antigo): a dita agora em accent, as já ditas
+   em ink e as que faltam em --color-muted.
+   Entrada «subir» (data-entrada="subir"): a frase sobe 10 px em 0,12 s quando entra.
+   Ligar e desligar são animações de duração zero (forwards; a de depois vence): o motor só desenha de novo os
    quadros em que algo muda, e repete os outros (P10.3). */
 .kz-legendas {
-  position: absolute; left: 0; right: 0; bottom: var(--legenda-base, 12%);
-  height: 0;
+  position: absolute; left: 0; right: 0; height: 0;
+  bottom: max(var(--legenda-base, 56px), var(--spacing-safe, 0px));
 }
+.kz-legendas[data-ancora="topo"] { top: var(--legenda-topo, 75%); bottom: auto; }
 .kz-legenda {
   position: absolute; left: 0; right: 0; bottom: 0;
   width: fit-content; max-width: var(--legenda-largura, 84%); margin: 0 auto; box-sizing: border-box;
-  padding: 0.25em 0.6em; border-radius: var(--rounded-card, 20px);
-  background: var(--legenda-fundo, color-mix(in srgb, var(--color-ground) 78%, transparent));
+  padding: var(--legenda-respiro-y, 12px) var(--legenda-respiro-x, 26px);
+  border-radius: var(--legenda-raio, var(--rounded-card, 18px));
+  background: var(--legenda-fundo, color-mix(in srgb, var(--color-ground) 92%, transparent));
   white-space: nowrap; overflow: hidden;
   font-family: var(--font-caption, var(--font-body)); font-weight: var(--font-caption-weight, 700);
-  font-size: var(--font-caption-size, 52px); line-height: var(--font-caption-line-height, 1.2);
+  font-size: var(--legenda-tamanho, var(--font-caption-size, 52px)); line-height: var(--font-caption-line-height, 1.15);
   letter-spacing: var(--font-caption-letter-spacing, normal);
-  color: var(--color-muted, var(--color-ink));
+  color: var(--color-ink);
   opacity: 0;
   animation: kz-legenda-entra 0s linear calc(var(--inicio) * 1s / var(--fps)) forwards,
              kz-legenda-sai 0s linear calc(var(--fim) * 1s / var(--fps)) forwards;
 }
+.kz-legendas[data-ancora="topo"] .kz-legenda { top: 0; bottom: auto; }
+.kz-legendas[data-entrada="subir"] .kz-legenda {
+  animation: kz-legenda-sobe var(--legenda-entrada, 0.12s) var(--motion-easing-enter, ease-out) calc(var(--inicio) * 1s / var(--fps)),
+             kz-legenda-entra 0s linear calc(var(--inicio) * 1s / var(--fps)) forwards,
+             kz-legenda-sai 0s linear calc(var(--fim) * 1s / var(--fps)) forwards;
+}
 .kz-palavra {
+  animation: kz-palavra-agora 0s linear calc(var(--inicio) * 1s / var(--fps)) forwards,
+             kz-palavra-dita 0s linear calc(var(--apaga, (var(--fim) + var(--legenda-folga, 0.15) * var(--fps))) * 1s / var(--fps)) forwards;
+}
+.kz-legendas[data-destaque="progresso"] .kz-legenda { color: var(--color-muted, var(--color-ink)); }
+.kz-legendas[data-destaque="progresso"] .kz-palavra {
   animation: kz-palavra-agora 0s linear calc(var(--inicio) * 1s / var(--fps)) forwards,
              kz-palavra-dita 0s linear calc(var(--fim) * 1s / var(--fps)) forwards;
 }
 @keyframes kz-legenda-entra { from, to { opacity: 1; } }
 @keyframes kz-legenda-sai { from, to { opacity: 0; } }
+@keyframes kz-legenda-sobe { from { transform: translateY(10px); } to { transform: none; } }
 @keyframes kz-palavra-agora { from, to { color: var(--color-accent); } }
 @keyframes kz-palavra-dita { from, to { color: var(--color-ink); } }
