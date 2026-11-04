@@ -1,15 +1,18 @@
 <!-- legenda-uma-linha (H01). <link rel="stylesheet" href="⟨blocos⟩/legenda-uma-linha/bloco.css"> no <head>.
-     Uma <p> por frase, montada pela largura medida (KODECZ.md, «Como aplicar»), com o ⟨inicio⟩ da primeira palavra e
-     o ⟨fim⟩ da última (a frase seguinte começa onde esta acaba). Cada palavra com o ⟨inicio⟩ e o ⟨fim⟩ dela na fala
-     (não o início da seguinte: a pausa entre frases tem de ficar). Tudo em quadros, dos tempos do Whisper (G11): q = round(s × qps).
-     O texto vem do roteiro (G07). data-papel="legenda" é o papel do S04 (docs/formatos/conferencia.md). --legenda-base (padrão 12%) sobe ou desce o eixo. -->
-<div class="kz-legendas" data-bloco="legenda-uma-linha">
-  <p class="kz-legenda" data-papel="legenda" style="--inicio: 30; --fim: 75"><span class="kz-palavra" style="--inicio: 30; --fim: 39">Primeira</span>
-    <span class="kz-palavra" style="--inicio: 39; --fim: 54">frase</span>
-    <span class="kz-palavra" style="--inicio: 54; --fim: 75">curta,</span></p>
-  <p class="kz-legenda" data-papel="legenda" style="--inicio: 75; --fim: 120"><span class="kz-palavra" style="--inicio: 75; --fim: 84">e</span>
-    <span class="kz-palavra" style="--inicio: 84; --fim: 96">a</span>
-    <span class="kz-palavra" style="--inicio: 96; --fim: 120">seguinte.</span></p>
+     Gerado por montar.ts (o `kodecz assemble` chama; KODECZ.md, «Como aplicar»): uma <p> por frase, montada pela largura
+     medida no arquivo da fonte, com o ⟨inicio⟩ da primeira palavra (menos 0,05 s) e o ⟨fim⟩ no início da seguinte.
+     Cada palavra com o ⟨inicio⟩ e o ⟨fim⟩ dela na fala (não o início da seguinte: a pausa entre frases tem de ficar) e o
+     --apaga quando a seguinte começa antes do fim + 0,15 s. Tudo em quadros, dos tempos do Whisper (G11):
+     q = round(s × fps). O texto vem do roteiro (G07); a vírgula sai da tela e fica em data-t.
+     data-destaque="progresso" volta ao modo antigo; data-entrada="subir" sobe a frase 10 px ao entrar;
+     data-ancora="topo" com --legenda-topo (9:16); senão --legenda-base (16:9, padrão 56 px, nunca abaixo de --spacing-safe). -->
+<div class="kz-legendas" data-bloco="legenda-uma-linha" style="--legenda-largura: 1498px; --legenda-base: 64px">
+  <p class="kz-legenda" data-papel="legenda" style="--inicio: 29; --fim: 75"><span class="kz-palavra" style="--inicio: 30; --fim: 39; --apaga: 40">Primeira</span>
+    <span class="kz-palavra" style="--inicio: 40; --fim: 54">frase</span>
+    <span class="kz-palavra" data-t="curta," style="--inicio: 58; --fim: 72">curta</span></p>
+  <p class="kz-legenda" data-papel="legenda" style="--inicio: 75; --fim: 120"><span class="kz-palavra" style="--inicio: 77; --fim: 84; --apaga: 85">e</span>
+    <span class="kz-palavra" style="--inicio: 85; --fim: 96; --apaga: 97">a</span>
+    <span class="kz-palavra" style="--inicio: 97; --fim: 110">seguinte.</span></p>
 </div>
 <!-- Uma vez por página, depois das legendas: publica a fala em window.motor_falas para a conferência do S04. -->
 <script src="⟨blocos⟩/legenda-uma-linha/bloco.js"></script>

@@ -1,7 +1,9 @@
 <!doctype html>
 <meta charset="utf-8">
 <title>legenda-uma-linha · exemplo</title>
-<!-- H01: duas frases, cada uma numa linha, palavra a palavra. Servir a pasta blocos/ (o marca.css fica em ../marca). -->
+<!-- H01: duas frases, cada uma numa linha, palavra a palavra, no destaque «progresso» (o modo antigo: as já ditas em
+     ink, as que faltam em muted). O modo padrão («falada») e o 9:16 estão em exemplo-9x16.html, saída do montar.ts.
+     Servir a pasta blocos/ (o marca.css fica em ../marca). -->
 <script type="application/json" id="kodecz">
 { "id": "ExemploLegenda", "width": 1920, "height": 1080, "fps": 30, "frames": 120 }
 </script>
@@ -11,7 +13,7 @@
   :root { --fps: 30; }
   html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--color-surface); }
 </style>
-<div class="kz-legendas" data-bloco="legenda-uma-linha">
+<div class="kz-legendas" data-bloco="legenda-uma-linha" data-destaque="progresso">
   <p class="kz-legenda" data-papel="legenda" style="--inicio: 10; --fim: 60"><span class="kz-palavra" style="--inicio: 10; --fim: 18">Cada</span>
     <span class="kz-palavra" style="--inicio: 18; --fim: 30">frase</span>
     <span class="kz-palavra" style="--inicio: 30; --fim: 40">cabe</span>
