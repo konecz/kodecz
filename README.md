@@ -122,6 +122,7 @@ and prints the command to install it; run it and then `./instalar.sh` again. Eac
 | `kodecz prepare words voice.wav script.txt speech.json` | word timings (faster-whisper on CUDA), with the script's text |
 | `kodecz prepare interpolate clip.mp4 frames/ --fps 72` | in-between frames by RIFE on the GPU, as a JPEG sequence |
 | `kodecz prepare loudness final.mp4 out.mp4 --target -14` | the audio to a loudness target, the video copied as is |
+| `kodecz assemble edit.json my-video/` | build the composition folder from an edit written as JSON ([format](docs/formatos/edicao.md)) |
 
 `kodecz render --help` lists every option. The render prints one JSON line with the result on stdout. The original
 Portuguese names (`--placa`, `--alfa`, `--de`, `--quadros`, `id="motor-video"`, `qps`…) still work for now.
