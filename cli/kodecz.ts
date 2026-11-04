@@ -1,13 +1,14 @@
 #!/usr/bin/env node
-// The `kodecz` command: `kodecz render|preview|check …` runs cli/render.ts, cli/previa.ts or cli/conferir.ts in this
-// same process, with the rest of the arguments. It is the `bin` of package.json (`npm link` or `npm i -g .` in a clone).
+// The `kodecz` command: `kodecz render|preview|check|prepare …` runs cli/render.ts, cli/previa.ts, cli/conferir.ts or
+// cli/preparar.ts in this same process, with the rest of the arguments. It is the `bin` of package.json (`npm link`
+// or `npm i -g .` in a clone).
 // The original Portuguese subcommand names (previa, conferir) still work.
 import { readFileSync, realpathSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { ErroDeUso } from "./regras.ts";
 
 const COMANDOS: Record<string, string> = {
-  render: "render.ts", preview: "previa.ts", check: "conferir.ts",
+  render: "render.ts", preview: "previa.ts", check: "conferir.ts", prepare: "preparar.ts",
   // Deprecated: the original names.
   previa: "previa.ts", conferir: "conferir.ts",
 };
@@ -17,6 +18,8 @@ export const USO = `usage: kodecz <command> [arguments]
   render <folder> <composition> <out.mp4>   render the composition to an MP4 (GPU or CPU)
   preview <folder> <composition> --frame N  one or more frames as PNG, in one to two seconds
   check <folder> <composition>              check every frame (text over a face, captions, contrast…) without rendering
+  prepare voice|words|interpolate|loudness  the media steps around a render: faster speech, word timings, in-between
+                                            frames, loudness (docs/formatos/preparo.md)
 
   kodecz <command> --help   the options of each command
   kodecz --version          the version
@@ -30,7 +33,7 @@ export function resolverComando(argv: string[]): { script: string; args: string[
   if (comando === undefined) throw new ErroDeUso(USO);
   if (comando === "-h" || comando === "--help" || comando === "help") throw new ErroDeUso(USO, 0);
   const script = Object.hasOwn(COMANDOS, comando) ? COMANDOS[comando] : null;
-  if (!script) throw new ErroDeUso(`unknown command «${comando}»: use render, preview, check\n\n${USO}`);
+  if (!script) throw new ErroDeUso(`unknown command «${comando}»: use render, preview, check, prepare\n\n${USO}`);
   return { script, args };
 }
 

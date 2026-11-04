@@ -78,4 +78,7 @@ license.
 | weston | MIT | virtual display |
 | bubblewrap | LGPL-2.0+ | hides the GPU from the CPU path |
 | NVIDIA driver 570+ (NVENC, NVDEC, Vulkan, CUDA) | proprietary | optional; without it, Kodecz renders on the CPU |
+| faster-whisper, with numpy and CTranslate2 (`kodecz prepare words` only) | MIT (faster-whisper, CTranslate2), BSD-3-Clause (numpy) | in your own Python (`KODECZ_PYTHON`); run as a separate process by `cli/whisper-palavras.py` |
+| Whisper large-v3-turbo, CTranslate2 conversion `mobiuslabsgmbh/faster-whisper-large-v3-turbo` (`kodecz prepare words` only) | MIT (OpenAI's Whisper weights) | downloaded by faster-whisper from Hugging Face on the first run, into its cache; or `--model <dir>` |
+| rife-ncnn-vulkan and the RIFE v4.6 model (`kodecz prepare interpolate` only) | MIT (rife-ncnn-vulkan, Copyright (c) 2020 nihui; RIFE, Copyright (c) hzwer) | the release you download; found by `--rife`, `KODECZ_RIFE` or the PATH, run as a separate process |
 | Ubuntu font, variable (benchmark scenes only) | Ubuntu Font Licence 1.0 | copied from `/usr/share/fonts` into a generated scene by `bench-gerador/mundo.ts`; not shipped |
