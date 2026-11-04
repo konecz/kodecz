@@ -359,8 +359,7 @@ export async function montarEdicao(caminhoEdicao: string, saida: string, o: Opco
       return { html: `<audio ${atributosDeAudio(a, p.papel as string | undefined)}></audio>`, css: [] };
     }
     const montar = await carregarBloco(pastaBlocos, no.bloco, cache);
-    const filhos: { html: string; css: string[] }[] = [];
-    for (const f of no.filhos) filhos.push(await montarNo(f));
+    const filhos = await montarEmOrdemDeTempo(no.filhos);
     const conteudo = filhos.map((f) => f.html).join("\n");
     const item: Record<string, unknown> = { ...no.item, ...p, conteudo };
     delete item.itens; delete item.transicao;
@@ -381,9 +380,17 @@ export async function montarEdicao(caminhoEdicao: string, saida: string, o: Opco
     if (m.head && !heads.includes(m.head)) heads.push(m.head);
     return { html: m.html, css: [...proprios, ...filhos.flatMap((f) => f.css)] };
   };
+  // Blocks are built in time order (a block that looks at the ones already built, like the theme band's «one at a
+  // time», must see the earlier ones first, whatever the order in the JSON); the page keeps the JSON order, which is
+  // the stacking order.
+  async function montarEmOrdemDeTempo(lista: No[]) {
+    const ordem = [...lista.keys()].sort((a, b) => lista[a].inicio - lista[b].inicio || a - b);
+    const feitos: { html: string; css: string[] }[] = new Array(lista.length);
+    for (const i of ordem) feitos[i] = await montarNo(lista[i]);
+    return feitos;
+  }
   const corpo: string[] = [];
-  for (const no of nos) {
-    const r = await montarNo(no);
+  for (const r of await montarEmOrdemDeTempo(nos)) {
     corpo.push(r.html);
     for (const c of r.css) if (!css.includes(c)) css.push(c);
   }
@@ -396,7 +403,10 @@ export async function montarEdicao(caminhoEdicao: string, saida: string, o: Opco
   for (const [k, s] of (e.sons ?? []).entries()) {
     if (!ehObjeto(s)) throw erro(`sons[${k}]`, "{ \"src\", \"em\", \"volume\", \"antes\"?, \"fim\"? }");
     const src = pub.publicarMidia(s.src, `sons[${k}]`);
-    const a = montarSom({ ...s, src }, ctx, `sons[${k}]`);
+    let a: Audio;
+    try { a = montarSom({ ...s, src }, ctx, `sons[${k}]`); } catch (x) {
+      throw erro(`sons[${k}]`, (x as Error).message.replace(`sons[${k}]: `, ""));
+    }
     if (a.inicio >= total) avisos.push(`sons[${k}] starts at frame ${a.inicio}, after the end of the video (${total})`);
     sons.push(a);
     audios.push(`<audio ${atributosDeAudio(a, "som")}></audio>`);
@@ -405,7 +415,9 @@ export async function montarEdicao(caminhoEdicao: string, saida: string, o: Opco
   if (e.trilha !== undefined) {
     if (!ehObjeto(e.trilha)) throw erro("trilha", "{ \"src\", \"volume\", \"abaixarSobVoz\", \"atraso\"?, \"rampaEntrada\"?, \"rampaSaida\"? }");
     const src = pub.publicarMidia(e.trilha.src, "trilha");
-    trilha = montarTrilha({ ...e.trilha, src }, ctx, total, "trilha");
+    try { trilha = montarTrilha({ ...e.trilha, src }, ctx, total, "trilha"); } catch (x) {
+      throw erro("trilha", (x as Error).message.replace("trilha: ", ""));
+    }
     if (trilha.volume !== "0" && (e.trilha.abaixarSobVoz ?? 0) > 0 && palavras.length === 0) avisos.push("trilha: «abaixarSobVoz» without «falas» does nothing");
     audios.push(`<audio ${atributosDeAudio(trilha, "trilha")}></audio>`);
   }

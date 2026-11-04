@@ -26,8 +26,8 @@ function kodecz(nome: string) {
   return { meta: analisarYaml(m[1], 2) as Record<string, any>, corpo: m[2] };
 }
 
-test("há de 8 a 40 blocos, e o índice lista cada um uma vez com o id do KODECZ.md", () => {
-  assert.ok(NOMES.length >= 8 && NOMES.length <= 40, `${NOMES.length} blocos`);
+test("há de 8 a 16 blocos, e o índice lista cada um uma vez com o id do KODECZ.md", () => {
+  assert.ok(NOMES.length >= 8 && NOMES.length <= 16, `${NOMES.length} blocos`);
   const indice = ler("INDICE.md");
   for (const nome of NOMES) {
     const { meta } = kodecz(nome);

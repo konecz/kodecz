@@ -58,6 +58,12 @@ com revisão e recibo).
   trilha sem loop; o `assemble` não passa a tipografia da marca à legenda (usa Inter 700); fonte.ts como utilitário
   comum (kerning, WOFF2); conferência das cores do H01 no `blocos.test.ts` ainda no modo `progresso`; saída do H02
   termina no fim da frase (o aprovado saía ~0,5 s depois), validar com o responsável.
+- Da revisão do PR #14 (não bloqueiam): `edicao.resolvida.json` grava o fim da cena para a faixa sem `ate` (a página
+  usa o fim da frase); mensagens dos `montar.ts` da legenda, zoom e faixa ainda em português; `kodecz prepare` não
+  interrompe o filho no Ctrl-C (`spawnSync`); campo `license: Proprietária` nos KODECZ.md num repositório Apache-2.0;
+  conferir a medida da legenda com fonte variável (o `hmtx` traz a instância padrão); take do H02 dentro de cena com
+  `fade` provavelmente vai para o canvas nos quadros da transição; item `audio` sem `ate` dentro de cena toca até o fim
+  do arquivo.
 
 - Modo CPU com vídeo embutido: sem placa, o HyperFrames gasta menos CPU que o `--cpu` no Apresentador (26,3 contra
   28,1 s; `docs/medidas.md`, 2026-11-02). Perfilar a pintura do vídeo no SwiftShader e a conversão de cor.

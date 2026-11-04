@@ -156,6 +156,10 @@ test("assemble: errors say where and what", async () => {
   await caso("transicao", (e) => { (e.itens[1].transicao as Record<string, unknown>).tipo = "girar"; return e; }, /itens\[1\]\.transicao/);
   await caso("ordem", (e) => { (e.itens[0] as Record<string, unknown>).ate = 0; return e; }, /itens\[0\]: ends at frame 0/);
   await caso("composicao", (e) => { (e.composicao as Record<string, unknown>).largura = 1081; return e; }, /composicao\.largura/);
+  await caso("som-palavra", (e) => { (e.sons[1] as Record<string, unknown>).em = { palavra: "tste" }; return e; },
+    /sons\[1\]: .*word «tste» is not in the speech/);
+  await caso("som-volume", (e) => { e.sons[0].volume = 20; return e; }, /sons\[0\]: /);
+  await caso("trilha-atraso", (e) => { (e.trilha as Record<string, unknown>).atraso = -5; return e; }, /trilha: /);
   await caso("sem-duracao", () => ({ composicao: EDICAO.composicao, itens: [] }), /composicao\.quadros/);
 });
 
@@ -183,6 +187,21 @@ test("assemble: media a block receives (src, logo…) is published to midia/ and
   assert.match(html, /data-url="https:\/\/exemplo\.invalid\/a\.png"/);
   assert.ok(lstatSync(join(p, "saida", "midia", "take.mp4")).isSymbolicLink());
   assert.ok(lstatSync(join(p, "saida", "midia", "foto.png")).isSymbolicLink());
+});
+
+test("assemble: blocks are built in time order, the page keeps the JSON order (theme bands)", async () => {
+  const edicao = { composicao: { ...EDICAO.composicao, quadros: 180 }, falas: "falas.json",
+    itens: [
+      { bloco: "faixa-do-tema", texto: "Depois", de: { palavra: "cresce" }, ate: 5.4 },
+      { bloco: "faixa-do-tema", texto: "Antes", de: { palavra: "isto" }, ate: 3.5 },
+    ] };
+  const p = pasta("faixas-fora-de-ordem", edicao);
+  await montarEdicao(join(p, "edicao.json"), join(p, "saida"));
+  const html = readFileSync(join(p, "saida", "index.html"), "utf8");
+  const inicio = (texto: string) => Number(new RegExp(`--inicio: (\\d+)[^>]*>\\s*<p[^>]*>\\s*<span[^>]*>${texto}<`).exec(html)?.[1]);
+  assert.ok(html.indexOf("Depois") < html.indexOf("Antes"), "page in JSON order");
+  assert.equal(inicio("Antes"), 30, "the earlier band keeps its word (isto at 1.0 s)");
+  assert.ok(inicio("Depois") > 105, `the later band waits for the earlier one to leave (${inicio("Depois")})`);
 });
 
 test("kodecz assemble: the command, its JSON line and its exit codes", () => {

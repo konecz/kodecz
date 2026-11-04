@@ -91,11 +91,11 @@ be new or empty.
 
 1. The frames are decoded (NVDEC when it can; ffmpeg falls back to the CPU for what NVDEC does not read, such as H.264
    4:4:4) to JPEG `-q:v 2`. JPEG in and out of RIFE: with PNG, writing and reading the frames made the CPU the
-   bottleneck (about 3× slower per clip, with the two results above 40 dB PSNR apart).
+   bottleneck (one run on one clip; not a published measurement, see `docs/medidas.md`).
 2. RIFE makes round(N × fps / source fps) frames (a v4 model takes any count). Only the NVIDIA GPU is made visible to
    Vulkan (`VK_DRIVER_FILES` and `VK_ICD_FILENAMES` set to `nvidia_icd.json`), otherwise RIFE may pick an integrated
    GPU. The command checks that RIFE made exactly that many frames, and reports the device RIFE ran on.
-3. One more ffmpeg pass at `-q:v 2` writes the `%04d.jpg` names (RIFE's own JPEGs are about three times larger).
+3. One more ffmpeg pass at `-q:v 2` writes the `%04d.jpg` names (RIFE's own JPEGs come out larger).
 
 Frame *i* of the output (from 1) is the instant (*i* − 1) / fps of the source.
 

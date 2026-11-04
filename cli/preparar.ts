@@ -290,7 +290,7 @@ function interpolar(p: Extract<Pedido, { passo: "interpolate" }>, tmp: string) {
   if (p.fps <= fpsEntrada) throw new ErroPreparo(`--fps ${p.fps} must be above the video's ${arred(fpsEntrada)} fps`);
   const ent = join(tmp, "ent"), sai = join(tmp, "sai");
   mkdirSync(ent); mkdirSync(sai);
-  // JPEG in and out of RIFE: with PNG, writing and reading the frames made the CPU the bottleneck (about 3× slower).
+  // JPEG in and out of RIFE: with PNG, writing and reading the frames made the CPU the bottleneck.
   // Decoded by NVDEC when it can; ffmpeg falls back to the CPU for what NVDEC does not read (H.264 4:4:4).
   const extrair = (hw: string[]) => ffmpeg(["-v", "error", ...hw, "-i", p.video, "-an", "-q:v", "2", join(ent, "%08d.jpg")]);
   try { extrair(["-hwaccel", "cuda"]); } catch { rmSync(ent, { recursive: true, force: true }); mkdirSync(ent); extrair([]); }
@@ -309,7 +309,7 @@ function interpolar(p: Extract<Pedido, { passo: "interpolate" }>, tmp: string) {
     const log = (r.stderr || "").trim().split("\n").slice(-4).join(" | ");
     throw new ErroPreparo(`RIFE made ${feitos} of ${quer} frames (exit ${r.status}): ${log}`, /vulkan|gpu/i.test(log) && feitos === 0 ? 3 : 1);
   }
-  // RIFE's JPEGs are about three times larger: one more ffmpeg pass at -q:v 2, which also numbers them %04d.jpg.
+  // RIFE's JPEGs come out larger: one more ffmpeg pass at -q:v 2, which also numbers them %04d.jpg.
   mkdirSync(p.pasta, { recursive: true });
   ffmpeg(["-v", "error", "-i", join(sai, "%08d.jpg"), "-q:v", "2", join(p.pasta, "%04d.jpg")]);
   const saida = readdirSync(p.pasta).filter((f) => f.endsWith(".jpg")).length;
