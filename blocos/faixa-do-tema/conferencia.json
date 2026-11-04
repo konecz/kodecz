@@ -1,0 +1,52 @@
+{
+  "bloco": "faixa-do-tema",
+  "checagens": [
+    {
+      "id": "faixa.uma-linha",
+      "prioridade": "P0",
+      "seletor": ".kz-faixa-cartao",
+      "quando": "visivel",
+      "medida": "linhas",
+      "maximo": 1,
+      "mensagem": "t={t} · {onde} · a faixa quebrou em {valor} linhas → uma linha só: encurtar o tema, sem <br> e com white-space: nowrap (G18)"
+    },
+    {
+      "id": "faixa.cabe",
+      "prioridade": "P0",
+      "seletor": ".kz-faixa-cartao",
+      "quando": "visivel",
+      "medida": "transborda",
+      "maximo": 0,
+      "mensagem": "t={t} · {onde} · o tema passa {valor} px do cartão e é cortado → pôr --faixa-letras com o número de letras (o montar.ts põe) ou encurtar o tema (G18)"
+    },
+    {
+      "id": "faixa.zona-segura",
+      "prioridade": "P0",
+      "seletor": ".kz-faixa-cartao",
+      "quando": "visivel-parado",
+      "medida": "fora-da-margem",
+      "maximo": 0,
+      "margem": "--spacing-safe",
+      "mensagem": "t={t} · {onde} · a faixa sai {valor} px da zona segura → encurtar o tema ou mudar --faixa-base (G19)"
+    },
+    {
+      "id": "faixa.rosto",
+      "prioridade": "P0",
+      "seletor": ".kz-faixa-teto",
+      "quando": "visivel",
+      "medida": "fora-da-margem",
+      "maximo": 0,
+      "margem": "0px",
+      "mensagem": "t={t} · {onde} · a faixa sobe {valor} px acima da linha do queixo (--faixa-teto) → descer a faixa (a base é a da legenda) ou pôr --faixa-teto no queixo do take (G15)"
+    },
+    {
+      "id": "faixa.uma-por-vez",
+      "prioridade": "P0",
+      "seletor": ".kz-faixa-cartao",
+      "quando": "todos",
+      "medida": "visiveis",
+      "maximo": 1,
+      "mensagem": "t={t} · {onde} · {valor} faixas na tela ao mesmo tempo → a nova entra depois de a anterior sair (--fim + --faixa-saida); o montar.ts ajusta"
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>faixa-do-tema · exemplo</title>
+<!-- H14: duas faixas, uma depois da outra, logo acima da legenda e no mesmo eixo, sobre um retângulo no lugar do vídeo
+     (o oval faz as vezes do rosto, acima da linha do queixo --faixa-teto, 60vh no 16:9). A primeira, cartão claro por
+     mola, do quadro 12 ao 60; a segunda, barra por cortina, do 75 ao 130. Servir a pasta blocos/. -->
+<script type="application/json" id="kodecz">
+{ "id": "ExemploFaixa", "width": 1920, "height": 1080, "fps": 30, "frames": 150 }
+</script>
+<link rel="stylesheet" href="../marca/marca.css">
+<link rel="stylesheet" href="bloco.css">
+<link rel="stylesheet" href="../legenda-uma-linha/bloco.css">
+<style>
+  :root { --fps: 30; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--color-muted); }
+  .rosto { position: absolute; left: 810px; top: 140px; width: 300px; height: 420px; border-radius: 50%; background: var(--color-surface); }
+</style>
+<div class="rosto"></div>
+<div class="kz-faixa" data-bloco="faixa-do-tema" data-estilo="cartao" data-entrada="mola" style="--inicio: 12; --fim: 60; --faixa-letras: 14">
+  <p class="kz-faixa-cartao" data-papel="faixa"><span class="kz-faixa-texto">Tema do trecho</span></p>
+  <i class="kz-faixa-cortina"></i><i class="kz-faixa-teto"></i>
+</div>
+<div class="kz-faixa" data-bloco="faixa-do-tema" data-estilo="barra" data-entrada="cortina" style="--inicio: 75; --fim: 130; --faixa-letras: 19">
+  <p class="kz-faixa-cartao" data-papel="faixa"><span class="kz-faixa-texto">Outro tema, depois</span></p>
+  <i class="kz-faixa-cortina"></i><i class="kz-faixa-teto"></i>
+</div>
+<div class="kz-legendas" data-bloco="legenda-uma-linha">
+  <p class="kz-legenda" data-papel="legenda" style="--inicio: 10; --fim: 66"><span class="kz-palavra" style="--inicio: 10; --fim: 20">Cada</span>
+    <span class="kz-palavra" style="--inicio: 20; --fim: 32">trecho</span>
+    <span class="kz-palavra" style="--inicio: 32; --fim: 40">tem</span>
+    <span class="kz-palavra" style="--inicio: 40; --fim: 46">um</span>
+    <span class="kz-palavra" style="--inicio: 46; --fim: 66">tema.</span></p>
+  <p class="kz-legenda" data-papel="legenda" style="--inicio: 72; --fim: 140"><span class="kz-palavra" style="--inicio: 72; --fim: 80">A</span>
+    <span class="kz-palavra" style="--inicio: 80; --fim: 94">faixa</span>
+    <span class="kz-palavra" style="--inicio: 94; --fim: 104">sai</span>
+    <span class="kz-palavra" style="--inicio: 104; --fim: 116">junto</span>
+    <span class="kz-palavra" style="--inicio: 116; --fim: 124">com</span>
+    <span class="kz-palavra" style="--inicio: 124; --fim: 128">a</span>
+    <span class="kz-palavra" style="--inicio: 128; --fim: 140">frase.</span></p>
+</div>
