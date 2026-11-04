@@ -118,6 +118,7 @@ and prints the command to install it; run it and then `./instalar.sh` again. Eac
 | `kodecz preview my-video/ MyVideo --frame 90` | one frame as PNG, in one to two seconds |
 | `kodecz preview my-video/ MyVideo --watch` | re-renders the frames you are looking at on every save |
 | `kodecz check my-video/ MyVideo` | automatic checks of every frame, without rendering (JSON) |
+| `kodecz assemble edit.json my-video/` | build the composition folder from an edit written as JSON ([format](docs/formatos/edicao.md)) |
 
 `kodecz render --help` lists every option. The render prints one JSON line with the result on stdout. The original
 Portuguese names (`--placa`, `--alfa`, `--de`, `--quadros`, `id="motor-video"`, `qps`…) still work for now.

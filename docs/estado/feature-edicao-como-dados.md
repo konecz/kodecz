@@ -14,4 +14,4 @@ Checkpoint da tarefa (apagar antes do PR). Itens 1, 7 e 8 da seção A e seção
 7. Ponta a ponta: edição sintética → assemble → render --gpu sob flock -s → quadros e RMS da trilha.
 
 ## Estado
-- em andamento: 1 a 3.
+- feitos 1 a 6 (testes rápidos passam); falta o 7 (render ponta a ponta na placa, fila da trava).
