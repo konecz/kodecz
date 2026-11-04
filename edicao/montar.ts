@@ -16,6 +16,8 @@ import { lerDesignMd, paraCss } from "../identidade/design-md.ts";
 export const BLOCOS = new URL("../blocos/", import.meta.url).pathname;
 /** Built-in item types (not folders of blocos/). */
 export const EMBUTIDOS = ["video", "imagem", "audio"] as const;
+/** Parameters of a block item that name a media file: published to midia/ before the block is built. */
+export const PARAMETROS_DE_MIDIA = ["src", "logo", "imagem", "poster"] as const;
 /** Default length of a scene transition, in frames. */
 export const DURACAO_TRANSICAO = 15;
 /** Without `composicao.quadros`, the video ends this long after the last thing that happens (seconds). */
@@ -362,6 +364,12 @@ export async function montarEdicao(caminhoEdicao: string, saida: string, o: Opco
     const conteudo = filhos.map((f) => f.html).join("\n");
     const item: Record<string, unknown> = { ...no.item, ...p, conteudo };
     delete item.itens; delete item.transicao;
+    // Media a block receives (the presenter's take, a logo…) goes to midia/ like the built-ins' and the block gets
+    // the published path; a URL or data: stays as is.
+    for (const chave of PARAMETROS_DE_MIDIA) {
+      const v = item[chave];
+      if (typeof v === "string" && v && !/^(?:[a-z][a-z0-9+.-]*:|#)/i.test(v)) item[chave] = pub.publicarMidia(v, `${onde}.${chave}`);
+    }
     if (no.bloco === "cena" || no.fimAjustado) { item.de = no.inicio / ctx.fps; item.ate = no.fim / ctx.fps; }
     let m: Montado;
     try { m = montar(item, ctx); } catch (x) { throw erro(onde, (x as Error).message); }

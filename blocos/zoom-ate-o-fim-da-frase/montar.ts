@@ -206,7 +206,7 @@ ${keyframes(`${nome}-video`, video, tol, px)}
 ${marcas.join("\n")}
   </div>
 </div>`;
-  return { html, css: ["zoom-ate-o-fim-da-frase/bloco.css"] };
+  return { html, css: ["bloco.css"] };
 }
 
 // --- Exemplo (apresentador sintético de blocos/gerar-midia.sh, sem pessoa e sem cliente) --------------------------

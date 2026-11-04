@@ -208,6 +208,9 @@ export function montar(item: Record<string, unknown>, ctx: ContextoMontagem): Mo
 - `item` is the edit's item as written (its triggers unresolved, so a block can read a word trigger's structure),
   plus `conteudo`, the children's HTML. For `cena`, and for a scene whose end a transition changed, `de`/`ate` come
   as seconds of the resolved frames.
+- Media parameters (`src`, `logo`, `imagem`, `poster`) are paths relative to the edit's folder; before calling the
+  block the assembler publishes each file to `midia/` (a symlink) and the block gets the published path (`midia/…`).
+  A URL or `data:` stays as is.
 - `ctx`: `fps`, `largura`, `altura`, `palavras`, `q(s)`, `quando(word, occurrence?)`, `fimDaFrase(s)`, `tempo(trigger)`.
 - `css`/`js`: paths relative to the block folder. The assembler copies them to `blocos/<name>/…`, links each
   stylesheet once (a parent's before its children's, in the order they first appear) and puts the scripts at the end

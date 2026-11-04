@@ -46,7 +46,7 @@ const FONTE = { "16:9": [1920, 1080], "9:16": [1080, 1920] } as const;
 
 test("montar: vídeo do apresentador com papel, início, recorte e quadros do take; bloco.css e data-bloco", () => {
   const m = montar(ITEM_DE_EXEMPLO, ctx);
-  assert.deepEqual(m.css, ["zoom-ate-o-fim-da-frase/bloco.css"]);
+  assert.deepEqual(m.css, ["bloco.css"]);
   assert.match(m.html, /data-bloco="zoom-ate-o-fim-da-frase"/);
   assert.match(m.html, /<video class="kz-take-video" data-papel="apresentador" src="\.\.\/midia\/apresentador\.mp4" data-inicio="0" data-recorte="0" data-quadros="195">/);
   // Nada de transform: o zoom é a caixa do vídeo (a escala num ancestral manda o quadro para o canvas).

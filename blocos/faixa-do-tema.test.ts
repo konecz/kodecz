@@ -48,7 +48,7 @@ test("montar: --inicio na palavra, --fim no fim da frase (sem ate), css do bloco
   assert.equal(estilo(r.html, "--faixa-saida"), 9);
   assert.equal(estilo(r.html, "--faixa-letras"), 16);
   assert.match(r.html, />Tema &lt;um&gt; &amp; dois</);
-  assert.deepEqual(r.css, ["faixa-do-tema/bloco.css"]);
+  assert.deepEqual(r.css, ["bloco.css"]);
   assert.match(r.html, /data-estilo="cartao"/);
   assert.match(r.html, /data-entrada="mola"/);
 });

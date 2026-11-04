@@ -168,6 +168,23 @@ test("assemble: a block without montar.ts is a clear error", async () => {
     /block «so-html» has no assembly yet \(blocos\/so-html\/montar\.ts is missing\)/);
 });
 
+test("assemble: media a block receives (src, logo…) is published to midia/ and the block gets that path", async () => {
+  const blocos = join(tmp, "blocos-midia");
+  mkdirSync(join(blocos, "eco"), { recursive: true });
+  writeFileSync(join(blocos, "eco", "KODECZ.md"), "---\nname: eco\n---\n");
+  writeFileSync(join(blocos, "eco", "montar.ts"),
+    "export function montar(item) { return { html: `<i data-src=\\\"${item.src}\\\" data-logo=\\\"${item.logo}\\\" data-url=\\\"${item.imagem}\\\"></i>` }; }\n");
+  const p = pasta("midia-de-bloco", { composicao: { ...EDICAO.composicao, quadros: 30 },
+    itens: [{ bloco: "eco", src: "midia/take.mp4", logo: "midia/foto.png", imagem: "https://exemplo.invalid/a.png" }] });
+  await montarEdicao(join(p, "edicao.json"), join(p, "saida"), { blocos });
+  const html = readFileSync(join(p, "saida", "index.html"), "utf8");
+  assert.match(html, /data-src="midia\/take\.mp4"/);
+  assert.match(html, /data-logo="midia\/foto\.png"/);
+  assert.match(html, /data-url="https:\/\/exemplo\.invalid\/a\.png"/);
+  assert.ok(lstatSync(join(p, "saida", "midia", "take.mp4")).isSymbolicLink());
+  assert.ok(lstatSync(join(p, "saida", "midia", "foto.png")).isSymbolicLink());
+});
+
 test("kodecz assemble: the command, its JSON line and its exit codes", () => {
   const p = pasta("cli", EDICAO);
   const r = spawnSync(process.execPath, [KODECZ, "assemble", join(p, "edicao.json"), join(p, "saida"), "--no-check"], { encoding: "utf8" });

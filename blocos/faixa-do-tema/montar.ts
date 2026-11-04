@@ -94,5 +94,5 @@ export function montar(item: ItemFaixa, ctx: ContextoMontagem): Montado {
   const html = `<div class="kz-faixa" data-bloco="faixa-do-tema" data-estilo="${estilo}" data-entrada="${entrada}" style="${variaveis.join("; ")}">` +
     `<p class="kz-faixa-cartao" data-papel="faixa"><span class="kz-faixa-texto">${escapar(texto)}</span></p>` +
     `<i class="kz-faixa-cortina"></i><i class="kz-faixa-teto"></i></div>`;
-  return { html, css: ["faixa-do-tema/bloco.css"] };
+  return { html, css: ["bloco.css"] };
 }

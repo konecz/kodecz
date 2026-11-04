@@ -84,7 +84,7 @@ só entra depois de a anterior sair.
 | `teto`, `folga`, `base` | os do CSS | `--faixa-teto` (px ou vh), `--faixa-folga` (px), `--faixa-base` (px, vh ou %) |
 
 Devolve o `html` do bloco (com `--inicio`, `--fim`, `--faixa-entrada` = 0,5 s, `--faixa-saida` = 0,3 s e
-`--faixa-letras` já postos, texto escapado) e `css: ["faixa-do-tema/bloco.css"]` (caminho relativo a `blocos/`).
+`--faixa-letras` já postos, texto escapado) e `css: ["bloco.css"]` (caminho relativo à pasta do bloco).
 
 Sobreposição: as faixas já montadas ficam guardadas por `ctx` e por `grupo` (o `assemble` passa o mesmo `ctx` para a
 composição inteira, com os itens em ordem). A que entraria antes de a anterior terminar de sair (`--fim` +
