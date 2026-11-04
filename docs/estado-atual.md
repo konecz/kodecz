@@ -2,7 +2,7 @@
 
 > Checkpoint de continuidade entre sessões. Curto: sobrescrever, nunca acumular.
 
-**Atualizado em:** 2026-11-02, interface em inglês e distribuição para agentes.
+**Atualizado em:** 2026-11-04, peças de edição (edição como dados, preparo e blocos no padrão aprovado).
 
 ## Onde estamos
 
@@ -24,14 +24,40 @@
   `hyperframes-to-kodecz` (`skills/`, formato Agent Skills), plugin e marketplace do Claude Code (`.claude-plugin/`),
   servidor MCP sem dependência (`mcp/`) e `server.json` do registro. Escritos já com os nomes em inglês. Envios
   externos prontos e não enviados em `docs/distribuicao.md`.
+- **Peças de edição** (2026-11-04, branch `feature/pecas-de-edicao`): editar vira preencher dados.
+  `kodecz assemble edicao.json pasta/` (gatilho por palavra falada, fim da frase, efeitos sonoros por evento, trilha
+  que abaixa sob a voz; `docs/formatos/edicao.md`, contrato `edicao/tipos.ts`); `kodecz prepare
+  voice|words|interpolate|loudness` (`docs/formatos/preparo.md`); `montar.ts` em todos os blocos; H01 legenda no
+  padrão aprovado (só a palavra falada acesa, fonte medida no arquivo), H02 v2 take do apresentador (aproximação lenta,
+  punch-in até o fim da frase, recorte 16:9→9:16; zoom pela caixa: 195 de 195 quadros na placa), H14 faixa do tema.
+  Origem: inventário das peças repetidas nos vídeos da Konecz e cinco pesquisas de editores (NLE, motion, GitHub,
+  edição com IA, editores abertos novos).
 - **Render:** `kodecz render <pasta> <composição> <saída.mp4> --gpu` (H.264; `--hevc`, `--alpha`, `--cpu`,
   `--from N`). Instalar: `./instalar.sh`.
 
 ## Próximo passo
 
-Nenhum em andamento: o responsável escolhe da lista abaixo.
+Em andamento (aprovado em 2026-11-04): H15 assinatura com logo e a onda 1, ferramentas do agente (`kodecz preview
+--sheet` folha de contato, `kodecz inspect` do MP4 pronto, `kodecz blocks` catálogo tipado com validação no
+`assemble`, `data-item` nos achados com conserto e `kodecz explain`). Depois delas: MCP enxuto (~11 ferramentas, patch
+com revisão e recibo).
 
 ## Depois (escolha do responsável; nada daqui vira tarefa sozinho)
+
+- Ondas seguintes das peças de edição (ordem aprovada 1 → 2 → 4 → 3 → 5):
+  - 2, edição pela fala: remover trecho com ripple, take por frase, silêncios e vícios no `prepare` (Silero VAD,
+    auto-editor), cobrir a fala da palavra ao fim da frase, marcadores com nome, corte só entre palavras com fade de
+    30 ms, motivo em cada item.
+  - 4, conferência: determinismo por ordem embaralhada, legenda rápida (cps), corte na palavra, buraco, trecho parado
+    > 1,5 s, transbordo, mídia esticada, G15 para SVG, texto sobre texto, as 10 regras de gosto.
+  - 3, motion: curvas e mola como tokens, texto fenda e cascata, fundo vivo, «vida», anotação à mão, lista de passos,
+    transições forma e chicote, palavra na batida, revelação de logo, clipe com speed ramp, cortina em duas fases, chip.
+  - 5, integrações: OTIO, SRT/VTT/ASS, blocos em OGraf (Resolve), reframe pelo rosto (MediaPipe), DeepFilterNet e
+    Demucs, Lottie, texto atrás do apresentador (pede vídeo com alfa).
+- Sobras das peças de edição: `prepare voice --max-pause` (o aprovado soava como 0,7); `words` sem teste com fala real;
+  trilha sem loop; o `assemble` não passa a tipografia da marca à legenda (usa Inter 700); fonte.ts como utilitário
+  comum (kerning, WOFF2); conferência das cores do H01 no `blocos.test.ts` ainda no modo `progresso`; saída do H02
+  termina no fim da frase (o aprovado saía ~0,5 s depois), validar com o responsável.
 
 - Modo CPU com vídeo embutido: sem placa, o HyperFrames gasta menos CPU que o `--cpu` no Apresentador (26,3 contra
   28,1 s; `docs/medidas.md`, 2026-11-02). Perfilar a pintura do vídeo no SwiftShader e a conversão de cor.
