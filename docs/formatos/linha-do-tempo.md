@@ -206,8 +206,11 @@ The media attributes still have their Portuguese names; English names will come 
   the duration without changing the pitch (chained in roots when the speed is outside 0.5 to 2, like Remotion), and
   starts at the media's `data-recorte`; volume points count in composition frames. Looping does not exist yet.
 - **Variable volume:** with points, each frame takes the volume of the line at that frame (the math of Remotion's
-  `interpolate`), constant within the frame and in the same ffmpeg expression Remotion's input uses; a frame with
-  volume 0 leaves the mix, as in Remotion. The ramp `interpolate(f, [0, 6, total − 20, total], [0, 1, 1, 0])` of a
+  `interpolate`), reached exactly at the frame's instant; between two frames the volume follows the straight line
+  sample by sample, so a ramp is smooth. This differs from Remotion, whose volume is constant within the frame and
+  rounded to 97 steps: ffmpeg's `volume=…:eval=frame` evaluates it once per audio block (about 1024 samples), so a
+  ramp came out in steps and a step could click (a music track ducking under a voice). A frame with volume 0 leaves
+  the mix, as in Remotion. The ramp `interpolate(f, [0, 6, total − 20, total], [0, 1, 1, 0])` of a
   Remotion volume function becomes `data-volume="0:0 6:1 <total − 20>:1 <total>:0"`.
 - **In a normal browser** (the author's own preview), `<video>` and `<audio>` play on their own and do not follow the
   attributes; what counts is the render.

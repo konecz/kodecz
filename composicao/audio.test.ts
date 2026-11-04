@@ -46,14 +46,28 @@ test('trechos: lista vazia e quadros sem áudio dão nenhum trecho', () => {
   assert.deepEqual(trechos([[], [], []]), []);
 });
 
-test('expressão de volume: igual à do Remotion (fixo, rampa, muitos valores, trimLeft)', () => {
+test('expressão de volume: fixo igual ao do Remotion; por quadro, a reta entre os quadros (rampa, muitos valores, trimLeft)', () => {
   const sorte = aleatorio(7);
   const casos = [
     [1, 30, 0], [0.5, 25, 1.2], [[0.3, 0.3, 0.3], 30, 0], [[0, 0.25, 0.5, 0.75, 1, 1, 1], 30, 0.4],
     [Array.from({ length: 300 }, () => sorte()), 30, 2.5], [Array.from({ length: 90 }, (_, i) => i / 89), 24, 0],
   ];
   assert.equal(REGUA.volume.length, casos.length);
-  casos.forEach(([volume, fps, trimLeft], i) => assert.deepEqual(expressaoVolume(volume, fps, trimLeft), REGUA.volume[i]));
+  casos.forEach(([volume, fps, trimLeft], i) => {
+    const nossa = expressaoVolume(volume, fps, trimLeft);
+    if (REGUA.volume[i].eval === 'once') { assert.deepEqual(nossa, REGUA.volume[i]); return; }
+    // Desvio consciente (2026-11-04): o Remotion deixa o volume constante dentro do quadro (degraus); aqui é a reta
+    // entre os quadros. O ffmpeg avalia a expressão (aevalsrc, 8 amostras por quadro, os quadros caem em amostras) e
+    // cada amostra tem de ser a reta, com o volume do quadro q no instante trimLeft + q / qps.
+    assert.equal(nossa.eval, 'sample');
+    const taxa = fps * 8, total = Math.round((trimLeft + volume.length / fps + 0.5) * taxa);
+    const r = spawnSync('ffmpeg', ['-v', 'error', '-f', 'lavfi', '-i', `aevalsrc='${nossa.value}':s=${taxa}:d=${total / taxa}`, '-f', 'f64le', '-'], { maxBuffer: 1 << 26 });
+    assert.equal(r.status, 0, String(r.stderr));
+    const amostras = new Float64Array(r.stdout.buffer.slice(r.stdout.byteOffset, r.stdout.byteOffset + r.stdout.length));
+    assert.equal(amostras.length, total);
+    const reta = (f) => { if (f <= 0) return volume[0]; if (f >= volume.length - 1) return volume.at(-1); const q = Math.floor(f); return volume[q] + (volume[q + 1] - volume[q]) * (f - q); };
+    amostras.forEach((v, n) => assert.ok(Math.abs(v - reta((n / taxa - trimLeft) * fps)) < 1e-9, `caso ${i}, amostra ${n}: ${v}`));
+  });
 });
 
 test('atempo: igual ao do Remotion, inclusive fora de 0,5 a 2 (encadeado)', () => {
@@ -77,7 +91,13 @@ test('filtro por trilha: o mesmo filtro do Remotion e os mesmos adelay e apad da
       const corpo = deles.filter.replace(/^\[0:a\]/, '').replace(/\[a0\]$/, '');
       const pads = [deles.pad_start, deles.pad_end].filter(Boolean).map((p) => `,${p}`).join('');
       // Depois do filtro do Remotion: a saída estéreo s16 (o -ac 2 -c:a pcm_s16le dele) e o pts zerado (o WAV dele).
-      assert.equal(nosso, `[3:a]${corpo},aformat=sample_fmts=s16:sample_rates=48000:channel_layouts=stereo,asetpts=PTS-STARTPTS${pads}[t3]`);
+      const final = `aformat=sample_fmts=s16:sample_rates=48000:channel_layouts=stereo,asetpts=PTS-STARTPTS${pads}[t3]`;
+      const [, antes, depois] = /^(.*?),volume='[^']*':eval=frame(.*)$/.exec(corpo) ?? [];
+      if (antes === undefined) { assert.equal(nosso, `[3:a]${corpo},${final}`); continue; }
+      // Volume por quadro (desvio consciente): o volume do Remotion vira o envelope por amostra multiplicado à trilha.
+      const d = /:d=([\d.]+),/.exec(nosso)[1];
+      assert.equal(nosso, `[3:a]${antes},aformat=sample_fmts=flt:channel_layouts=stereo[t3m];\naevalsrc='${expressaoVolume(t.volume, fps, 0).value}':s=48000:d=${d},` +
+        `pan=stereo|c0=c0|c1=c0,aformat=sample_fmts=flt[t3e];\n[t3m][t3e]amultiply,${depois ? `${depois.slice(1)},` : ''}${final}`);
     }
   }
   assert.equal(k, REGUA.filtros.length);
@@ -264,4 +284,38 @@ test('MP4 montado do fluxo cru: o quadro n no tempo n / qps exato, sem deriva (2
       { encoding: 'utf8' }).stdout.trim();
     assert.equal(d, `${fps}/1,${(quadros / fps).toFixed(6)}`, `${fps} qps`);
   }
+});
+
+// Regressão (2026-11-04): com volume=…:eval=frame, o ffmpeg avaliava o volume uma vez por quadro de áudio (~1024
+// amostras), e a rampa saía em degraus: a trilha que abaixa sob a voz estalava no degrau. O volume tem de seguir a reta
+// entre os quadros amostra a amostra, com o valor de cada quadro no instante do quadro.
+test('volume variável: rampa por amostra, sem degrau (nem estalo) e com o valor de cada quadro no instante dele', (t) => {
+  const pasta = mkdtempSync(join(tmpdir(), 'm07-rampa-'));
+  t.after(() => rmSync(pasta, { recursive: true, force: true }));
+  const fps = 30, taxa = 48000, total = 150;
+  const tom = join(pasta, 'tom.wav');
+  assert.equal(spawnSync('ffmpeg', ['-v', 'error', '-y', '-f', 'lavfi', '-i', `sine=frequency=440:sample_rate=${taxa}:duration=6`, tom]).status, 0);
+  // data-volume="0:1 90:1 96:0.25": a reta entre os pontos, quadro a quadro (volumeNoQuadro do midia-linha.ts).
+  const ganho = (q) => (q <= 90 ? 1 : q >= 96 ? 0.25 : 1 + ((0.25 - 1) * (q - 90)) / 6);
+  // A trilha com a rampa e a mesma trilha com volume 1 (a referência), pela cadeia do motor; o canal esquerdo de cada.
+  const ler = (volume) => {
+    const [trecho] = trechos(Array.from({ length: total }, (_, n) => [asset('tom', n, { volume: volume(n) })]));
+    const filtro = filtroTrilha({ trecho, fps, duracaoVideo: total / fps, taxa, canais: 1, duracaoMidia: 6, inicioMidia: 0, entrada: '0:a', saida: 'audio' });
+    const r = spawnSync('ffmpeg', ['-v', 'error', '-i', tom, '-filter_complex', filtro, '-map', '[audio]', '-f', 's16le', '-'], { maxBuffer: 1 << 26 });
+    assert.equal(r.status, 0, String(r.stderr));
+    return new Int16Array(r.stdout.buffer, r.stdout.byteOffset, r.stdout.length / 2).filter((_, i) => i % 2 === 0);
+  };
+  const saida = ler(ganho);
+  const entrada = ler(() => 1);
+  assert.equal(saida.length, entrada.length);
+  const maiorSalto = (de, ate) => { let m = 0; for (let i = de + 1; i < ate; i++) m = Math.max(m, Math.abs(saida[i] - saida[i - 1])); return m; };
+  const s = (q) => Math.round((q / fps) * taxa);
+  const tipico = maiorSalto(0, s(90)); // o seno com volume 1
+  const naRampa = maiorSalto(s(89), s(97));
+  assert.ok(naRampa <= tipico + 2, `salto na rampa ${naRampa} contra ${tipico} do seno: degrau de volume`);
+  // Amostra a amostra: a reta entre os quadros (o ganho do quadro q no instante q / qps), só com o arredondamento do s16
+  // (o da referência e o da saída, até 1,5).
+  let pior = 0;
+  for (let i = 0; i < saida.length; i++) pior = Math.max(pior, Math.abs(saida[i] - entrada[i] * ganho((i / taxa) * fps)));
+  assert.ok(pior <= 1.5, `desvio de ${pior} da reta entre os quadros`);
 });

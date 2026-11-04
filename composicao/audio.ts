@@ -55,29 +55,33 @@ export function trechos(quadros) {
 
 // ---------- filtros (ffmpeg-volume-expression.ts, calculate-atempo.ts, stringify-ffmpeg-filter.ts) ----------
 
-// Expressão do ffmpeg tem profundidade máxima 100: o volume é arredondado a 97 degraus.
-const arredondarVolume = (v) => Number((Math.round(v * 97) / 97).toFixed(3));
-
-function entreQuadros(quadros, trimLeft, fps) {
-  const grupos = [];
-  quadros.forEach((q, i) => { if (i === 0 || q !== quadros[i - 1] + 1) grupos.push([]); grupos.at(-1).push(q); });
-  return grupos.map((g) => `between(t,${((g[0] - 0.5) / fps + trimLeft).toFixed(4)},${((g.at(-1) + 0.5) / fps + trimLeft).toFixed(4)})`).join('+');
-}
-function encadear(pares, trimLeft, fps) {
-  if (pares.length === 1) return String(pares[0][0]);
-  const [[volume, quadros], ...resto] = pares;
-  return `if(${entreQuadros(quadros, trimLeft, fps)},${volume},${encadear(resto, trimLeft, fps)})`;
-}
-
-// Volume fixo: eval=once. Por quadro: if(between(t,…)) aninhados, o volume mais comum por último (o «senão»).
-// O último quadro é repetido: o quadro 29 de um vídeo de 1 s está em 0,9667 s, mas o áudio vai até 1 s.
+// Volume fixo: eval=once, como o Remotion. Volume por quadro: desvio consciente do Remotion (2026-11-04). O dele é
+// constante dentro do quadro (if(between(t,…)) aninhados, arredondado a 97 degraus) e vai no volume=…:eval=frame, que
+// o ffmpeg avalia uma vez por quadro de áudio (~1024 amostras): a rampa sai em degraus, e o degrau estala (a trilha que
+// abaixa sob a voz). Aqui sai a expressão de um envelope (o aevalsrc do filtroTrilha, avaliado amostra a amostra): o
+// volume do quadro q vale no instante trimLeft + q / qps e, entre dois quadros, segue a reta; antes do primeiro e
+// depois do último, o volume da ponta. Só os quadros em que a inclinação muda entram (uma rampa de pontos vira poucos
+// trechos), numa árvore de if(lt(t,…)) de profundidade log2 (a expressão do ffmpeg aceita 100), sem arredondar.
+const numero = (v) => String(Object.is(v, -0) ? 0 : v);
 export function expressaoVolume(volume, fps, trimLeft) {
   if (typeof volume === 'number') return { eval: 'once', value: String(volume) };
   if (new Set(volume).size === 1) return expressaoVolume(volume[0], fps, trimLeft);
-  const mapa = {};
-  [...volume, volume.at(-1)].forEach((v, q) => { (mapa[arredondarVolume(v)] ??= []).push(q); });
-  const pares = Object.keys(mapa).map((k) => [Number(k), mapa[k]]).sort((a, b) => a[1].length - b[1].length);
-  return { eval: 'frame', value: `'${encadear(pares, trimLeft, fps)}'` };
+  const nos = volume.flatMap((v, q) => (q === 0 || q === volume.length - 1 || Math.abs(volume[q + 1] - 2 * v + volume[q - 1]) > 1e-9 ? [q] : []));
+  const instante = (q) => trimLeft + q / fps;
+  // Região r: 0 antes do primeiro nó, r entre os nós r − 1 e r, nos.length depois do último.
+  const regiao = (r) => {
+    if (r === 0) return numero(volume[nos[0]]);
+    if (r === nos.length) return numero(volume[nos.at(-1)]);
+    const [a, b] = [nos[r - 1], nos[r]];
+    if (volume[a] === volume[b]) return numero(volume[a]);
+    return `${numero(volume[a])}+(${numero((volume[b] - volume[a]) / (instante(b) - instante(a)))})*(t-${numero(instante(a))})`;
+  };
+  const arvore = (de, ate) => {
+    if (de === ate) return regiao(de);
+    const meio = Math.ceil((de + ate) / 2);
+    return `if(lt(t,${numero(instante(nos[meio - 1]))}),${arvore(de, meio - 1)},${arvore(meio, ate)})`;
+  };
+  return { eval: 'sample', value: arvore(0, nos.length) };
 }
 
 // O atempo aceita de 0,5 a 2; fora disso, encadeia raízes.
@@ -107,23 +111,28 @@ export function filtroTrilha({ trecho, fps, duracaoVideo, taxa, canais, duracaoM
   if (duracaoMidia) corteDir = Math.min(corteDir, duracaoMidia / vel);
   if (corteDir < corteEsq) corteDir = corteEsq;
   const audivel = corteDir - corteEsq;
-  const vol = expressaoVolume(trecho.volume, fps, corteEsq);
+  // O envelope começa junto com o trecho (o t do aevalsrc parte de 0 na primeira amostra depois do atrim).
+  const vol = expressaoVolume(trecho.volume, fps, typeof trecho.volume === 'number' ? corteEsq : 0);
   const fimPad = duracaoVideo - audivel - inicioNoVideo;
   const atrasoS = inicioNoVideo + (trecho.trimLeft === 0 ? inicioMidia : 0);
-  return `[${entrada}]` + [
-    `aformat=sample_fmts=s16:sample_rates=${taxa}`,
-    atempo(vel),
-    `atrim=${microssegundos(corteEsq)}:${microssegundos(corteDir)}`,
-    vol.value === '1' ? null : `volume=${vol.value}:eval=${vol.eval}`,
+  const cadeia = (filtros) => filtros.filter(Boolean).join(',');
+  const inicio = cadeia([`aformat=sample_fmts=s16:sample_rates=${taxa}`, atempo(vel), `atrim=${microssegundos(corteEsq)}:${microssegundos(corteDir)}`]);
+  const fim = cadeia([
     tom && tom !== 1 ? `asetrate=${taxa}*${tom},aresample=${taxa},atempo=1/${tom}` : null,
     `aformat=sample_fmts=s16:sample_rates=${taxa}:channel_layouts=stereo`,
-    // O WAV intermediário do Remotion começa em 0; aqui, sem ele, o pts do atrim iria até a saída do amix (o volume
-    // acima ainda precisa do t original, por isso o reinício vem depois dele).
+    // O WAV intermediário do Remotion começa em 0; aqui, sem ele, o pts do atrim iria até a saída do amix.
     'asetpts=PTS-STARTPTS',
     // Como o Remotion: em milissegundos, um valor por canal mais um (o ffprobe às vezes conta canal a menos).
     atrasoS === 0 ? null : `adelay=${new Array(canais + 1).fill((atrasoS * 1000).toFixed(0)).join('|')}`,
     fimPad > 0.0000001 ? `apad=pad_len=${Math.round(fimPad * taxa)}` : null,
-  ].filter(Boolean).join(',') + `[${saida}]`;
+  ]);
+  if (vol.eval !== 'sample') return `[${entrada}]${cadeia([inicio, vol.value === '1' ? null : `volume=${vol.value}:eval=${vol.eval}`, fim])}[${saida}]`;
+  // Volume por amostra: o envelope mono (uma avaliação por amostra, metade da CPU de um aeval nos dois canais), passado
+  // a estéreo e multiplicado à trilha já em estéreo (a mistura de canais e o volume são lineares: a ordem não muda o
+  // som). O envelope dura 1 s a mais que o trecho; o amultiply termina com a trilha.
+  const env = `aevalsrc='${vol.value}':s=${taxa}:d=${(audivel + 1).toFixed(6)},pan=stereo|c0=c0|c1=c0,aformat=sample_fmts=flt`;
+  return `[${entrada}]${inicio},aformat=sample_fmts=flt:channel_layouts=stereo[${saida}m];\n${env}[${saida}e];\n` +
+    `[${saida}m][${saida}e]amultiply,${fim}[${saida}]`;
 }
 
 // O grafo inteiro: entrada 0 é o vídeo; depois as fontes das trilhas, nessa ordem.
@@ -254,10 +263,10 @@ export class ColetorDeAudio {
         const chave = `${arquivo}#${t.audioStreamIndex}`;
         if (!sondas.has(chave)) sondas.set(chave, sondar(arquivo, { ffprobe, faixa: t.audioStreamIndex }));
         const s = sondas.get(chave);
-        const corpo = filtroTrilha({ trecho: t, fps: this.fps, duracaoVideo, taxa: this.taxa, ...s, entrada: 'E', saida: 'S' });
-        if (corpo === null) continue;
-        trilhas.push({ arquivo, faixa: t.audioStreamIndex,
-          filtro: (e, s2) => corpo.replace(/^\[E\]/, `[${rotuloEntrada(Number(e.split(':')[0]), t.audioStreamIndex)}]`).replace(/\[S\]$/, `[${s2}]`) });
+        const filtro = (e, s2) => filtroTrilha({ trecho: t, fps: this.fps, duracaoVideo, taxa: this.taxa, ...s,
+          entrada: rotuloEntrada(Number(e.split(':')[0]), t.audioStreamIndex), saida: s2 });
+        if (filtro('1:a', 'S') === null) continue;
+        trilhas.push({ arquivo, faixa: t.audioStreamIndex, filtro });
       }
       const totalAmostras = Math.round(duracaoVideo * this.taxa);
       const m = montarMistura({ trilhas, totalAmostras });
