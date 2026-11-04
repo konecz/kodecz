@@ -18,6 +18,35 @@
       "medida": "escala",
       "maximo": 1.001,
       "mensagem": "t={t} · {onde} · no último quadro em que aparece, o zoom ainda está em {valor}× → o zoom volta na pausa depois da frase; conferir --fim e --saida (G21)"
+    },
+    {
+      "id": "zoom.enfase-ordem",
+      "prioridade": "P0",
+      "seletor": ".kz-take-enfase",
+      "quando": "fim",
+      "medida": "fim-menos-inicio",
+      "minimo": 1,
+      "mensagem": "t={t} · {onde} · a ênfase acaba {valor} quadros depois da palavra → o fim é o da frase da palavra de ênfase, depois dela (G21)"
+    },
+    {
+      "id": "zoom.enfase-volta",
+      "prioridade": "P0",
+      "seletor": ".kz-take-enfase",
+      "quando": "fim",
+      "medida": "distancia-do-alvo",
+      "propriedade": "--kz-punch",
+      "maximo": 0.0005,
+      "mensagem": "t={t} · {onde} · no fim da frase o punch-in ainda soma {valor} ao zoom → o punch-in acaba de sair no fim da frase; montar o take de novo pelo montar.ts (G21)"
+    },
+    {
+      "id": "zoom.take-volta",
+      "prioridade": "P0",
+      "seletor": ".kz-take-caixa",
+      "quando": "fim-do-bloco",
+      "medida": "distancia-do-alvo",
+      "propriedade": "--kz-punch",
+      "maximo": 0.0005,
+      "mensagem": "t={t} · {onde} · no último quadro do take o punch-in ainda soma {valor} ao zoom → a ênfase acaba antes do corte do take (G21)"
     }
   ]
 }

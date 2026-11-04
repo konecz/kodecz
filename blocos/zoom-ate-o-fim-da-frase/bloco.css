@@ -12,3 +12,28 @@
 .kz-zoom > * { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 @keyframes kz-zoom-entra { from { transform: none; } to { transform: scale(var(--escala, 1.15)); } }
 @keyframes kz-zoom-sai { from { transform: scale(var(--escala, 1.15)); } to { transform: none; } }
+
+/* v2, o take do apresentador (montar.ts): a caixa do take (tela cheia ou cartão) e o vídeo dentro dela, posicionados
+   por @keyframes lineares amostrados por quadro, gerados pelo montar.ts (--kz-caixa, --kz-video, --kz-n quadros).
+   Nada de transform: o zoom é o tamanho e a posição do vídeo, e o quadro continua na placa (take-placa.js).
+   --kz-punch é a parte do punch-in no zoom (0 fora das ênfases), herdada pelos marcadores .kz-take-enfase que a
+   conferência lê no fim da frase (G21). O take aparece no --inicio e some no --fim, como a cena (H04). */
+@property --kz-punch { syntax: "<number>"; inherits: true; initial-value: 0; }
+.kz-take {
+  position: absolute; inset: 0;
+  opacity: 0;
+  animation: kz-take-entra 0s linear calc(var(--inicio) * 1s / var(--fps)) forwards,
+             kz-take-sai 0s linear calc(var(--fim) * 1s / var(--fps)) forwards;
+}
+@keyframes kz-take-entra { from, to { opacity: 1; } }
+@keyframes kz-take-sai { from, to { opacity: 0; } }
+.kz-take-caixa {
+  position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: hidden;
+  animation: var(--kz-caixa) calc(var(--kz-n) * 1s / var(--fps)) linear calc(var(--inicio) * 1s / var(--fps)) both;
+}
+.kz-take-cartao { outline: 0 solid var(--color-accent); }
+.kz-take-video {
+  position: absolute; left: 0; top: 0;
+  animation: var(--kz-video) calc(var(--kz-n) * 1s / var(--fps)) linear calc(var(--inicio) * 1s / var(--fps)) both;
+}
+.kz-take-enfase { display: none; }

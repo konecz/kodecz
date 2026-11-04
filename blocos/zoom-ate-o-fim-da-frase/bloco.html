@@ -1,7 +1,10 @@
 <!-- zoom-ate-o-fim-da-frase (H02). <link rel="stylesheet" href="⟨blocos⟩/zoom-ate-o-fim-da-frase/bloco.css"> no <head>.
-     ⟨inicio⟩: quadro do começo da palavra de ênfase; ⟨fim⟩: quadro do começo da pausa depois do fim da frase dela
-     (o primeiro . ! ou ? do roteiro dali em diante). --escala (padrão 1.15), --entrada e --saida em quadros (padrão
-     6 e 12), --zoom-origem no ponto de interesse (padrão 50% 38%, G23). Um zoom por frase, no máximo. -->
+     v2 (o take do apresentador, aproximação lenta + punch-in por ênfase, recorte no foco, cartão): não se escreve à
+     mão; sai de montar(item, ctx) em montar.ts (o kodecz assemble chama), com os @keyframes por quadro.
+     v1, à mão (abaixo): ⟨inicio⟩: quadro do começo da palavra de ênfase; ⟨fim⟩: quadro do começo da pausa depois do
+     fim da frase dela (o primeiro . ! ou ? do roteiro dali em diante). --escala (padrão 1.15), --entrada e --saida em
+     quadros (padrão 6 e 12), --zoom-origem no ponto de interesse (padrão 50% 38%, G23). Um zoom por frase, no máximo.
+     Na v1 o vídeo vai pelo canvas enquanto escala (transform no invólucro). -->
 <div class="kz-zoom" data-bloco="zoom-ate-o-fim-da-frase" style="--inicio: ⟨inicio⟩; --fim: ⟨fim⟩; --escala: 1.15">
   <video class="tela-apresentador" data-papel="apresentador" src="⟨apresentador.mp4⟩" data-inicio="⟨quadro em que o vídeo começa⟩"></video>
 </div>
