@@ -11,8 +11,10 @@
   --kz-faixa-teto: var(--faixa-teto, 60vh);
   --kz-faixa-alto: 12px; --kz-faixa-lado: 28px;
   position: absolute; left: 0; right: 0; margin: 0 auto; width: fit-content; max-width: var(--kz-faixa-largura);
-  bottom: var(--faixa-base, calc(var(--legenda-base, 12%) + var(--font-caption-size, 52px) *
-    (var(--font-caption-line-height, 1.2) + 0.5) + var(--faixa-folga, 20px)));
+  /* The same base, line and padding as the H01 caption box (blocos/legenda-uma-linha/bloco.css). */
+  bottom: var(--faixa-base, calc(max(var(--legenda-base, 56px), var(--spacing-safe, 0px)) +
+    var(--font-caption-size, 52px) * var(--font-caption-line-height, 1.15) + 2 * var(--legenda-respiro-y, 12px) +
+    var(--faixa-folga, 20px)));
   animation: kz-faixa-entra calc(var(--faixa-entrada, 15) * 1s / var(--fps)) var(--motion-easing-enter, cubic-bezier(0.16, 1, 0.3, 1))
                calc(var(--inicio) * 1s / var(--fps)) both,
              kz-faixa-sai calc(var(--faixa-saida, 9) * 1s / var(--fps)) var(--motion-easing-enter, cubic-bezier(0.16, 1, 0.3, 1))

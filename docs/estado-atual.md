@@ -64,6 +64,8 @@ com revisão e recibo).
   conferir a medida da legenda com fonte variável (o `hmtx` traz a instância padrão); take do H02 dentro de cena com
   `fade` provavelmente vai para o canvas nos quadros da transição; item `audio` sem `ate` dentro de cena toca até o fim
   do arquivo.
+- A faixa do tema (H14) calcula o topo da legenda pela base; com a legenda ancorada pelo topo (9:16, `topo` do H01) ela
+  não acompanha: o `assemble` deveria passar a posição da legenda à faixa.
 
 - Modo CPU com vídeo embutido: sem placa, o HyperFrames gasta menos CPU que o `--cpu` no Apresentador (26,3 contra
   28,1 s; `docs/medidas.md`, 2026-11-02). Perfilar a pintura do vídeo no SwiftShader e a conversão de cor.
