@@ -132,6 +132,8 @@ test("montar: modos (progresso, subir), posição por formato e zona segura", ()
   assert.match(v, /data-ancora="topo"[^>]*--legenda-topo: 1440px/, "9:16: 75 % da altura");
   assert.match(montar({ larguraEm: 0.6, topo: 1112 }, contexto(p)).html, /--legenda-topo: 1112px/, "logo abaixo do queixo");
   assert.match(montar({ larguraEm: 0.6, topo: "60%" }, contexto(p)).html, /--legenda-topo: 1152px/);
+  assert.match(montar({ larguraEm: 0.6, topo: "1100px" }, contexto(p)).html, /--legenda-topo: 1100px/);
+  assert.throws(() => montar({ larguraEm: 0.6, topo: "abaixo" }, contexto(p)), /topo/);
   // Reels (G19): os 35 % de baixo livres; a caixa (56 × 1,15 + 2 × 16 = 96,4 px, arredondado para 97) termina até 1248.
   const r = montar({ larguraEm: 0.6, destino: "reels", tamanho: 56, alturaLinha: 1.15 }, contexto(p)).html;
   const topo = Number(/--legenda-topo: (\d+)px/.exec(r)![1]);

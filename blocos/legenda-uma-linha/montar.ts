@@ -131,7 +131,10 @@ export function montar(item: ItemLegenda, ctx: ContextoMontagem): Montado {
   if (destaque === "progresso") attrs.push(`data-destaque="progresso"`);
   if (entrada === "subir") attrs.push(`data-entrada="subir"`);
   if (vertical || item.topo !== undefined) {
-    const pedido = typeof item.topo === "string" ? (H * parseFloat(item.topo)) / 100 : item.topo ?? 0.75 * H;
+    const pedido = typeof item.topo === "string"
+      ? (item.topo.trim().endsWith("%") ? (H * parseFloat(item.topo)) / 100 : parseFloat(item.topo))
+      : item.topo ?? 0.75 * H;
+    if (!Number.isFinite(pedido)) throw new Error(`legenda-uma-linha: topo "${item.topo}" (px ou "NN%")`);
     const topo = Math.max(cima, Math.min(Math.round(pedido), H - baixo - alturaCaixa));
     attrs.push(`data-ancora="topo"`);
     estilo.push(`--legenda-topo: ${topo}px`);
