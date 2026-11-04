@@ -17,8 +17,8 @@ Leia este índice inteiro; abra o `KODECZ.md` só do bloco que vai usar.
 - [H09 cartela](cartela/KODECZ.md): quadro cheio de cor com uma chamada curta (abertura, capítulo, fim).
 - [H10 terco-inferior](terco-inferior/KODECZ.md): nome e cargo de quem fala, no terço de baixo.
 - [H01 legenda-uma-linha](legenda-uma-linha/KODECZ.md): legenda palavra a palavra, sempre numa linha (G17).
-- [H02 zoom-ate-o-fim-da-frase](zoom-ate-o-fim-da-frase/KODECZ.md): punch-in da palavra de ênfase até a pausa
-  depois da frase (G21); o movimento de câmera dos blocos.
+- [H02 zoom-ate-o-fim-da-frase](zoom-ate-o-fim-da-frase/KODECZ.md): take do apresentador (`montar.ts`) com
+  aproximação lenta e punch-in de 12 % por ênfase até o fim da frase (G21), recorte no foco e cartão; na placa.
 - [H11 grafico-barras](grafico-barras/KODECZ.md): barras que crescem com o número contando.
 - [H12 grafico-linha](grafico-linha/KODECZ.md): linha que se desenha, com os pontos e o último valor contando.
 - [H13 contagem](contagem/KODECZ.md): número grande contando até o valor, ou regressiva de N até 1.
