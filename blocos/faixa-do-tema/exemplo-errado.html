@@ -1,0 +1,32 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>faixa-do-tema · exemplo errado</title>
+<!-- H14, errado de propósito, com a legenda junto (que não é acusada). A conferência tem de acusar:
+     - faixa.rosto: a primeira (10 a 40) erguida com --faixa-base: 70%, acima da linha do queixo;
+     - faixa.uma-por-vez: a segunda entra no 35, antes de a primeira terminar de sair (40 a 49);
+     - faixa.uma-linha: a terceira (80 a 110) quebrada com <br>. -->
+<script type="application/json" id="kodecz">
+{ "id": "ExemploFaixaErrado", "width": 1920, "height": 1080, "fps": 30, "frames": 125 }
+</script>
+<link rel="stylesheet" href="../marca/marca.css">
+<link rel="stylesheet" href="bloco.css">
+<link rel="stylesheet" href="../legenda-uma-linha/bloco.css">
+<style>
+  :root { --fps: 30; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--color-muted); }
+</style>
+<div class="kz-faixa" data-bloco="faixa-do-tema" data-estilo="cartao" data-entrada="mola" style="--inicio: 10; --fim: 40; --faixa-letras: 13; --faixa-base: 70%">
+  <p class="kz-faixa-cartao" data-papel="faixa"><span class="kz-faixa-texto">Sobre o rosto</span></p>
+  <i class="kz-faixa-cortina"></i><i class="kz-faixa-teto"></i>
+</div>
+<div class="kz-faixa" data-bloco="faixa-do-tema" data-estilo="cartao" data-entrada="mola" style="--inicio: 35; --fim: 70; --faixa-letras: 12">
+  <p class="kz-faixa-cartao" data-papel="faixa"><span class="kz-faixa-texto">Entrou cedo</span></p>
+  <i class="kz-faixa-cortina"></i><i class="kz-faixa-teto"></i>
+</div>
+<div class="kz-faixa" data-bloco="faixa-do-tema" data-estilo="barra" data-entrada="cortina" style="--inicio: 80; --fim: 110; --faixa-letras: 18">
+  <p class="kz-faixa-cartao" data-papel="faixa"><span class="kz-faixa-texto">Tema que<br>quebrou</span></p>
+  <i class="kz-faixa-cortina"></i><i class="kz-faixa-teto"></i>
+</div>
+<div class="kz-legendas" data-bloco="legenda-uma-linha">
+  <p class="kz-legenda" data-papel="legenda" style="--inicio: 10; --fim: 115"><span class="kz-palavra" style="--inicio: 10; --fim: 115">Legenda certa.</span></p>
+</div>

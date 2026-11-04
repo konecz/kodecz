@@ -22,6 +22,7 @@ Leia este índice inteiro; abra o `KODECZ.md` só do bloco que vai usar.
 - [H11 grafico-barras](grafico-barras/KODECZ.md): barras que crescem com o número contando.
 - [H12 grafico-linha](grafico-linha/KODECZ.md): linha que se desenha, com os pontos e o último valor contando.
 - [H13 contagem](contagem/KODECZ.md): número grande contando até o valor, ou regressiva de N até 1.
+- [H14 faixa-do-tema](faixa-do-tema/KODECZ.md): o tema do trecho numa linha, logo acima da legenda e no eixo dela; sai com o zoom.
 
 H03 (`texto-fora-do-rosto`) está reservado: precisa da caixa do rosto, que vem do S04. Mapas ficaram fora do S02.
 

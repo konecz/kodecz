@@ -1,0 +1,10 @@
+<!-- faixa-do-tema (H14). <link rel="stylesheet" href="⟨blocos⟩/faixa-do-tema/bloco.css"> no <head>, junto com o da
+     legenda (H01). Entra no ⟨inicio⟩ e começa a sair no ⟨fim⟩ (quadros): o fim da frase, o mesmo --fim do zoom (G21).
+     data-estilo: cartao (claro, filete de acento embaixo) ou barra (escuro, barra à esquerda, texto subindo);
+     data-entrada: mola (fade) ou cortina (duas fases). --faixa-letras: o número de letras do tema (o texto encolhe
+     para caber). --legenda-base no :root, para a faixa e a legenda lerem o mesmo; --faixa-teto: a linha do queixo. -->
+<div class="kz-faixa" data-bloco="faixa-do-tema" data-estilo="cartao" data-entrada="mola"
+     style="--inicio: ⟨inicio⟩; --fim: ⟨fim⟩; --faixa-letras: ⟨letras do tema⟩">
+  <p class="kz-faixa-cartao" data-papel="faixa"><span class="kz-faixa-texto">⟨tema⟩</span></p>
+  <i class="kz-faixa-cortina"></i><i class="kz-faixa-teto"></i>
+</div>
