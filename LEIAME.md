@@ -5,6 +5,12 @@
 
 # Kodecz
 
+> [!WARNING]
+> **Descontinuado (12 de novembro de 2026).** O Kodecz não é mais desenvolvido neste repositório. O motor continua, e
+> segue melhorando, dentro do **Konectaz**, o produto da Konecz: para a versão mais atualizada, use o Konectaz
+> ([konecz.com](https://konecz.com)). Este repositório fica disponível como está, sob a Apache-2.0, mas não recebe
+> funções novas, correções nem atualizações de segurança. Issues e pull requests não são mais revisados.
+
 **O vídeo escrito como página web, renderizado na placa da NVIDIA ou em qualquer CPU.**
 
 O Kodecz é o motor de vídeo por código da [Konecz](https://konecz.com). O vídeo é uma pasta com um `index.html`:

@@ -5,6 +5,12 @@
 </picture>
 </a>
 
+> [!WARNING]
+> **Discontinued (November 12, 2026).** Kodecz is no longer developed in this repository. The engine lives on, and
+> keeps improving, inside **Konectaz**, the Konecz product: for the most up-to-date version, use Konectaz
+> ([konecz.com](https://konecz.com)). This repository stays available as it is, under Apache-2.0, but receives no new
+> features, fixes or security updates. Issues and pull requests are no longer reviewed.
+
 **Kodecz is an open-source video rendering engine that turns a web page into an MP4.** You write the video in HTML,
 CSS and JavaScript (React, WebGL, GSAP, Lottie or nothing at all), and Kodecz renders it frame by frame on an NVIDIA
 GPU with NVENC or on any CPU with x264, without taking a screenshot of every frame. It is an alternative to Remotion

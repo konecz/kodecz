@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Open-source video engine: a web page becomes an MP4, rendered on an NVIDIA GPU (NVENC) or on the CPU (x264).",
+  "description": "Discontinued: development continues in Konectaz (konecz.com). Open-source video engine: a web page becomes an MP4, rendered on an NVIDIA GPU (NVENC) or on the CPU (x264).",
   "license": "Apache-2.0",
   "homepage": "https://github.com/konecz/kodecz",
   "repository": { "type": "git", "url": "git+https://github.com/konecz/kodecz.git" },
